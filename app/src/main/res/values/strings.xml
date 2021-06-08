@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SuportStudy</string>
+    <string name="dangkythanhcong">Đăng ký thành công</string>
+    <string name="No_internet_connection">No internet</string>
+</resources>
