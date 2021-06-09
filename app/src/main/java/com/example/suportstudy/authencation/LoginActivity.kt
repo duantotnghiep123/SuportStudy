@@ -35,16 +35,14 @@ class LoginActivity : AppCompatActivity() {
                 if (it.isSuccess) {
                     Until.showToast(context,"Đăng nhập thành công");
                     user = app.currentUser()
-                    Until.nextActivity(context,ChatActivity::class.java)
+                    Until.nextActivity(context,HomeActivity::class.java)
                     Log.d("User",user!!.id)
 
                 } else {
                     Until.showToast(context,"Đăng nhập thất bại");
                 }
             }
-
         }
-
         btnRegister.setOnClickListener {
             Until.nextActivity(context,RegisterActivity::class.java)
         }

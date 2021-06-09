@@ -16,17 +16,19 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".chat.ChatActivity"></activity>
         <activity android:name=".QuizzActivity"></activity>
-        <activity android:name=".authencation.SetupProfileActivity" />
-        <activity android:name=".home.HomeActivity" />
-        <activity android:name=".authencation.RegisterActivity"></activity>
-        <activity android:name=".authencation.LoginActivity" >
-        </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".authencation.ProfileActivity" />
+        <activity android:name=".home.HomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".authencation.RegisterActivity"></activity>
+        <activity android:name=".authencation.LoginActivity" >
+        </activity>
+        <activity android:name=".MainActivity">
+
         </activity>
     </application>
 

@@ -18,8 +18,8 @@ import org.bson.Document
 object Until {
 
     val appId="duantotnghiep-aeidb";
-//    var baseQuestionUrl="http://192.168.3.107:10000"
-    var baseQuestionUrl="http://172.20.10.3:10000"
+    var baseQuestionUrl="http://192.168.3.107:10000"
+//    var baseQuestionUrl="http://172.20.10.3:10000"
 
     val app = App(AppConfiguration.Builder(appId).build())
     var getCurrentUser: User? =app.currentUser()

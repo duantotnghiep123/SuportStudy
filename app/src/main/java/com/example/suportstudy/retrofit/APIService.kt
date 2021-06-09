@@ -26,7 +26,7 @@ interface APIService {
         @Field("receiverUid") receiverUid: String?,
         @Field("timeSend") timeSend: String,
         @Field("messageType") messageType: String,
-        @Field("messge") messge: String,
+        @Field("message") message: String,
     ): Call<Chat>
     companion object{
 

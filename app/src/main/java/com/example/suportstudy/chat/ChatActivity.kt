@@ -87,7 +87,6 @@ class ChatActivity : AppCompatActivity() {
         mongoCollection = mongoDatabase!!.getCollection("chats")
 
 
-
         var retrofit = APIService.getClient();
         chatApi = retrofit?.create(APIService::class.java)
 
@@ -99,8 +98,10 @@ class ChatActivity : AppCompatActivity() {
                 Until.showToast(context, "Nhập tin nhắn")
             } else {
                 sendMessage2(message)
+
                 Until.hideKeyBoard(context)
             }
+
             messageEt!!.setText("")
         }
 
@@ -108,33 +109,31 @@ class ChatActivity : AppCompatActivity() {
 
     fun sendMessage2(message: String) {
         var time: String = System.currentTimeMillis().toString()
-        var call = chatApi!!.savePost(user!!.id, receiver, time, "text", message)
-        call!!.enqueue(object : Callback<Chat> {
+        chatApi!!.savePost(user!!.id, receiver, time, "text", message)
+        .enqueue(object : Callback<Chat> {
             override fun onResponse(call: Call<Chat>, response: Response<Chat>) {
                 if(response.isSuccessful){
-                    readMessage2()
+                   Until.showToast(context,"Hoan Thanh")
                 }
             }
             override fun onFailure(call: Call<Chat>, t: Throwable) {
-                  Log.d("error",t.message.toString())
+                  Log.d("Errorconected",t.message.toString())
             }
         })
+        readMessage2()
     }
 
     fun readMessage2() {
-
         val chatFetchJob = Job()
         val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
             throwable.printStackTrace()
-            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Errorconect", Toast.LENGTH_SHORT).show()
         }
         val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
-
         scope.launch(errorHandler) {
-            CoroutineScope(Dispatchers.Main).launch {
-                val responce = chatApi!!.getAllMessage()
-                data.postValue(responce.body())
-            }
+            val responce = chatApi!!.getAllMessage()
+            Log.d("data",responce.body().toString())
+            data.postValue(responce.body())
         }
 
         data.observe(this, {

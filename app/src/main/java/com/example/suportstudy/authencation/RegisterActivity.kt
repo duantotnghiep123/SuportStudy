@@ -11,10 +11,8 @@ import io.realm.Realm
 import io.realm.mongodb.*
 import io.realm.mongodb.mongo.MongoClient
 import io.realm.mongodb.mongo.MongoDatabase
-import io.realm.mongodb.mongo.iterable.FindIterable
 import kotlinx.android.synthetic.main.activity_register.*
 import org.bson.Document
-import org.json.JSONObject
 import io.realm.mongodb.mongo.MongoCollection as MongoCollection1
 
 

@@ -5,15 +5,12 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import com.example.suportstudy.authencation.RegisterActivity
-import com.example.suportstudy.home.HomeActivity
 import com.example.suportstudy.model.Question
 import com.example.suportstudy.retrofit.APIService
 import com.example.suportstudy.until.Until
@@ -127,7 +124,6 @@ class QuizzActivity : AppCompatActivity() {
                 if (indexq5 == list.get(cau5!!).trueOption) {
                     score++
                 }
-
 
                 val dialog = Dialog(context)
                 if(score>3){
