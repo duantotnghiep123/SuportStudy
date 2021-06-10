@@ -1,12 +1,9 @@
-package com.example.suportstudy.chat
+package com.example.suportstudy.activity.chat
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
 import com.example.suportstudy.adapter.ChatAdapter
 import com.example.suportstudy.model.Chat
-import com.example.suportstudy.retrofit.APIService
+import com.example.suportstudy.service.APIService
 import com.example.suportstudy.until.Until
 import io.realm.Realm
 import io.realm.mongodb.App
@@ -29,7 +26,6 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.create
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -37,10 +33,7 @@ import kotlin.collections.ArrayList
 class ChatActivity : AppCompatActivity() {
     var recyclerView: RecyclerView? = null
     var profileIv: ImageView? = null
-    var attachBtn: ImageView? = null
-    var microphoneBtn: ImageButton? = null
-    var nameTv: TextView? = null
-    var userStatusTv: TextView? = null
+
     var ChatConnectionTV: TextView? = null
     var sendBtn: ImageView? = null
     var messageEt: EditText? = null
@@ -68,8 +61,7 @@ class ChatActivity : AppCompatActivity() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         recyclerView = findViewById(R.id.chat_Recyclerview)
         profileIv = findViewById(R.id.profileIv)
-        nameTv = findViewById(R.id.nameTv)
-        userStatusTv = findViewById(R.id.userStatusTv)
+
         sendBtn = findViewById(R.id.senBtn)
         messageEt = findViewById(R.id.messageEt)
         ChatConnectionTV = findViewById(R.id.ChatConnectionTV)
@@ -81,13 +73,14 @@ class ChatActivity : AppCompatActivity() {
         val app = App(AppConfiguration.Builder(Until.appId).build())
 
         user = app.currentUser()!!
+
         Log.d("User", user!!.id.toString())
         mongoClient = user!!.getMongoClient("mongodb-atlas")
         mongoDatabase = mongoClient!!.getDatabase("SuportStudy")
         mongoCollection = mongoDatabase!!.getCollection("chats")
 
 
-        var retrofit = APIService.getClient();
+        var retrofit = Until.getClient();
         chatApi = retrofit?.create(APIService::class.java)
 
 
@@ -109,7 +102,7 @@ class ChatActivity : AppCompatActivity() {
 
     fun sendMessage2(message: String) {
         var time: String = System.currentTimeMillis().toString()
-        chatApi!!.savePost(user!!.id, receiver, time, "text", message)
+        chatApi!!.saveChat(user!!.id, receiver, time, "text", message)
         .enqueue(object : Callback<Chat> {
             override fun onResponse(call: Call<Chat>, response: Response<Chat>) {
                 if(response.isSuccessful){

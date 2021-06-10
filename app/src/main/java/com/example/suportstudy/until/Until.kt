@@ -5,8 +5,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.inputmethod.InputMethodManager
+import android.widget.SearchView
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import io.realm.mongodb.App
 import io.realm.mongodb.AppConfiguration
 import io.realm.mongodb.User
@@ -14,12 +14,14 @@ import io.realm.mongodb.mongo.MongoClient
 import io.realm.mongodb.mongo.MongoCollection
 import io.realm.mongodb.mongo.MongoDatabase
 import org.bson.Document
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 object Until {
 
     val appId="duantotnghiep-aeidb";
-    var baseQuestionUrl="http://192.168.3.107:10000"
-//    var baseQuestionUrl="http://172.20.10.3:10000"
+    var baseUrl="http://192.168.3.107:10000"
+//    var baseUrl="http://172.20.10.3:10000"
 
     val app = App(AppConfiguration.Builder(appId).build())
     var getCurrentUser: User? =app.currentUser()
@@ -51,5 +53,21 @@ object Until {
         inputManager.hideSoftInputFromWindow(context.currentFocus!!.windowToken, 0)
     }
 
+    fun searchView(sear:SearchView,msg:String):SearchView{
+
+
+        return sear
+
+    }
+    var retrofit: Retrofit?=null
+    fun getClient(): Retrofit? {
+        if (retrofit == null) {
+            retrofit = Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        }
+        return retrofit
+    }
 
 }

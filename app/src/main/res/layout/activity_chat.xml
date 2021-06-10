@@ -2,68 +2,63 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+    android:background="@color/grey10"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".chat.ChatActivity">
-
+    tools:context=".activity.chat.ChatActivity">
     <RelativeLayout
         android:id="@+id/toolbar"
+        android:background="@drawable/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/white">
-
-        <LinearLayout
+        android:layout_height="90dp">
+        <ImageView
+            android:src="@drawable/ic_menu"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            app:tint="@color/black"
+            android:layout_marginLeft="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profileIv"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/avatar_default"
-                app:civ_circle_background_color="@color/white" />
-
-            <LinearLayout
+                android:src="@drawable/tutor"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                app:tint="@color/black"
+                android:layout_width="60dp"
+                android:layout_height="60dp"/>
+            <TextView
+                android:text="Nguyễn Văn Quế"
+                android:textSize="16dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:orientation="vertical">
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/nameTv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Name"
-                        android:textColor="@color/black"
-                        android:textSize="16dp"
-                        android:fontFamily="@font/rubik"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-                <TextView
-                    android:id="@+id/userStatusTv"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Online"
-                    android:textColor="@color/grey"
-                    android:textSize="12dp" />
-            </LinearLayout>
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@drawable/ic_call"
+                android:layout_marginRight="10dp"
+                app:tint="@color/black"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
 
         </LinearLayout>
-        <View
-            android:background="@color/grey"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="0.2dp"/>
     </RelativeLayout>
+
     <TextView
         android:layout_below="@id/toolbar"
         android:padding="2dp"
@@ -80,7 +75,6 @@
         android:gravity="center_horizontal" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chat_Recyclerview"
-        android:background="@color/white"
         android:layout_marginBottom="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -95,17 +89,16 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <View
-            android:layout_alignParentTop="true"
-            android:background="@color/grey"
-            android:layout_width="match_parent"
-            android:layout_height="0.1dp"/>
-        <LinearLayout
+
+        <RelativeLayout
+            android:layout_marginBottom="10dp"
             android:id="@+id/chat_layout"
-            android:src="@color/grey"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/background_edt_message"
             android:orientation="horizontal">
 
 <!--            <ImageView-->
@@ -122,6 +115,7 @@
 <!--                android:tint="@color/main"-->
 <!--                android:background="@color/white"-->
 <!--                android:src="@drawable/ic_mic" />-->
+
             <EditText
                 android:id="@+id/messageEt"
                 android:layout_width="match_parent"
@@ -129,19 +123,61 @@
                 android:layout_weight="1"
                 android:textSize="14dp"
                 android:hint="Nhập tin nhắn"
-                android:background="@color/white"
+                android:layout_toRightOf="@id/faceBtn"
+                android:textColorHint="@color/white"
+                android:textColor="@color/white"
+                android:layout_toLeftOf="@id/cameraBtn"
+                android:background="@color/float_transparent"
                 android:inputType="textCapSentences|textImeMultiLine"
                 android:padding="15dp" />
+            <ImageView
+                android:id="@+id/faceBtn"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/ic_face"
+                app:tint="@color/grey"
+                android:layout_marginLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+            <ImageView
+                android:id="@+id/cameraBtn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="5dp"
+                android:layout_gravity="center_vertical"
+                app:tint="@color/white"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@id/voidBtn"
+                android:layout_centerVertical="true"
 
+                android:background="@drawable/backgournd_oval"
+                android:src="@drawable/ic_camerax"
+                />
+            <ImageView
+                android:id="@+id/voidBtn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_centerVertical="true"
+                app:tint="@color/white"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@id/senBtn"
+                android:background="@drawable/backgournd_oval"
+                android:src="@drawable/ic_voice"
+                />
             <ImageView
                 android:id="@+id/senBtn"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="5dp"
+                android:layout_centerVertical="true"
+
+                android:layout_alignParentRight="true"
                 android:layout_gravity="center_vertical"
-                android:background="@color/white"
+                app:tint="@color/white"
                 android:src="@drawable/ic_send"
                 />
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 </RelativeLayout>

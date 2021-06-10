@@ -1,4 +1,4 @@
-package com.example.suportstudy
+package com.example.suportstudy.activity
 
 import android.app.Dialog
 import android.content.Intent
@@ -10,9 +10,10 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
-import com.example.suportstudy.authencation.RegisterActivity
+import com.example.suportstudy.R
+import com.example.suportstudy.activity.authencation.RegisterActivity
 import com.example.suportstudy.model.Question
-import com.example.suportstudy.retrofit.APIService
+import com.example.suportstudy.service.APIService
 import com.example.suportstudy.until.Until
 import kotlinx.android.synthetic.main.activity_quizz.*
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +34,7 @@ class QuizzActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quizz)
 
-        var retrofit = APIService.getClient();
+        var retrofit = Until.getClient();
         val quizzApi = retrofit?.create(APIService::class.java)
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -153,7 +154,7 @@ class QuizzActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     }else{
-                        Until.nextActivity(context,MainActivity::class.java)
+                        Until.nextActivity(context, MainActivity::class.java)
                         finish()
                     }
                     score=0

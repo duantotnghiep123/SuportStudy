@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/float_transparent"
+    tools:context=".fragment.RegisterFragment">
+   <androidx.cardview.widget.CardView
+       android:layout_marginLeft="30dp"
+       android:layout_marginRight="30dp"
+       android:layout_marginTop="30dp"
+       android:elevation="7dp"
+       app:cardCornerRadius="5dp"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+      <EditText
+          android:hint="Enter your name"
+          android:background="@color/white"
+          android:drawableLeft="@drawable/ic_person"
+          android:drawablePadding="10dp"
+          android:paddingLeft="10dp"
+          android:textSize="15dp"
+          android:layout_width="match_parent"
+          android:layout_height="55dp"/>
+   </androidx.cardview.widget.CardView>
+   <androidx.cardview.widget.CardView
+       android:layout_marginLeft="30dp"
+       android:layout_marginRight="30dp"
+       android:layout_marginTop="30dp"
+       android:elevation="7dp"
+       app:cardCornerRadius="5dp"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+      <EditText
+          android:hint="Enter your name"
+          android:background="@color/white"
+          android:drawableLeft="@drawable/ic_email"
+          android:drawablePadding="10dp"
+          android:paddingLeft="10dp"
+          android:textSize="15dp"
+          android:layout_width="match_parent"
+          android:layout_height="55dp"/>
+   </androidx.cardview.widget.CardView>
+   <androidx.cardview.widget.CardView
+       android:layout_marginLeft="30dp"
+       android:layout_marginRight="30dp"
+       android:layout_marginTop="30dp"
+       android:elevation="7dp"
+       app:cardCornerRadius="5dp"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+      <EditText
+          android:hint="Enter your name"
+          android:background="@color/white"
+          android:drawableLeft="@drawable/ic_key"
+          android:drawablePadding="10dp"
+          android:paddingLeft="10dp"
+          android:textSize="15dp"
+          android:layout_width="match_parent"
+          android:layout_height="55dp"/>
+   </androidx.cardview.widget.CardView>
+   <androidx.appcompat.widget.AppCompatButton
+       android:layout_marginLeft="30dp"
+       android:layout_marginRight="30dp"
+       android:layout_marginTop="30dp"
+       android:text="ĐĂNG KÍ"
+       android:textColor="@color/white"
+       android:background="@drawable/button"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"/>
+
+
+
+</LinearLayout>

@@ -1,11 +1,10 @@
-package com.example.suportstudy.authencation
+package com.example.suportstudy.activity.authencation
 
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.suportstudy.R
-import com.example.suportstudy.chat.ChatActivity
-import com.example.suportstudy.home.HomeActivity
+import com.example.suportstudy.activity.chat.ChatActivity
 import com.example.suportstudy.until.Until
 import io.realm.Realm
 import io.realm.mongodb.App
@@ -35,7 +34,7 @@ class LoginActivity : AppCompatActivity() {
                 if (it.isSuccess) {
                     Until.showToast(context,"Đăng nhập thành công");
                     user = app.currentUser()
-                    Until.nextActivity(context,HomeActivity::class.java)
+                    Until.nextActivity(context,ChatActivity::class.java)
                     Log.d("User",user!!.id)
 
                 } else {

@@ -14,22 +14,26 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SuportStudy"
         android:usesCleartextTraffic="true">
-        <activity android:name=".chat.ChatActivity"></activity>
-        <activity android:name=".QuizzActivity"></activity>
-        <activity android:name=".authencation.ProfileActivity" />
-        <activity android:name=".home.HomeActivity" >
+        <activity android:name="com.example.suportstudy.activity.chat.ChatContainerActivity"></activity>
+        <activity android:name="com.example.suportstudy.activity.course.CourseActivity"></activity>
+        <activity android:name="com.example.suportstudy.activity.authencation.LoginAndRegisterMainActivity">
+
+        </activity>
+        <activity android:name="com.example.suportstudy.activity.chat.ChatActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".authencation.RegisterActivity"></activity>
-        <activity android:name=".authencation.LoginActivity" >
-        </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.QuizzActivity" />
+        <activity android:name="com.example.suportstudy.activity.authencation.ProfileActivity" />
+        <activity android:name="com.example.suportstudy.activity.home.HomeActivity" />
+        <activity android:name="com.example.suportstudy.activity.authencation.RegisterActivity" >
 
         </activity>
+        <activity android:name="com.example.suportstudy.activity.authencation.LoginActivity" />
+        <activity android:name=".activity.MainActivity" />
     </application>
 
 </manifest>

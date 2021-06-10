@@ -1,15 +1,14 @@
-package com.example.suportstudy.home
+package com.example.suportstudy.activity.home
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.example.suportstudy.MainActivity
+import com.example.suportstudy.activity.MainActivity
 import com.example.suportstudy.R
 import com.example.suportstudy.until.Until
 import io.realm.Realm
 import io.realm.mongodb.App
 import io.realm.mongodb.AppConfiguration
-import io.realm.mongodb.User
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity() {
@@ -23,15 +22,14 @@ class HomeActivity : AppCompatActivity() {
         val app = App(AppConfiguration.Builder(Until.appId).build())
         var user=app.currentUser()
         if(user==null){
-            Until.nextActivity(context,MainActivity::class.java)
+            Until.nextActivity(context, MainActivity::class.java)
         }
 
         btnLogout.setOnClickListener {
                  app.currentUser()?.logOutAsync {
                 if (it.isSuccess) {
                     Log.v("AUTH", "Successfully logged out.")
-                    Until.nextActivity(context,MainActivity::class.java)
-
+                    Until.nextActivity(context, MainActivity::class.java)
                 } else {
                     Log.e("AUTH", it.error.toString())
                 }

@@ -1,4 +1,4 @@
-package com.example.suportstudy.authencation
+package com.example.suportstudy.activity.authencation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

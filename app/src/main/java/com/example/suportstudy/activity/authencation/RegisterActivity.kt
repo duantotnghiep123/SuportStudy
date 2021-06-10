@@ -1,11 +1,11 @@
-package com.example.suportstudy.authencation
+package com.example.suportstudy.activity.authencation
 
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
-import com.example.suportstudy.home.HomeActivity
+import com.example.suportstudy.activity.home.HomeActivity
 import com.example.suportstudy.until.Until
 import io.realm.Realm
 import io.realm.mongodb.*
@@ -51,6 +51,7 @@ class RegisterActivity : AppCompatActivity() {
 //                    Until.showToast(applicationContext, getString(R.string.dangkythanhcong))
                     var credentials= Credentials.emailPassword(email, password)
                     sd!!.titleText ="Đang đăng nhập vào ứng dụng..."
+
                     app.loginAsync(credentials) {
                         if (it.isSuccess) {
 //                            Until.showToast(applicationContext, "Đăng nhập thành công");
