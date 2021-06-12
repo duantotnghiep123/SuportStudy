@@ -9,13 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.MainActivity
-import com.example.suportstudy.activity.authencation.LoginActivity
 import com.example.suportstudy.activity.authencation.LoginAndRegisterMainActivity
-import com.example.suportstudy.activity.home.HomeActivity
+import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.until.Until
 import io.realm.Realm
 import io.realm.mongodb.App
@@ -25,8 +23,6 @@ import io.realm.mongodb.User
 import io.realm.mongodb.mongo.MongoClient
 import io.realm.mongodb.mongo.MongoCollection
 import io.realm.mongodb.mongo.MongoDatabase
-import kotlinx.android.synthetic.main.activity_register.*
-import kotlinx.android.synthetic.main.activity_register.btnRegister
 import kotlinx.android.synthetic.main.activity_register.edtEmail
 import kotlinx.android.synthetic.main.activity_register.edtPassword
 import kotlinx.android.synthetic.main.fragment_register.*
@@ -110,7 +106,7 @@ class RegisterFragment : Fragment() {
                                     Log.v("Data", "Data Inserted Successfully")
                                     Until.nextActivity(
                                         activity!!,
-                                        HomeActivity::class.java
+                                        ListCourseActivity::class.java
                                     )
                                     activity!!.finish()
                                 } else {

@@ -1,4 +1,4 @@
-package com.example.suportstudy.activity
+package com.example.suportstudy.activity.quizz
 
 import android.app.Dialog
 import android.content.Intent
@@ -14,8 +14,8 @@ import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.MutableLiveData
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.MainActivity
 import com.example.suportstudy.activity.authencation.LoginAndRegisterMainActivity
-import com.example.suportstudy.activity.authencation.RegisterActivity
 import com.example.suportstudy.model.Question
 import com.example.suportstudy.service.APIService
 import com.example.suportstudy.until.Until
@@ -28,22 +28,21 @@ import kotlin.collections.ArrayList
 
 class QuizzActivity : AppCompatActivity() {
     val data = MutableLiveData<List<Question>>()
-    var score=0;
+    var score = 0;
     var listIndexQuestion = ArrayList<Int?>()
 
-    val context=this@QuizzActivity
+    val context = this@QuizzActivity
 
-    var lazyLoader:LazyLoader?=null
-    var questionView:NestedScrollView?=null
-
+    var lazyLoader: LazyLoader? = null
+    var questionView: NestedScrollView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quizz)
-        lazyLoader=findViewById(R.id.myLoader)
-        questionView=findViewById(R.id.questionView)
-        questionView!!.visibility=View.GONE
-        lazyLoader!!.visibility=View.VISIBLE
+        lazyLoader = findViewById(R.id.myLoader)
+        questionView = findViewById(R.id.questionView)
+        questionView!!.visibility = View.GONE
+        lazyLoader!!.visibility = View.VISIBLE
 
         var retrofit = Until.getClient();
         val quizzApi = retrofit?.create(APIService::class.java)
@@ -73,16 +72,15 @@ class QuizzActivity : AppCompatActivity() {
             txtQ4.text = it[cau4!!].title
             txtQ5.text = it[cau5!!].title
 
-             Until.showQuestion(radio1_op1,radio1_op2,radio1_op3,radio1_op4,it,cau1)
-             Until.showQuestion(radio2_op1,radio2_op2,radio2_op3,radio2_op4,it,cau2)
-             Until.showQuestion(radio3_op1,radio3_op2,radio3_op3,radio3_op4,it,cau3)
-             Until.showQuestion(radio4_op1,radio4_op2,radio4_op3,radio4_op4,it,cau4)
-             Until.showQuestion(radio5_op1,radio5_op2,radio5_op3,radio5_op4,it,cau5)
+            Until.showQuestion(radio1_op1, radio1_op2, radio1_op3, radio1_op4, it, cau1)
+            Until.showQuestion(radio2_op1, radio2_op2, radio2_op3, radio2_op4, it, cau2)
+            Until.showQuestion(radio3_op1, radio3_op2, radio3_op3, radio3_op4, it, cau3)
+            Until.showQuestion(radio4_op1, radio4_op2, radio4_op3, radio4_op4, it, cau4)
+            Until.showQuestion(radio5_op1, radio5_op2, radio5_op3, radio5_op4, it, cau5)
 
-            questionView!!.visibility=View.VISIBLE
-            lazyLoader!!.visibility=View.GONE
+            questionView!!.visibility = View.VISIBLE
+            lazyLoader!!.visibility = View.GONE
             var list = it
-
 
             btnSubmit.setOnClickListener {
                 val indexq1: Int =
@@ -119,9 +117,9 @@ class QuizzActivity : AppCompatActivity() {
                 }
 
                 val dialog = Dialog(context)
-                if(score>3){
+                if (score > 3) {
                     dialog.setContentView(R.layout.dialog_quizz_win)
-                }else{
+                } else {
                     dialog.setContentView(R.layout.dialog_quizz_lose)
                 }
                 dialog!!.window!!.attributes.windowAnimations = R.style.DialogTheme
@@ -139,19 +137,19 @@ class QuizzActivity : AppCompatActivity() {
                 txtScore.setText("Điểm của bạn là ${score}")
                 btnOK.setOnClickListener {
                     dialog.dismiss()
-                    if(score>=3){
-                        var isTutor=true
-                        var positionRegister=1
-                        var intent= Intent(context,LoginAndRegisterMainActivity::class.java)
-                        intent.putExtra("isTutor",isTutor)
-                        intent.putExtra("positionRegister",positionRegister)
+                    if (score >= 3) {
+                        var isTutor = true
+                        var positionRegister = 1
+                        var intent = Intent(context, LoginAndRegisterMainActivity::class.java)
+                        intent.putExtra("isTutor", isTutor)
+                        intent.putExtra("positionRegister", positionRegister)
                         startActivity(intent)
                         finish()
-                    }else{
+                    } else {
                         Until.nextActivity(context, MainActivity::class.java)
                         finish()
                     }
-                    score=0
+                    score = 0
                 }
                 dialog.show()
 
@@ -165,7 +163,6 @@ class QuizzActivity : AppCompatActivity() {
 
 
         })
-
 
 
     }

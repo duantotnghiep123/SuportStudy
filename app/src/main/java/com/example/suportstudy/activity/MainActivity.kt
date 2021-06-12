@@ -7,7 +7,7 @@ import android.widget.Button
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.authencation.LoginActivity
 import com.example.suportstudy.activity.authencation.LoginAndRegisterMainActivity
-import com.example.suportstudy.activity.authencation.RegisterActivity
+import com.example.suportstudy.activity.quizz.QuizzActivity
 import com.example.suportstudy.until.Until
 import kotlinx.android.synthetic.main.activity_main.*
 
