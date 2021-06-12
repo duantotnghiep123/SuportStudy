@@ -1,11 +1,11 @@
 package com.example.suportstudy.activity.course
 
 import android.os.Bundle
-import android.text.Html
-import android.widget.AutoCompleteTextView
-import android.widget.LinearLayout
+import android.widget.SearchView
+import android.widget.SearchView.OnQueryTextListener
 import androidx.appcompat.app.AppCompatActivity
 import com.example.suportstudy.R
+import com.example.suportstudy.until.Until
 import kotlinx.android.synthetic.main.activity_course.*
 
 class CourseActivity : AppCompatActivity() {
@@ -15,16 +15,17 @@ class CourseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_course)
 
-        searchView.setActivated(true)
-        searchView.setQueryHint(Html.fromHtml("<font color = #ACACAC>" + "Tìm khóa học" + "</font>"))
-        searchView.onActionViewExpanded()
-        searchView.setIconified(false)
-        searchView.clearFocus()
-        searchView.setFocusable(false)
-        val linearLayout1 = searchView.getChildAt(0) as LinearLayout
-        val linearLayout2 = linearLayout1.getChildAt(2) as LinearLayout
-        val linearLayout3 = linearLayout2.getChildAt(1) as LinearLayout
-        val autoComplete = linearLayout3.getChildAt(0) as AutoCompleteTextView
-        autoComplete.textSize = 15f
+        Until.searchView( searchView,"Tìm khóa học")
+            .setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                Until.showToast(applicationContext,query)
+                return false
+            }
+            override fun onQueryTextChange(newText: String): Boolean {
+                Until.showToast(applicationContext,newText)
+
+                return false
+            }
+        })
     }
 }

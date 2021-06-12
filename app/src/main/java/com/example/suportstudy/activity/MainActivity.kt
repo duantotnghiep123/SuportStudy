@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.authencation.LoginActivity
+import com.example.suportstudy.activity.authencation.LoginAndRegisterMainActivity
 import com.example.suportstudy.activity.authencation.RegisterActivity
 import com.example.suportstudy.until.Until
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         }
         btnMember.setOnClickListener {
             isTutor=false
-            var intent=Intent(this@MainActivity,RegisterActivity::class.java)
+            var intent=Intent(this@MainActivity,LoginAndRegisterMainActivity::class.java)
             intent.putExtra("isTutor",isTutor)
             startActivity(intent)
         }

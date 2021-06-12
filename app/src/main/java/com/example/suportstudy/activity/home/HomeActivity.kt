@@ -18,22 +18,5 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        Realm.init(applicationContext)
-        val app = App(AppConfiguration.Builder(Until.appId).build())
-        var user=app.currentUser()
-        if(user==null){
-            Until.nextActivity(context, MainActivity::class.java)
-        }
-
-        btnLogout.setOnClickListener {
-                 app.currentUser()?.logOutAsync {
-                if (it.isSuccess) {
-                    Log.v("AUTH", "Successfully logged out.")
-                    Until.nextActivity(context, MainActivity::class.java)
-                } else {
-                    Log.e("AUTH", it.error.toString())
-                }
-            }
-        }
     }
 }

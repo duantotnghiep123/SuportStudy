@@ -1,26 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:background="@color/grey10"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.home.HomeActivity">
-
-    <androidx.cardview.widget.CardView
-        android:elevation="5dp"
-        app:cardCornerRadius="5dp"
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:background="@drawable/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="65dp">
+        <ImageView
+            android:src="@drawable/ic_menu"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            app:tint="@color/black"
+            android:layout_marginLeft="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+        <TextView
+            android:text="Course"
+            android:textSize="18dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@drawable/ic_notification"
+                android:layout_marginRight="10dp"
+                app:tint="@color/black"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:src="@drawable/tutor"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+        </LinearLayout>
+    </RelativeLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <EditText
-            android:hint="Enter"
-            android:background="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"/>
-    </androidx.cardview.widget.CardView>
-    <Button
-        android:id="@+id/btnLogout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
-</LinearLayout>
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="@color/white" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_listcourse"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

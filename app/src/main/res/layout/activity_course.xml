@@ -53,13 +53,14 @@
         android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-      <androidx.appcompat.widget.SearchView
-          android:id="@+id/searchView"
-          android:background="@color/white"
-          android:layout_marginRight="20dp"
-          android:autofillHints="hi"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"/>
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:background="@color/white" />
+
         <TextView
             android:textStyle="bold"
             android:textColor="@color/black"

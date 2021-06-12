@@ -23,7 +23,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/marginForTextView</item>
         <item name="android:layout_marginBottom">@dimen/marginForTextView</item>
-        <item name="android:background">@drawable/bg_style</item>
+        <item name="android:background">@drawable/background_edt_message</item>
         <item name="android:padding">@dimen/paddingForTextView</item>
         <item name="android:textColor">@color/colorOfText</item>
         <item name="android:textSize">@dimen/textSize</item>

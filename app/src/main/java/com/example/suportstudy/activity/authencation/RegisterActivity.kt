@@ -2,6 +2,7 @@ package com.example.suportstudy.activity.authencation
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
@@ -30,6 +31,7 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
 
         sd = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
         sd!!.titleText ="Đang tạo tài khoản..."

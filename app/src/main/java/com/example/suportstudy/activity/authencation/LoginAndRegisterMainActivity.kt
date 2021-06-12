@@ -1,5 +1,6 @@
 package com.example.suportstudy.activity.authencation
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
@@ -13,9 +14,18 @@ class LoginAndRegisterMainActivity : AppCompatActivity() {
     private var viewPager: ViewPager? = null
     private var tabLayout: TabLayout? = null
     var po=0
+    companion object{
+        var isTutor=false
+
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_and_register_main)
+        var intent:Intent=intent
+        po=intent.getIntExtra("positionRegister",1);
+        isTutor=intent.getBooleanExtra("isTutor",false);
 
 
         viewPager = findViewById(R.id.viewpager_Login_Register)

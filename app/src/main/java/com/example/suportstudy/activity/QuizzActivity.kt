@@ -5,12 +5,16 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.MutableLiveData
+import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.authencation.LoginAndRegisterMainActivity
 import com.example.suportstudy.activity.authencation.RegisterActivity
 import com.example.suportstudy.model.Question
 import com.example.suportstudy.service.APIService
@@ -29,10 +33,17 @@ class QuizzActivity : AppCompatActivity() {
 
     val context=this@QuizzActivity
 
+    var lazyLoader:LazyLoader?=null
+    var questionView:NestedScrollView?=null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quizz)
+        lazyLoader=findViewById(R.id.myLoader)
+        questionView=findViewById(R.id.questionView)
+        questionView!!.visibility=View.GONE
+        lazyLoader!!.visibility=View.VISIBLE
 
         var retrofit = Until.getClient();
         val quizzApi = retrofit?.create(APIService::class.java)
@@ -62,33 +73,14 @@ class QuizzActivity : AppCompatActivity() {
             txtQ4.text = it[cau4!!].title
             txtQ5.text = it[cau5!!].title
 
-            radio1_op1.text = it.get(cau1!!).option1
-            radio1_op2.text = it.get(cau1!!).option2
-            radio1_op3.text = it.get(cau1!!).option3
-            radio1_op4.text = it.get(cau1!!).option4
+             Until.showQuestion(radio1_op1,radio1_op2,radio1_op3,radio1_op4,it,cau1)
+             Until.showQuestion(radio2_op1,radio2_op2,radio2_op3,radio2_op4,it,cau2)
+             Until.showQuestion(radio3_op1,radio3_op2,radio3_op3,radio3_op4,it,cau3)
+             Until.showQuestion(radio4_op1,radio4_op2,radio4_op3,radio4_op4,it,cau4)
+             Until.showQuestion(radio5_op1,radio5_op2,radio5_op3,radio5_op4,it,cau5)
 
-
-            radio2_op1.text = it.get(cau2!!).option1
-            radio2_op2.text = it.get(cau2!!).option2
-            radio2_op3.text = it.get(cau2!!).option3
-            radio2_op4.text = it.get(cau2!!).option4
-
-
-            radio3_op1.text = it.get(cau3!!).option1
-            radio3_op2.text = it.get(cau3!!).option2
-            radio3_op3.text = it.get(cau3!!).option3
-            radio3_op4.text = it.get(cau3!!).option4
-
-            radio4_op1.text = it.get(cau4!!).option1
-            radio4_op2.text = it.get(cau4!!).option2
-            radio4_op3.text = it.get(cau4!!).option3
-            radio4_op4.text = it.get(cau4!!).option4
-
-            radio5_op1.text = it.get(cau5!!).option1
-            radio5_op2.text = it.get(cau5!!).option2
-            radio5_op3.text = it.get(cau5!!).option3
-            radio5_op4.text = it.get(cau5!!).option4
-
+            questionView!!.visibility=View.VISIBLE
+            lazyLoader!!.visibility=View.GONE
             var list = it
 
 
@@ -147,10 +139,12 @@ class QuizzActivity : AppCompatActivity() {
                 txtScore.setText("Điểm của bạn là ${score}")
                 btnOK.setOnClickListener {
                     dialog.dismiss()
-                    if(score>3){
+                    if(score>=3){
                         var isTutor=true
-                        var intent= Intent(context,RegisterActivity::class.java)
+                        var positionRegister=1
+                        var intent= Intent(context,LoginAndRegisterMainActivity::class.java)
                         intent.putExtra("isTutor",isTutor)
+                        intent.putExtra("positionRegister",positionRegister)
                         startActivity(intent)
                         finish()
                     }else{
