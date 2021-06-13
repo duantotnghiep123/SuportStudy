@@ -14,23 +14,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SuportStudy"
         android:usesCleartextTraffic="true">
-        <activity android:name="com.example.suportstudy.activity.chat.ChatContainerActivity"></activity>
-        <activity android:name="com.example.suportstudy.activity.course.CourseActivity">
+        <activity android:name=".activity.document.ViewDocumentDetailActivity"></activity>
+        <activity android:name=".activity.home.HomeActivity" />
+        <activity android:name=".activity.course.CourseDetailActivity" />
+        <activity android:name=".activity.chat.ChatContainerActivity" />
+        <activity android:name=".activity.course.CourseActivity" />
+        <activity android:name=".activity.authencation.LoginAndRegisterMainActivity" >
 
         </activity>
-        <activity android:name="com.example.suportstudy.activity.authencation.LoginAndRegisterMainActivity">
+        <activity android:name=".activity.chat.ChatActivity" />
+        <activity android:name=".activity.quizz.QuizzActivity" />
+        <activity android:name=".activity.authencation.ProfileActivity" />
+        <activity android:name=".activity.course.ListCourseActivity">
 
         </activity>
-        <activity android:name="com.example.suportstudy.activity.chat.ChatActivity">
-
-        </activity>
-        <activity android:name=".activity.QuizzActivity" />
-        <activity android:name="com.example.suportstudy.activity.authencation.ProfileActivity" />
-        <activity android:name="com.example.suportstudy.activity.home.HomeActivity" />
-        <activity android:name="com.example.suportstudy.activity.authencation.RegisterActivity" >
-
-        </activity>
-        <activity android:name="com.example.suportstudy.activity.authencation.LoginActivity" />
+        <activity android:name=".activity.authencation.RegisterActivity" />
+        <activity android:name=".activity.authencation.LoginActivity" />
         <activity android:name=".activity.MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

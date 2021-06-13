@@ -2,7 +2,6 @@ package com.example.suportstudy.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,15 +9,12 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.authencation.RegisterActivity
-import com.example.suportstudy.activity.chat.ChatActivity
-import com.example.suportstudy.activity.home.HomeActivity
+import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.until.Until
 import io.realm.Realm
 import io.realm.mongodb.App
 import io.realm.mongodb.AppConfiguration
 import io.realm.mongodb.Credentials
-import io.realm.mongodb.User
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginFragment : Fragment() {
@@ -51,7 +47,7 @@ class LoginFragment : Fragment() {
 
             app.loginAsync(credentials) {
                 if (it.isSuccess) {
-                    Until.nextActivity(activity!!, HomeActivity::class.java)
+                    Until.nextActivity(activity!!, ListCourseActivity::class.java)
                 } else {
                     Until.showToast(activity!!,"Đăng nhập thất bại");
                 }

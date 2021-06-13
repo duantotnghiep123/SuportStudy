@@ -23,7 +23,7 @@ object Until {
 
     val appId="duantotnghiep-aeidb";
 //    var baseUrl="http://192.168.3.107:10000"
-    var baseUrl="http://192.168.1.7:10000"
+    var baseUrl="http://192.168.1.7:3000"
 //    var baseUrl="http://172.20.10.3:10000"
 
 //    val app = App(AppConfiguration.Builder(appId).build())
@@ -71,7 +71,6 @@ object Until {
         }
         return retrofit
     }
-
    fun showQuestion(op1: RadioButton,op2: RadioButton,op3: RadioButton,op4: RadioButton,list: List<Question>,index:Int){
        op1.text = list.get(index).option1
        op2.text = list.get(index).option2
