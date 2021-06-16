@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseDetailActivity
 import com.example.suportstudy.activity.course.ListCourseActivity
@@ -32,6 +33,7 @@ class ListGroupActivity : AppCompatActivity() {
     var rcvListGroup:RecyclerView?=null;
      var noGroupLayout:LinearLayout?=null;
      var groupAdapter:GroupAdapter?=null;
+    var myLoader:LazyLoader?=null
     companion object {
         var imageUrl = ""
         var courseId= CourseDetailActivity.courseId.toString()
@@ -43,21 +45,24 @@ class ListGroupActivity : AppCompatActivity() {
         setContentView(R.layout.activity_list_group)
         rcvListGroup = findViewById(R.id.rcvListGroup)
          noGroupLayout = findViewById(R.id.noGroupLayou)
+        myLoader = findViewById(R.id.myLoader)
         groupAPI = Until.createRetrofit(GroupAPI::class.java)
         participantAPI = Until.createRetrofit(ParticipantAPI::class.java)
+
+
 
         displayListGroup()
     }
     fun displayListGroup() {
-        Log.d("courseId", CourseDetailActivity.courseId.toString())
         val chatFetchJob = Job()
         val errorHandler = CoroutineExceptionHandler() { coroutineContext, throwable ->
             throwable.printStackTrace()
             Toast.makeText(this, "Errorconect", Toast.LENGTH_SHORT).show()
         }
         val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
-        test()
         scope.launch(errorHandler) {
+            myLoader!!.visibility=View.VISIBLE
+            rcvListGroup!!.visibility=View.INVISIBLE
             listGroup!!.clear()
             groupAPI!!.getAllGroup()
                 .enqueue(object : Callback<List<Group>> {
@@ -74,21 +79,24 @@ class ListGroupActivity : AppCompatActivity() {
                             }
                             if(listGroup!!.size==0){
                                 noGroupLayout!!.visibility= View.VISIBLE
+                                myLoader!!.visibility=View.GONE
+
                             }else{
                                 noGroupLayout!!.visibility= View.GONE
+                                groupAdapter =
+                                GroupAdapter(context, listGroup!!, participantAPI!!,groupAPI!!)
+                                rcvListGroup!!.adapter = groupAdapter
                             }
+                            myLoader!!.visibility=View.GONE
+                            rcvListGroup!!.visibility=View.VISIBLE
 
                         }
-                        groupAdapter =
-                            GroupAdapter(context, listGroup!!, participantAPI!!,groupAPI!!)
-                        rcvListGroup!!.adapter = groupAdapter
+
                     }
-                    override fun onFailure(call: retrofit2.Call<List<com.example.suportstudy.model.Group>>, t: Throwable) {
+                    override fun onFailure(call: Call<List<Group>>, t: Throwable) {
                         Log.v("Data", "Error:" + t.message.toString())
                     }
                 })
-
-
         }
 
     }
@@ -117,7 +125,6 @@ class ListGroupActivity : AppCompatActivity() {
                 }
             })
     }
-
     fun getGroup(idG: String) {
         Log.d("id", idG)
         CourseDetailActivity.listG!!.clear()

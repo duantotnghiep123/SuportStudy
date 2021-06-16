@@ -1,14 +1,13 @@
 package com.example.suportstudy.adapter
 
-import android.app.Dialog
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseDetailActivity
 import com.example.suportstudy.activity.course.ListCourseActivity
@@ -33,11 +32,13 @@ class GroupAdapter(
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
         var IVGroup: CircleImageView? = null
         var txtJoin: TextView? = null
+        var txtHuy: TextView? = null
         var txtGroupName: TextView? = null
         init {
             IVGroup = itemView.findViewById(R.id.IVGroup)
             txtGroupName = itemView.findViewById(R.id.txtGroupName)
             txtJoin = itemView.findViewById(R.id.txtJoin)
+            txtHuy = itemView.findViewById(R.id.txtHuy)
         }
     }
 
@@ -48,6 +49,7 @@ class GroupAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         var  group:Group=list[position]
+        getAllParticipant(group, holder.txtJoin!!,holder.txtHuy!!)
         holder.txtGroupName!!.text=group.groupName
         if(!group.groupImage.equals("")){
             Picasso.with(context).load(group.groupImage).placeholder(R.drawable.ic_gallery_grey).into(holder.IVGroup)
@@ -56,6 +58,13 @@ class GroupAdapter(
         }
 
         holder.txtJoin!!.setOnClickListener {
+            if(holder.txtJoin!!.text.equals("Đã tham gia")){
+                com.example.suportstudy.until.Until.showToast(context,"Đã tham gia")
+            }
+            if(holder.txtJoin!!.text.equals("Tham gia")){
+                com.example.suportstudy.until.Until.showToast(context,"Tham gia")
+
+            }
 
             var time=System.currentTimeMillis().toString()
             Log.d("join", time+""+ListCourseActivity.uid+"__"+group._id)
@@ -76,7 +85,6 @@ class GroupAdapter(
 //                   })
 
         }
-        getAllParticipant(group, holder.txtJoin!!)
 
     }
 
@@ -122,7 +130,7 @@ class GroupAdapter(
             })
 
     }
-    fun getAllParticipant(group: Group,textView: TextView){
+    fun getAllParticipant(group: Group,txtJoin: TextView,txtHuy:TextView){
         participantAPI!!.getAllParticipant()
             .enqueue(object : Callback<List<Participant>> {
                 override fun onResponse(
@@ -130,26 +138,24 @@ class GroupAdapter(
                     response: Response<List<Participant>>
                 ) {
                     if (response.code() == 200) {
-                     var    list2 = response.body()!!
-                        Log.d("sizep", list2!!.size.toString())
-                        var b=0;
-                        for (i in list2!!.indices) {
-                            Log.d("groupid",list2!![i].groupId)
-                            if(list2!![i].uid.equals(ListCourseActivity.uid)){
-                                if(group._id.equals(list2!![i].groupId)){
-                                    textView.text="Đã tham gia"
+                     var    listP = response.body()!!
+                        Log.d("sizep", listP!!.size.toString())
+                        for (i in listP!!.indices) {
+                            Log.d("groupid",listP!![i].groupId)
+                            if(listP!![i].uid.equals(ListCourseActivity.uid)){
+                                if(group._id.equals(listP!![i].groupId)){
+                                    txtJoin.text="Đã tham gia"
+                                    txtHuy!!.visibility=View.VISIBLE
                                 }
                             }
-                            Log.d("count", b.toString())
-
-//                            if (listP!![i].uid.equals(ListCourseActivity.uid) && group._id.equals(listP!![i].groupId) ) {
-//                                txtJoin.text="Đã tham gia"
-//                            }else{
-//                                txtJoin.text="Tham gia"
-//
-//                            }
+                            if(txtJoin!!.text.equals("Tham gia")){
+                                txtHuy!!.visibility=View.GONE
+                            }
                         }
+
                     }
+
+
                 }
                 override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
                     Log.v("Data", "Error:" + t.message.toString())
