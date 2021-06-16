@@ -23,7 +23,6 @@ class ChatAdapter(var context: Context, var chatList: List<Chat>) :RecyclerView.
     private val MSG_TYPE_RIGHT = 1
 
 
-    val app = App(AppConfiguration.Builder(Until.appId).build())
 
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
@@ -57,9 +56,9 @@ class ChatAdapter(var context: Context, var chatList: List<Chat>) :RecyclerView.
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val message: String = chatList.get(position).message
-        val timeStamp: String = chatList.get(position).timeSend
-        val type: String = chatList.get(position).messageType
+        val message: String = chatList.get(position).message!!
+        val timeStamp: String = chatList.get(position).timeSend!!
+        val type: String = chatList.get(position).messageType!!
         val cal = Calendar.getInstance(Locale.ENGLISH)
         cal.timeInMillis = timeStamp.toLong()
         val dateTime = DateFormat.format("dd/MM/yyyy hh:mm aa", cal).toString()
@@ -81,11 +80,8 @@ class ChatAdapter(var context: Context, var chatList: List<Chat>) :RecyclerView.
     }
 
     override fun getItemViewType(position: Int): Int {
-        var user = app.currentUser()!!
-        Log.d("myuid",user.id)
-        Until.showToast(context,user.id)
 
-        return if (chatList[position].senderUid.equals(user.id)) {
+        return if (chatList[position].senderUid.equals("60c5527bd45d2165ec51fd6f")) {
             return MSG_TYPE_RIGHT
         } else {
             return MSG_TYPE_LEFT

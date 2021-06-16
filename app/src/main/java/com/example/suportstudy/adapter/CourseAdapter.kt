@@ -43,9 +43,9 @@ class CourseAdapter(var context: Context,var courseList: List<Course>) :Recycler
         }
         holder.txtCourseName!!.text=name
 
-
         holder.itemView.setOnClickListener {
             var  intent:Intent= Intent(context,CourseDetailActivity::class.java)
+            intent.putExtra("courseId",course._id)
             intent.putExtra("name",name)
             intent.putExtra("desciption",desciption)
             intent.putExtra("image",imageUrl)

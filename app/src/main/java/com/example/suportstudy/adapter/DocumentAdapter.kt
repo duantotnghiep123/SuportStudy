@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.document.ViewDocumentDetailActivity
 import com.example.suportstudy.model.Document
+import com.makeramen.roundedimageview.RoundedImageView
 import com.squareup.picasso.Picasso
 import java.util.*
 import kotlin.collections.ArrayList
@@ -23,7 +24,7 @@ class DocumentAdapter(var context: Context, var list: ArrayList<Document>) :
 
      inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var txtTitle: TextView
-        var imageView: ImageView
+        var imageView: RoundedImageView
 
         init {
             txtTitle = itemView.findViewById(R.id.txt)

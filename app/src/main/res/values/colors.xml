@@ -23,4 +23,5 @@
     <color name="colorOfNameAndResult">#000</color>
     <color name="blue">#0091EA</color>
     <color name="grey10">#F1F1F1</color>
+    <color name="red">#EC2424</color>
 </resources>

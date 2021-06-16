@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:gravity="center"
+    android:id="@+id/homeLayout"
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,13 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <Button
-        android:id="@+id/btnCick"
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="click"
-      />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/btnTutor"
         android:layout_marginTop="25dp"
@@ -107,6 +102,49 @@
                 <TextView
 
                     android:text="Tạo nhóm và hướng dẫn thành viên"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/grey"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="25dp"
+        android:elevation="0dp">
+        <LinearLayout
+            android:id="@+id/btnLoginMain"
+            android:padding="20dp"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:src="@drawable/loginimage"
+                android:layout_width="80dp"
+                android:layout_height="80dp"/>
+            <LinearLayout
+                android:layout_marginLeft="30dp"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="Bạn đã có tài khoản"
+                    android:textSize="21dp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+
+                    android:text="Bạn có thể đăng nhập khi có tài khoản trong ứng dụng"
                     android:textSize="16dp"
                     android:textStyle="bold"
                     android:textColor="@color/grey"
