@@ -15,18 +15,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SuportStudy"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.group.ListGroupActivity"></activity>
+        <activity android:name=".activity.chat.ChatGroupActivity">
+
+        </activity>
+        <activity android:name=".activity.group.ListGroupActivity" />
         <activity android:name=".activity.document.ViewDocumentDetailActivity" />
         <activity android:name=".activity.home.HomeActivity" />
         <activity android:name=".activity.course.CourseDetailActivity" />
         <activity android:name=".activity.course.CourseActivity" />
-        <activity android:name=".activity.authencation.LoginAndRegisterMainActivity"></activity>
-        <activity android:name=".activity.chat.ChatActivity"></activity>
+        <activity android:name=".activity.authencation.LoginAndRegisterMainActivity" />
+        <activity android:name=".activity.chat.ChatActivity" >
+
+        </activity>
         <activity android:name=".activity.quizz.QuizzActivity" />
         <activity android:name=".activity.authencation.ProfileActivity" />
-        <activity android:name=".activity.course.ListCourseActivity"></activity>
-        <activity android:name=".activity.authencation.RegisterActivity" />
-        <activity android:name=".activity.authencation.LoginActivity" />
+        <activity android:name=".activity.course.ListCourseActivity" />
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

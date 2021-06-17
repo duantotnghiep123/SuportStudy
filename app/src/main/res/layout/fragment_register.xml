@@ -53,16 +53,29 @@
        app:cardCornerRadius="5dp"
        android:layout_width="match_parent"
        android:layout_height="wrap_content">
-      <EditText
-          android:id="@+id/edtPassword"
-          android:hint="Enter your password"
-          android:background="@color/white"
-          android:drawableLeft="@drawable/ic_key"
-          android:drawablePadding="10dp"
-          android:paddingLeft="10dp"
-          android:textSize="15dp"
+      <com.google.android.material.textfield.TextInputLayout
+          app:hintEnabled="false"
+          app:passwordToggleEnabled="true"
+          app:hintTextAppearance="@color/white"
+          android:paddingRight="10dp"
+          android:gravity="center_vertical"
+          app:boxStrokeColor="@color/white"
           android:layout_width="match_parent"
-          android:layout_height="55dp"/>
+          android:layout_height="wrap_content">
+         <EditText
+             android:id="@+id/edtPassword"
+             android:inputType="textPassword"
+             android:hint="Enter your password"
+             android:background="@color/white"
+             android:drawableLeft="@drawable/ic_key"
+             android:drawableStart="@drawable/ic_key"
+             android:drawablePadding="10dp"
+             android:layout_marginBottom="5dp"
+             android:textSize="15dp"
+             android:layout_width="match_parent"
+             android:layout_height="55dp"/>
+      </com.google.android.material.textfield.TextInputLayout>
+
    </androidx.cardview.widget.CardView>
    <androidx.cardview.widget.CardView
        android:layout_marginLeft="30dp"

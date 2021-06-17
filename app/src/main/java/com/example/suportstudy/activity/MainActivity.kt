@@ -5,17 +5,13 @@ import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.authencation.LoginActivity
 import com.example.suportstudy.activity.authencation.LoginAndRegisterMainActivity
 import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.activity.quizz.QuizzActivity
 import com.example.suportstudy.until.ConnectivityReceiver
 import com.example.suportstudy.until.Until
-import com.rezwan.knetworklib.KNetwork
 import kotlinx.android.synthetic.main.activity_main.*
 
 

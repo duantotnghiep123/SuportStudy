@@ -50,7 +50,6 @@ class CourseDetailActivity : AppCompatActivity() {
     companion object {
         var imageUrl = ""
         var courseId: String? = null
-
         var listG:ArrayList<Group>?=ArrayList<Group>() //
 
 
@@ -82,10 +81,11 @@ class CourseDetailActivity : AppCompatActivity() {
         } else {
             btnGroup!!.text = "Nhóm thảo luận"
             btnGroup!!.setOnClickListener {
-               Until.nextActivity(context,ListGroupActivity::class.java)
+                var intent=Intent(context,ListGroupActivity::class.java)
+                intent.putExtra("group","allgroup")
+                startActivity(intent)
             }
         }
-
         loadDetail()
         btnJoin!!.setOnClickListener {
             var intent = Intent(context, HomeActivity::class.java)
@@ -109,7 +109,6 @@ class CourseDetailActivity : AppCompatActivity() {
             IVCourse!!.setImageResource(R.drawable.ic_gallery_grey)
         }
     }
-
     fun createGroup() {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_create_group)
@@ -161,66 +160,12 @@ class CourseDetailActivity : AppCompatActivity() {
         }
         dialog.show()
     }
-
-
-
-    fun test() {
-        dialog = Dialog(context, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
-        dialog!!.setContentView(
-            R.layout.dialog_list_group
-        )
-        dialog!!.window!!.attributes.windowAnimations = R.style.DialogListGrouTheme
-        dialog!!.show()
-
-        var rcvListGroup = dialog!!.findViewById<RecyclerView>(R.id.rcvListGroup)
-        var noGroupLayout = dialog!!.findViewById<LinearLayout>(R.id.noGroupLayou)
-        participantAPI!!.getAllParticipant()
-            .enqueue(object : Callback<List<Participant>> {
-                override fun onResponse(
-                    call: Call<List<Participant>>,
-                    response: Response<List<Participant>>
-                ) {
-                    if (response.code() == 200) {
-                        listP = response.body()
-                        for (i in listP!!.indices) {
-                            if (listP!![i].uid.equals(ListCourseActivity.uid) && listP!![i].courseId.equals(
-                                    courseId) ) {
-                                var idG = listP!![i].groupId
-
-                                getGroup(idG)
-                            }
-                        }
-                    }
-                }
-                override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
-                    Log.v("Data", "Error:" + t.message.toString())
-                }
-            })
-    }
-
-    fun getGroup(idG: String) {
-        Log.d("id", idG)
-        listG!!.clear()
-        groupAPI!!.getGroupById(idG)
-            .enqueue(object : Callback<List<Group>> {
-                override fun onResponse(call: Call<List<Group>>, response: Response<List<Group>>) {
-                   listG!!.addAll(response.body()!!)
-                    Log.d("sizetest",listG!!.size.toString())
-                }
-                override fun onFailure(call: Call<List<Group>>, t: Throwable) {
-                }
-            })
-
-    }
-
     override fun onBackPressed() {
         Until.showToast(context, "fff")
         super.onBackPressed()
     }
-
     override fun onNavigateUp(): Boolean {
         return super.onNavigateUp()
         Until.showToast(context, "fff")
-
     }
 }

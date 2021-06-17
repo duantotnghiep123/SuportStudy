@@ -1,6 +1,7 @@
 package com.example.suportstudy.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +19,7 @@ import com.example.suportstudy.until.Until
 import io.realm.Realm
 import io.realm.mongodb.App
 import io.realm.mongodb.AppConfiguration
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.fragment_login.*
 import retrofit2.Response
 
 class LoginFragment : Fragment() {
@@ -43,6 +44,11 @@ class LoginFragment : Fragment() {
         // Inflate the layout for this fragment
         var view = inflater.inflate(R.layout.fragment_login, container, false)
         val btnLogin = view.findViewById<Button>(R.id.btnLogin)
+
+        sharedPreferences = context!!.getSharedPreferences(
+            Until.SHARED_REF_NAME,
+            Context.MODE_PRIVATE
+        )
         sd=Until.sweetdialog(activity!!,"Đang đăng nhập")
 
         btnLogin.setOnClickListener {

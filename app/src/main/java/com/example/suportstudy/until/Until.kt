@@ -12,17 +12,16 @@ import android.widget.RadioButton
 import android.widget.Toast
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.model.Question
-import io.realm.mongodb.App
-import io.realm.mongodb.AppConfiguration
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.regex.Pattern
 
 object Until {
 
     val appId = "duantotnghiep-aeidb";
 
     //    var baseUrl="http://192.168.3.107:10000"
-    var baseUrl = "http://192.168.1.6:3000"
+    var baseUrl = "http://192.168.1.8:3000"
 //    var baseUrl="http://172.20.10.3:10000"
 
     var SHARED_REF_NAME: String? = "savestatuslogin"
@@ -31,6 +30,9 @@ object Until {
     var KEY_EMAIL = "email"
     var KEY_LOGIN = "islogin"
     var KEY_ISTUTOR = "isTutor"
+
+    val VALID_EMAIL_ADDRESS_REGEX =
+        Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE)
 
     fun <T> nextActivity(context: Context, clazz: Class<T>) {
         var intent = Intent(context, clazz);
@@ -41,10 +43,6 @@ object Until {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 
-    fun app(): App {
-        val app = App(AppConfiguration.Builder(appId).build())
-        return app
-    }
 
     fun hideKeyBoard(context: Activity) {
         @SuppressLint("ServiceCast") val inputManager: InputMethodManager =
@@ -69,7 +67,6 @@ object Until {
         autoComplete.textSize = 15f
         return searchView
     }
-
     fun sweetdialog(context: Context, title: String):SweetAlertDialog{
         var sd: SweetAlertDialog? = null
         sd = SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE)
@@ -78,7 +75,6 @@ object Until {
 
         return sd
     }
-
     var retrofit: Retrofit? = null
     fun <T> createRetrofit(clazz: Class<T>): T {
         if (retrofit == null) {

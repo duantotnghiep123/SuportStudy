@@ -1,6 +1,7 @@
 package com.example.suportstudy.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.activity.course.CourseDetailActivity
 import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.model.Group
@@ -56,14 +58,28 @@ class GroupAdapter(
         }else{
             holder.IVGroup!!.setImageResource(R.drawable.loginimage)
         }
+         holder.itemView.setOnClickListener {
+             if(holder.txtJoin!!.text.equals("Đã tham gia")){
+                 com.example.suportstudy.until.Until.showToast(context,"Đã tham gia")
+                 var intent=Intent(context,ChatGroupActivity::class.java)
+                 intent.putExtra("groupId",group._id)
+                 intent.putExtra("groupCreateBy",group.createBy)
+                 intent.putExtra("groupName",group.groupName)
+                 intent.putExtra("groupDescription",group.groupDescription)
+                 intent.putExtra("groupId",group._id)
+                 context.startActivity(intent)
+             }
+             if(holder.txtJoin!!.text.equals("Tham gia")){
+                 com.example.suportstudy.until.Until.showToast(context,"Bạn chưa tham gia nhóm này")
+             }
 
+         }
         holder.txtJoin!!.setOnClickListener {
             if(holder.txtJoin!!.text.equals("Đã tham gia")){
                 com.example.suportstudy.until.Until.showToast(context,"Đã tham gia")
             }
             if(holder.txtJoin!!.text.equals("Tham gia")){
                 com.example.suportstudy.until.Until.showToast(context,"Tham gia")
-
             }
 
             var time=System.currentTimeMillis().toString()
@@ -92,45 +108,8 @@ class GroupAdapter(
         return list.size
     }
 
-    fun test() {
-        participantAPI!!.getAllParticipant()
-            .enqueue(object : Callback<List<Participant>> {
-                override fun onResponse(
-                    call: Call<List<Participant>>,
-                    response: Response<List<Participant>>
-                ) {
-                    if (response.code() == 200) {
-                      var  listP = response.body()
-                        for (i in listP!!.indices) {
-                            if (listP!![i].uid.equals(ListCourseActivity.uid) && listP!![i].courseId.equals(
-                                    CourseDetailActivity.courseId
-                                ) ) {
-                                var idG = listP!![i].groupId
-                                getGroup(idG)
-                            }
-                        }
-                    }
-                }
-                override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
-                    Log.v("Data", "Error:" + t.message.toString())
-                }
-            })
-    }
-
-    fun getGroup(idG: String) {
-        Log.d("id", idG)
-        groupAPI!!.getGroupById(idG)
-            .enqueue(object : Callback<List<Group>> {
-                override fun onResponse(call: Call<List<Group>>, response: Response<List<Group>>) {
-                    listGroupMyParticipant!!.addAll(response.body()!!)
-                    Log.d("sizetestAdapter",listGroupMyParticipant!!.size.toString())
-                }
-                override fun onFailure(call: Call<List<Group>>, t: Throwable) {
-                }
-            })
-
-    }
     fun getAllParticipant(group: Group,txtJoin: TextView,txtHuy:TextView){
+        txtJoin.text="Tham gia"
         participantAPI!!.getAllParticipant()
             .enqueue(object : Callback<List<Participant>> {
                 override fun onResponse(
@@ -142,11 +121,12 @@ class GroupAdapter(
                         Log.d("sizep", listP!!.size.toString())
                         for (i in listP!!.indices) {
                             Log.d("groupid",listP!![i].groupId)
-                            if(listP!![i].uid.equals(ListCourseActivity.uid)){
+                            if(listP!![i].uid.equals(ListCourseActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
                                 if(group._id.equals(listP!![i].groupId)){
                                     txtJoin.text="Đã tham gia"
                                     txtHuy!!.visibility=View.VISIBLE
                                 }
+
                             }
                             if(txtJoin!!.text.equals("Tham gia")){
                                 txtHuy!!.visibility=View.GONE

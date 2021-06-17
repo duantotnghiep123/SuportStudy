@@ -62,7 +62,7 @@ class ChatActivity : AppCompatActivity() {
         recyclerView!!.setHasFixedSize(true)
 
 
-        firebaseDatabase = FirebaseDatabase.getInstance("https://suportstudy-5d9e0-default-rtdb.firebaseio.com/")
+        firebaseDatabase = FirebaseDatabase.getInstance("https://suportstudy-72e5e-default-rtdb.firebaseio.com/")
         chatRef = firebaseDatabase!!.getReference("Chats")
 
         displayMessage()

@@ -1,32 +1,55 @@
 package com.example.suportstudy.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.RecyclerView
+import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.course.CourseDetailActivity
+import com.example.suportstudy.activity.course.ListCourseActivity
+import com.example.suportstudy.adapter.GroupChatListAdapter
+import com.example.suportstudy.model.Group
+import com.example.suportstudy.model.Participant
+import com.example.suportstudy.service.GroupAPI
+import com.example.suportstudy.service.ParticipantAPI
+import com.example.suportstudy.until.Until
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ChatGroupFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ChatGroupFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
+
+  var searchView:SearchView?=null
+  var recyclerViewChatGroup:RecyclerView?=null
+  var myLoader:LazyLoader?=null
+  var listG: ArrayList<Group>? = ArrayList<Group>()
+  var listGSearch: ArrayList<Group>? = ArrayList<Group>()
+  var groupAPI: GroupAPI? = null
+  var participantAPI: ParticipantAPI? = null
+    companion object {
+        var groupChatListAdapter:GroupChatListAdapter?=null
+
+        @JvmStatic
+        fun newInstance(param1: String, param2: String) =
+            ChatGroupFragment().apply {
+                arguments = Bundle().apply {
+
+                }
+            }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
         }
     }
 
@@ -35,26 +58,153 @@ class ChatGroupFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat_group, container, false)
+        var view=inflater.inflate(R.layout.fragment_chat_group, container, false)
+        recyclerViewChatGroup=view.findViewById(R.id.recyclerViewChatGroup);
+        myLoader=view.findViewById(R.id.myLoader);
+        searchView=view.findViewById(R.id.searchView);
+        groupAPI = Until.createRetrofit(GroupAPI::class.java)
+        participantAPI = Until.createRetrofit(ParticipantAPI::class.java)
+        getAllParticipant()
+
+        searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if(query.equals("")){
+                    getAllParticipant()
+                }else{
+                    getAllParticipantSearch(query!!)
+
+                }
+
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if(newText.equals("")){
+                    getAllParticipant()
+                }else{
+                    getAllParticipantSearch(newText!!)
+
+                }
+                return false
+            }
+
+        })
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ChatGroupFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ChatGroupFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    fun getAllParticipant(){
+        listG!!.clear()
+        myLoader!!.visibility=View.VISIBLE
+        participantAPI!!.getAllParticipant()
+            .enqueue(object : Callback<List<Participant>> {
+                override fun onResponse(
+                    call: Call<List<Participant>>,
+                    response: Response<List<Participant>>
+                ) {
+                    if (response.code() == 200) {
+                        var    listP = response.body()!!
+                        for (i in listP!!.indices) {
+                            if(listP!![i].uid.equals(ListCourseActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
+                                if(listP[i].courseId.equals(CourseDetailActivity.courseId)){
+                                    var idG=listP[i].groupId
+                                    getALGroupById(idG)
+                                }
+
+                            }
+
+                        }
+
+                    }
                 }
-            }
+                override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
+                    Log.v("Data", "Error:" + t.message.toString())
+                }
+            })
+
+
     }
+    @SuppressLint("UseRequireInsteadOfGet")
+    private fun getALGroupById(idG: String) {
+
+        groupAPI!!.getGroupById(idG)
+            .enqueue(object : Callback<List<Group>> {
+                override fun onResponse(call: Call<List<Group>>, response: Response<List<Group>>) {
+
+                    if(response.isSuccessful){
+                       listG!!.addAll(response.body()!!)
+                   }
+
+                    groupChatListAdapter =   GroupChatListAdapter(context!!, listG!!)
+                    recyclerViewChatGroup!!.adapter = groupChatListAdapter
+                    recyclerViewChatGroup!!.visibility=View.VISIBLE
+                    myLoader!!.visibility=View.GONE
+                }
+                override fun onFailure(call: Call<List<Group>>, t: Throwable) {
+                }
+            })
+
+    }
+
+
+    fun getAllParticipantSearch(keysearch:String){
+        listGSearch!!.clear()
+        myLoader!!.visibility=View.VISIBLE
+        participantAPI!!.getAllParticipant()
+            .enqueue(object : Callback<List<Participant>> {
+                override fun onResponse(
+                    call: Call<List<Participant>>,
+                    response: Response<List<Participant>>
+                ) {
+                    if (response.code() == 200) {
+                        var    listP = response.body()!!
+                        for (i in listP!!.indices) {
+                            if(listP!![i].uid.equals(ListCourseActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
+                                if(listP[i].courseId.equals(CourseDetailActivity.courseId)){
+                                    var idG=listP[i].groupId
+                                    getALGroupByIdSearch(idG,keysearch)
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+
+                }
+                override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
+                    Log.v("Data", "Error:" + t.message.toString())
+                }
+            })
+
+
+    }
+    private fun getALGroupByIdSearch(idG: String,keysearch: String) {
+
+        groupAPI!!.getGroupById(idG)
+            .enqueue(object : Callback<List<Group>> {
+                override fun onResponse(call: Call<List<Group>>, response: Response<List<Group>>) {
+                   if(response.isSuccessful){
+                       listG!!.addAll(response.body()!!)
+                       for (i in listG!!.indices){
+                           if (listG!![i].groupName!!.contains(keysearch)){
+                               listGSearch!!.add(listG!![i])
+
+                           }
+                       }
+                       groupChatListAdapter =   GroupChatListAdapter(context!!, listGSearch!!)
+                       recyclerViewChatGroup!!.adapter = groupChatListAdapter
+                       groupChatListAdapter!!.notifyDataSetChanged()
+                       recyclerViewChatGroup!!.visibility=View.VISIBLE
+                       myLoader!!.visibility=View.GONE
+                   }
+                }
+
+                override fun onFailure(call: Call<List<Group>>, t: Throwable) {
+                }
+            })
+
+    }
+
+
 }
