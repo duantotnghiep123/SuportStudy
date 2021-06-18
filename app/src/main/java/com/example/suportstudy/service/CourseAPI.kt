@@ -7,7 +7,7 @@ import retrofit2.http.GET
 
 interface CourseAPI {
 
-    @GET("/api/allcourse")
+    @GET("/api/getAllCourse")
     suspend fun getAllCourse(): Response<List<Course>>
 
 }

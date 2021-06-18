@@ -1,4 +1,4 @@
-package com.example.suportstudy.adapter
+package com.example.italkapp.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -7,6 +7,7 @@ import com.example.suportstudy.fragment.ChatGroupFragment
 import com.example.suportstudy.fragment.ChatOneFragment
 import com.example.suportstudy.fragment.LoginFragment
 import com.example.suportstudy.fragment.RegisterFragment
+
 
 class ChatContainerAdapter(fm: FragmentManager) :
     FragmentStatePagerAdapter(fm) {

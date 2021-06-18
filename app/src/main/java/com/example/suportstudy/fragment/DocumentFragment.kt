@@ -14,16 +14,7 @@ import com.example.suportstudy.model.Document
 import java.util.*
 import kotlin.collections.ArrayList
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [DocumentFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class DocumentFragment : Fragment() {
     var recyclerView: RecyclerView? = null
     var list: ArrayList<Document>? = null
@@ -46,7 +37,6 @@ class DocumentFragment : Fragment() {
         var view=inflater.inflate(R.layout.fragment_document, container, false)
 
         recyclerView = view.findViewById<RecyclerView>(R.id.rcvDocument)
-
         list = ArrayList()
         for (i in 1..23) {
             list!!.add(Document("Android bài $i", CourseDetailActivity.imageUrl))
