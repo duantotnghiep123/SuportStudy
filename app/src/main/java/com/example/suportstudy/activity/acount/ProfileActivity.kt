@@ -1,4 +1,4 @@
-package com.example.suportstudy.activity.authencation
+package com.example.suportstudy.activity.acount
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -8,7 +8,7 @@ import android.widget.RelativeLayout
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.MainActivity
 import com.example.suportstudy.activity.group.ListGroupActivity
-import com.example.suportstudy.until.Until
+import com.example.suportstudy.until.Constrain
 
 class ProfileActivity : AppCompatActivity() {
     val context=this@ProfileActivity
@@ -20,7 +20,7 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
-        sharedPreferences = getSharedPreferences(Until.SHARED_REF_NAME, MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(Constrain.SHARED_REF_NAME, MODE_PRIVATE)
 
         listGroupLayout=findViewById(R.id.listGroupLayout)
         logoutLayout=findViewById(R.id.logoutLayout)

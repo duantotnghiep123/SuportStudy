@@ -30,4 +30,7 @@ interface UserAPI {
         @Field("password") password: String,
     ): Call<List<Users>>
 
+    @POST("/api/getAllUseId")
+    @FormUrlEncoded
+    fun getAllUsersByID( @Field("_id") _id:String ?): Call<List<Users>>
 }

@@ -11,7 +11,7 @@ import retrofit2.Response
 import java.security.acl.Group
 
 object GroupController {
-     fun createGroup(groupAPI: GroupAPI,createBy:String,groupName:String,groupDescription:String,groupImage:String,courseId:String,dialog: Dialog){
+     fun createGroup2(groupAPI: GroupAPI,createBy:String,groupName:String,groupDescription:String,groupImage:String,courseId:String,dialog: Dialog){
          groupAPI!!.insertGroup(
              createBy,
              groupName,

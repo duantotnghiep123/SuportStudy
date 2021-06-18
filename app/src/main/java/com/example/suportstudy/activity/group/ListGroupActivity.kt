@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
@@ -17,7 +16,7 @@ import com.example.suportstudy.model.Group
 import com.example.suportstudy.model.Participant
 import com.example.suportstudy.service.GroupAPI
 import com.example.suportstudy.service.ParticipantAPI
-import com.example.suportstudy.until.Until
+import com.example.suportstudy.until.Constrain
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,8 +42,8 @@ class ListGroupActivity : AppCompatActivity() {
         rcvListGroup = findViewById(R.id.rcvListGroup)
         noGroupLayout = findViewById(R.id.noGroupLayou)
         myLoader = findViewById(R.id.myLoader)
-        groupAPI = Until.createRetrofit(GroupAPI::class.java)
-        participantAPI = Until.createRetrofit(ParticipantAPI::class.java)
+        groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
+        participantAPI = Constrain.createRetrofit(ParticipantAPI::class.java)
 
         var intent=intent
         typedisplayGroup=intent.getStringExtra("group")

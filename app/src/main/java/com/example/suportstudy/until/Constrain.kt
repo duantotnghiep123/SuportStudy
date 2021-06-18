@@ -16,12 +16,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.regex.Pattern
 
-object Until {
+object Constrain {
 
     val appId = "duantotnghiep-aeidb";
 
     //    var baseUrl="http://192.168.3.107:10000"
-    var baseUrl = "http://192.168.1.8:3000"
+    var baseUrl = "http://192.168.1.6:3000"
 //    var baseUrl="http://172.20.10.3:10000"
 
     var SHARED_REF_NAME: String? = "savestatuslogin"

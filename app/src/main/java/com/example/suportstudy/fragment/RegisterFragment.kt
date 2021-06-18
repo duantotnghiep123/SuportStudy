@@ -14,11 +14,11 @@ import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.MainActivity
-import com.example.suportstudy.activity.authencation.LoginAndRegisterMainActivity
+import com.example.suportstudy.activity.acount.LoginAndRegisterMainActivity
 import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
-import com.example.suportstudy.until.Until
+import com.example.suportstudy.until.Constrain
 
 import kotlinx.android.synthetic.main.fragment_register.*
 import retrofit2.Response
@@ -53,12 +53,12 @@ class RegisterFragment : Fragment() {
         } else {
             isTutor = false
         }
-        val userAPI = Until.createRetrofit(UserAPI::class.java)
+        val userAPI = Constrain.createRetrofit(UserAPI::class.java)
         sharedPreferences = context!!.getSharedPreferences(
-            Until.SHARED_REF_NAME,
+            Constrain.SHARED_REF_NAME,
             Context.MODE_PRIVATE
         )
-        Until.showToast(activity!!, isTutor.toString())
+        Constrain.showToast(activity!!, isTutor.toString())
         sd = SweetAlertDialog(activity, SweetAlertDialog.PROGRESS_TYPE)
         sd!!.titleText = "Đang tạo tài khoản..."
         sd!!.setCancelable(false)
@@ -69,7 +69,7 @@ class RegisterFragment : Fragment() {
         txtHome.setOnClickListener {
             LoginAndRegisterMainActivity.isTutor = false
             isTutor = false
-            Until.nextActivity(activity!!, MainActivity::class.java)
+            Constrain.nextActivity(activity!!, MainActivity::class.java)
         }
 
         btnRegister.setOnClickListener {
@@ -77,7 +77,7 @@ class RegisterFragment : Fragment() {
             var email = edtEmail.text.toString()
             var name = edtName.text.toString()
             var password = edtPassword.text.toString()
-            val matcher: Matcher = Until.VALID_EMAIL_ADDRESS_REGEX.matcher(email)
+            val matcher: Matcher = Constrain.VALID_EMAIL_ADDRESS_REGEX.matcher(email)
 
             if (name.equals("")) {
                 edtName.error = "Vui lòng nhập tên !"
@@ -126,13 +126,14 @@ class RegisterFragment : Fragment() {
 
                             isLogin = true
                             val editor = sharedPreferences!!.edit()
-                            editor.putString(Until.KEY_ID, _id)
-                            editor.putString(Until.KEY_EMAIL, email)
-                            editor.putBoolean(Until.KEY_LOGIN, isLogin)
-                            editor.putBoolean(Until.KEY_ISTUTOR, isTutor)
+                            editor.putString(Constrain.KEY_ID, _id)
+                            editor.putString(Constrain.KEY_NAME, name)
+                            editor.putString(Constrain.KEY_EMAIL, email)
+                            editor.putBoolean(Constrain.KEY_LOGIN, isLogin)
+                            editor.putBoolean(Constrain.KEY_ISTUTOR, isTutor)
                             editor.apply()
                             sd!!.dismiss()
-                            Until.nextActivity(
+                            Constrain.nextActivity(
                                 activity!!,
                                 ListCourseActivity::class.java
                             )

@@ -8,19 +8,16 @@ import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.group.ListGroupActivity
 import com.example.suportstudy.activity.home.HomeActivity
-import com.example.suportstudy.adapter.GroupAdapter
 import com.example.suportstudy.model.Group
 import com.example.suportstudy.model.Participant
 import com.example.suportstudy.service.GroupAPI
 import com.example.suportstudy.service.ParticipantAPI
-import com.example.suportstudy.until.Until
+import com.example.suportstudy.until.Constrain
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.*
@@ -40,11 +37,6 @@ class CourseDetailActivity : AppCompatActivity() {
     var groupAPI: GroupAPI? = null
     var participantAPI: ParticipantAPI? = null
 
-    var dialog: Dialog? = null
-
-
-    var listGropByCourse:ArrayList<Group>?=ArrayList<Group>()
-    var listP:List<Participant>?=ArrayList<Participant>()
 
 
     companion object {
@@ -55,16 +47,13 @@ class CourseDetailActivity : AppCompatActivity() {
 
     }
 
-    var listGroup: ArrayList<Group>? = ArrayList<Group>()
-    var listGrouptest: List<Group>? = ArrayList<Group>()
-    var listGroupAdapter = ArrayList<Group>()
 
     @SuppressLint("WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_course_detail)
-        groupAPI = Until.createRetrofit(GroupAPI::class.java)
-        participantAPI = Until.createRetrofit(ParticipantAPI::class.java)
+        groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
+        participantAPI = Constrain.createRetrofit(ParticipantAPI::class.java)
 
 
         txtCourseName = findViewById(R.id.txtCourseName)
@@ -72,6 +61,8 @@ class CourseDetailActivity : AppCompatActivity() {
         IVCourse = findViewById(R.id.IVCourse)
         btnJoin = findViewById(R.id.btnJoin)
         btnGroup = findViewById(R.id.btnCrearteClass)
+
+
 
         if (ListCourseActivity.istutor == true) {
             btnGroup!!.text = "Tạo Nhóm"
@@ -110,6 +101,7 @@ class CourseDetailActivity : AppCompatActivity() {
         }
     }
     fun createGroup() {
+        Constrain.showToast(context,"TẠo nhom")
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_create_group)
         dialog!!.window!!.attributes.windowAnimations = R.style.DialogTheme
@@ -129,8 +121,11 @@ class CourseDetailActivity : AppCompatActivity() {
         val ivGroup = dialog!!.findViewById<CircleImageView>(R.id.IVGroup)
 
         btnTao.setOnClickListener {
+
+
             var groupName = edtName.text.toString()
             var groupDescription = edtDecription.text.toString()
+            var time=System.currentTimeMillis().toString()
             groupAPI!!.insertGroup(
                 ListCourseActivity.uid,
                 groupName,
@@ -144,7 +139,28 @@ class CourseDetailActivity : AppCompatActivity() {
                         response: Response<com.example.suportstudy.model.Group>
                     ) {
                         if (response.isSuccessful) {
-                            dialog.dismiss()
+                            var groupId= response.body()!!._id
+                            participantAPI!!.insertParticipant(
+                               time,
+                                ListCourseActivity.uid,
+                                groupId!!,
+                                courseId!!
+                            ).enqueue(object :Callback<Participant>{
+                                override fun onResponse(
+                                    call: Call<Participant>,
+                                    response: Response<Participant>
+                                ) {
+                                   if(response.isSuccessful){
+                                       Constrain.showToast(context,"Tạo nhóm thành công")
+                                       dialog.dismiss()
+
+                                   }
+                                }
+
+                                override fun onFailure(call: Call<Participant>, t: Throwable) {
+                                }
+
+                            })
                         }
                     }
 
@@ -161,11 +177,11 @@ class CourseDetailActivity : AppCompatActivity() {
         dialog.show()
     }
     override fun onBackPressed() {
-        Until.showToast(context, "fff")
+        Constrain.showToast(context, "fff")
         super.onBackPressed()
     }
     override fun onNavigateUp(): Boolean {
         return super.onNavigateUp()
-        Until.showToast(context, "fff")
+        Constrain.showToast(context, "fff")
     }
 }

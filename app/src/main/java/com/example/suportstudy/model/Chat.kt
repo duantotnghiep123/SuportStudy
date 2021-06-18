@@ -7,6 +7,8 @@ data class Chat(
     var _id:String?=null,
     @SerializedName("senderUid")
     var senderUid:String?=null,
+    @SerializedName("senderName")
+    var senderName:String?=null,
     @SerializedName("receiverUid")
     var receiverUid:String?=null,
     @SerializedName("timeSend")

@@ -1,8 +1,8 @@
 package com.example.suportstudy.activity.course
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -11,12 +11,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.MainActivity
-import com.example.suportstudy.activity.authencation.ProfileActivity
+import com.example.suportstudy.activity.acount.ProfileActivity
 import com.example.suportstudy.adapter.CourseAdapter
 import com.example.suportstudy.model.Course
 import com.example.suportstudy.service.CourseAPI
-import com.example.suportstudy.until.Until
+import com.example.suportstudy.until.Constrain
 import kotlinx.coroutines.*
 
 class ListCourseActivity : AppCompatActivity() {
@@ -42,6 +41,7 @@ class ListCourseActivity : AppCompatActivity() {
 
     companion object{
         var uid:String?=null
+        var name:String?=null
         var email:String?=null
         var istutor:Boolean?=null
     }
@@ -52,11 +52,14 @@ class ListCourseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_course)
 
-        sharedPreferences = getSharedPreferences(Until.SHARED_REF_NAME, MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(Constrain.SHARED_REF_NAME, MODE_PRIVATE)
 
-        uid = sharedPreferences!!.getString(Until.KEY_ID, "")
-         email = sharedPreferences!!.getString(Until.KEY_EMAIL, "")
-         istutor = sharedPreferences!!.getBoolean(Until.KEY_ISTUTOR, false)
+         uid = sharedPreferences!!.getString(Constrain.KEY_ID, "")
+         name = sharedPreferences!!.getString(Constrain.KEY_NAME, "")
+         email = sharedPreferences!!.getString(Constrain.KEY_EMAIL, "")
+         istutor = sharedPreferences!!.getBoolean(Constrain.KEY_ISTUTOR, false)
+
+        Log.d("name", name!!)
 
 
         rcvAndroidViewCourse = findViewById(R.id.rcvAndroidCourse)
@@ -70,10 +73,10 @@ class ListCourseActivity : AppCompatActivity() {
         lazyLoader!!.visibility = View.VISIBLE
         courseLayout!!.visibility = View.GONE
 
-        courseAPI = Until.createRetrofit(CourseAPI::class.java)
+        courseAPI = Constrain.createRetrofit(CourseAPI::class.java)
         loadCourse()
         IVProfile!!.setOnClickListener {
-            Until.nextActivity(context,ProfileActivity::class.java)
+            Constrain.nextActivity(context,ProfileActivity::class.java)
 //            val editor = sharedPreferences!!.edit()
 //            editor.clear()
 //            editor.commit()
@@ -86,7 +89,7 @@ class ListCourseActivity : AppCompatActivity() {
         val chatFetchJob = Job()
         val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
             throwable.printStackTrace()
-            Until.showToast(context, "Data error")
+            Constrain.showToast(context, "Data error")
         }
         val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
         scope.launch(errorHandler) {
