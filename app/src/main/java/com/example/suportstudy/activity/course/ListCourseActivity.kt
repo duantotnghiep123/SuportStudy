@@ -1,82 +1,125 @@
 package com.example.suportstudy.activity.course
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.MainActivity
+import com.example.suportstudy.activity.authencation.ProfileActivity
 import com.example.suportstudy.adapter.CourseAdapter
 import com.example.suportstudy.model.Course
 import com.example.suportstudy.service.CourseAPI
 import com.example.suportstudy.until.Until
-
 import kotlinx.coroutines.*
 
 class ListCourseActivity : AppCompatActivity() {
 
-    var  courseLayout:RelativeLayout?=null
-   val context=this@ListCourseActivity
-    var recyclerViewCourse:RecyclerView?=null
-    var rcvPythonCourse:RecyclerView?=null
-    var rcvRectNatieCourse:RecyclerView?=null
-    var  courseAdapter:CourseAdapter?=null
-
+    var courseLayout: RelativeLayout? = null
+    val context = this@ListCourseActivity
+    var rcvAndroidViewCourse: RecyclerView? = null
+    var rcvPythonCourse: RecyclerView? = null
+    var rcvRectNatieCourse: RecyclerView? = null
+    var rcvCSharpCourse: RecyclerView? = null
+    var courseAdapter: CourseAdapter? = null
+    var IVProfile:ImageView?=null
+    var listAndroid=ArrayList<Course>()
+    var listPython=ArrayList<Course>()
+    var listJava=ArrayList<Course>()
+    var listCShap=ArrayList<Course>()
     val coursedata = MutableLiveData<List<Course>>()
 
-    var courseAPI:CourseAPI?=null
+    var courseAPI: CourseAPI? = null
 
-    var lazyLoader:LazyLoader?=null
+    var lazyLoader: LazyLoader? = null
+    var sharedPreferences: SharedPreferences? = null
+
+    companion object{
+        var uid:String?=null
+        var email:String?=null
+        var istutor:Boolean?=null
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_course)
 
-        recyclerViewCourse=findViewById(R.id.rcvAndroidCourse)
-        rcvPythonCourse=findViewById(R.id.rcvPythonCourse)
-        rcvRectNatieCourse=findViewById(R.id.rcvRectNatieCourse)
-        lazyLoader=findViewById(R.id.myLoader)
-        courseLayout=findViewById(R.id.courseLayout)
+        sharedPreferences = getSharedPreferences(Until.SHARED_REF_NAME, MODE_PRIVATE)
 
-        lazyLoader!!.visibility=View.VISIBLE
-        courseLayout!!.visibility=View.GONE
+        uid = sharedPreferences!!.getString(Until.KEY_ID, "")
+         email = sharedPreferences!!.getString(Until.KEY_EMAIL, "")
+         istutor = sharedPreferences!!.getBoolean(Until.KEY_ISTUTOR, false)
 
 
-        var retrofit = Until.getClient()
-        courseAPI = retrofit?.create(CourseAPI::class.java)
+        rcvAndroidViewCourse = findViewById(R.id.rcvAndroidCourse)
+        rcvPythonCourse = findViewById(R.id.rcvPythonCourse)
+        rcvRectNatieCourse = findViewById(R.id.rcvRectNatieCourse)
+        rcvCSharpCourse = findViewById(R.id.rcvC)
+        IVProfile = findViewById(R.id.IVProfile)
+        lazyLoader = findViewById(R.id.myLoader)
+        courseLayout = findViewById(R.id.courseLayout)
+
+        lazyLoader!!.visibility = View.VISIBLE
+        courseLayout!!.visibility = View.GONE
+
+        courseAPI = Until.createRetrofit(CourseAPI::class.java)
         loadCourse()
-
-
+        IVProfile!!.setOnClickListener {
+            Until.nextActivity(context,ProfileActivity::class.java)
+//            val editor = sharedPreferences!!.edit()
+//            editor.clear()
+//            editor.commit()
+//            startActivity(Intent(context,MainActivity::class.java))
+//            finish()
+        }
     }
 
-
-    fun loadCourse(){
-
+    fun loadCourse() {
         val chatFetchJob = Job()
         val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
             throwable.printStackTrace()
-            Until.showToast(context,"Error")
+            Until.showToast(context, "Data error")
         }
         val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
-        scope.launch(errorHandler){
+        scope.launch(errorHandler) {
             val responce = courseAPI!!.getAllCourse()
-//            Until.showToast(context,responce.body().toString())
-            Log.d("data",responce.body().toString())
-
             coursedata.postValue(responce.body())
         }
-
         coursedata.observe(this, {
-            courseAdapter = CourseAdapter(context, it)
-            recyclerViewCourse!!.adapter = courseAdapter
-            rcvPythonCourse!!.adapter = courseAdapter
-            rcvRectNatieCourse!!.adapter = courseAdapter
-            courseAdapter!!.notifyDataSetChanged()
-            lazyLoader!!.visibility=View.GONE
-            courseLayout!!.visibility=View.VISIBLE
+            for (i in it.indices) {
+                if (it[i].courseType.name.equals("ANDROID")) {
+                    listAndroid.add(it[i])
+                    setAdapter(rcvAndroidViewCourse!!, listAndroid)
+                }
+                if (it[i].courseType.name.equals("JAVA")) {
+                    listJava.add(it[i])
+                    setAdapter(rcvRectNatieCourse!!, listJava)
+                }
+                if (it[i].courseType.name.equals("C#")) {
+                    listCShap.add(it[i])
+                    setAdapter(rcvCSharpCourse!!,listCShap)
+                }
+                if (it[i].courseType.name.equals("PYTHON")) {
+                    listPython.add(it[i])
+                    setAdapter(rcvPythonCourse!!,listPython)
+                }
+            }
+            lazyLoader!!.visibility = View.GONE
+            courseLayout!!.visibility = View.VISIBLE
         })
     }
+    fun setAdapter(recyclerView: RecyclerView, list: List<Course>) {
+        var courseAdapter = CourseAdapter(context, list)
+        recyclerView!!.adapter = courseAdapter
+        courseAdapter!!.notifyDataSetChanged()
+    }
+
 }

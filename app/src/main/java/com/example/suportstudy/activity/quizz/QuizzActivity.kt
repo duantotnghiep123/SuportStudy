@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -17,7 +18,8 @@ import com.example.suportstudy.R
 import com.example.suportstudy.activity.MainActivity
 import com.example.suportstudy.activity.authencation.LoginAndRegisterMainActivity
 import com.example.suportstudy.model.Question
-import com.example.suportstudy.service.APIService
+import com.example.suportstudy.service.QuestionAPI
+import com.example.suportstudy.until.ConnectivityReceiver
 import com.example.suportstudy.until.Until
 import kotlinx.android.synthetic.main.activity_quizz.*
 import kotlinx.coroutines.CoroutineScope
@@ -26,31 +28,35 @@ import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
-class QuizzActivity : AppCompatActivity() {
+class QuizzActivity : AppCompatActivity(){
     val data = MutableLiveData<List<Question>>()
     var score = 0;
     var listIndexQuestion = ArrayList<Int?>()
 
     val context = this@QuizzActivity
-
+    var isconected=false
     var lazyLoader: LazyLoader? = null
     var questionView: NestedScrollView? = null
+    private var connectivityReceiver: ConnectivityReceiver? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quizz)
+
         lazyLoader = findViewById(R.id.myLoader)
         questionView = findViewById(R.id.questionView)
+
+
+
+        val quizzApi = Until.createRetrofit(QuestionAPI::class.java)
+        Until.showToast(applicationContext,isconected.toString())
         questionView!!.visibility = View.GONE
         lazyLoader!!.visibility = View.VISIBLE
-
-        var retrofit = Until.getClient();
-        val quizzApi = retrofit?.create(APIService::class.java)
-
         CoroutineScope(Dispatchers.IO).launch {
             val responce = quizzApi!!.getAllQuestion()
             if (responce.isSuccessful) {
                 data.postValue(responce.body())
+                Log.d("respon",responce.body().toString())
             }
         }
         data.observe(this, {
@@ -165,7 +171,7 @@ class QuizzActivity : AppCompatActivity() {
         })
 
 
-    }
 
+    }
 
 }

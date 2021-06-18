@@ -45,6 +45,10 @@
         <item name="android:windowEnterAnimation">@anim/popup</item>
         <item name="android:windowExitAnimation">@anim/popdown</item>
     </style>
+    <style name="DialogListGrouTheme">
+        <item name="android:windowEnterAnimation">@anim/to_top</item>
+        <item name="android:windowExitAnimation">@anim/to_bottom</item>
+    </style>
     <style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
     </style>

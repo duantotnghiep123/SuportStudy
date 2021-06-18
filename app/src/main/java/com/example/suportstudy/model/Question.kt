@@ -1,7 +1,7 @@
 package com.example.suportstudy.model
 
 data class Question (
-    var id:String,
+    var _id:String,
     var title:String,
     var option1:String,
     var option2:String,
