@@ -6,5 +6,5 @@ data class Users(
     var image:String ,
     var email:String,
     var password:String,
-    var isTutor :Boolean ,
+    var isTurtor :Boolean ,
 )

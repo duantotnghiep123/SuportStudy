@@ -15,10 +15,7 @@ import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
-import com.example.suportstudy.until.Until
-import io.realm.Realm
-import io.realm.mongodb.App
-import io.realm.mongodb.AppConfiguration
+import com.example.suportstudy.until.Constrain
 import kotlinx.android.synthetic.main.fragment_login.*
 import retrofit2.Response
 
@@ -46,21 +43,21 @@ class LoginFragment : Fragment() {
         val btnLogin = view.findViewById<Button>(R.id.btnLogin)
 
         sharedPreferences = context!!.getSharedPreferences(
-            Until.SHARED_REF_NAME,
+            Constrain.SHARED_REF_NAME,
             Context.MODE_PRIVATE
         )
-        sd=Until.sweetdialog(activity!!,"Đang đăng nhập")
+        sd=Constrain.sweetdialog(activity!!,"Đang đăng nhập")
 
         btnLogin.setOnClickListener {
             sd!!.show()
             var email = edtEmail.text.toString()
             var password = edtPassword.text.toString()
             if(email.equals("")){
-                Until.showToast(activity!!,"Vui lòng nhập email")
+                Constrain.showToast(activity!!,"Vui lòng nhập email")
                 sd!!.dismiss()
 
             }else if(password.equals("")){
-                Until.showToast(activity!!,"Vui lòng nhập mật khẩu")
+                Constrain.showToast(activity!!,"Vui lòng nhập mật khẩu")
                 sd!!.dismiss()
 
             }else{
@@ -72,7 +69,7 @@ class LoginFragment : Fragment() {
     }
 
     fun loginFuntion(email:String,password:String){
-        val userAPI = Until.createRetrofit(UserAPI::class.java)
+        val userAPI = Constrain.createRetrofit(UserAPI::class.java)
         var call = userAPI.getAllUsers()
         call.enqueue(object : retrofit2.Callback<List<Users>> {
             override fun onResponse(
@@ -83,28 +80,30 @@ class LoginFragment : Fragment() {
                     listUser = response.body()
                     for (i in listUser!!.indices) {
                         var   _id=listUser!![i]._id
+                        var   name=listUser!![i].name
                         var   userEmail=listUser!![i].email
                         var  userPassword=listUser!![i].password
-                        var  istutor=listUser!![i].isTutor
+                        var  istutor=listUser!![i].isTurtor
                         if (userEmail.equals(email) && userPassword.equals(password)
                         ) {
                             checkLogin=true
                             Log.d("email",_id+ email)
                             isLogin=true
                             val editor = sharedPreferences!!.edit()
-                            editor.putString(Until.KEY_ID, _id)
-                            editor.putString(Until.KEY_EMAIL, userEmail)
-                            editor.putBoolean(Until.KEY_LOGIN, isLogin)
-                            editor.putBoolean(Until.KEY_ISTUTOR, istutor)
+                            editor.putString(Constrain.KEY_ID, _id)
+                            editor.putString(Constrain.KEY_NAME, name)
+                            editor.putString(Constrain.KEY_EMAIL, userEmail)
+                            editor.putBoolean(Constrain.KEY_LOGIN, isLogin)
+                            editor.putBoolean(Constrain.KEY_ISTUTOR, istutor)
                             editor.apply()
                             break
                         }
                     }
                     if(checkLogin==true){
-                        Until.nextActivity(activity!!,ListCourseActivity::class.java)
+                        Constrain.nextActivity(activity!!,ListCourseActivity::class.java)
                         activity!!.finish()
                     }else{
-                        Until.showToast(activity!!,"Email hoặc mật khẩu không đúng")
+                        Constrain.showToast(activity!!,"Email hoặc mật khẩu không đúng")
 
                     }
                     sd!!.dismiss()

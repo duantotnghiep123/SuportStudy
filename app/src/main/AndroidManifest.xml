@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.suportstudy">
+    package="com.example.suportstudy" >
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,23 +14,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SuportStudy"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".activity.chat.ChatGroupActivity">
-
+        android:usesCleartextTraffic="true" >
+        <activity android:name=".activity.chat.ChatOneActivity" >
         </activity>
+        <activity android:name=".activity.group.ListMemberGroupActivity" />
+        <activity android:name=".activity.group.GroupInfoActivity" />
+        <activity android:name=".activity.chat.ChatGroupActivity" />
         <activity android:name=".activity.group.ListGroupActivity" />
         <activity android:name=".activity.document.ViewDocumentDetailActivity" />
         <activity android:name=".activity.home.HomeActivity" />
         <activity android:name=".activity.course.CourseDetailActivity" />
         <activity android:name=".activity.course.CourseActivity" />
-        <activity android:name=".activity.authencation.LoginAndRegisterMainActivity" />
-        <activity android:name=".activity.chat.ChatActivity" >
-
-        </activity>
+        <activity android:name=".activity.acount.LoginAndRegisterMainActivity" />
+        <activity android:name=".activity.chat.ChatOneActivity" />
         <activity android:name=".activity.quizz.QuizzActivity" />
-        <activity android:name=".activity.authencation.ProfileActivity" />
+        <activity android:name=".activity.acount.ProfileActivity" />
         <activity android:name=".activity.course.ListCourseActivity" />
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

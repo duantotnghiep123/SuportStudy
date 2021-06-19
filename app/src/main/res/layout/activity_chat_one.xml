@@ -5,7 +5,7 @@
     android:background="@color/grey10"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.chat.ChatActivity">
+    tools:context=".activity.chat.ChatOneActivity">
     <RelativeLayout
         android:id="@+id/toolbar"
         android:background="@drawable/toolbar"
@@ -26,6 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/avatarIv"
                 android:src="@drawable/tutor"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
@@ -33,6 +34,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"/>
             <TextView
+                android:id="@+id/txtName"
                 android:text="Nguyễn Văn Quế"
                 android:textSize="16dp"
                 android:textColor="@color/black"

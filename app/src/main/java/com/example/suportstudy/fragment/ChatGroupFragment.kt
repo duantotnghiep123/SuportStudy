@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
@@ -19,7 +18,9 @@ import com.example.suportstudy.model.Group
 import com.example.suportstudy.model.Participant
 import com.example.suportstudy.service.GroupAPI
 import com.example.suportstudy.service.ParticipantAPI
-import com.example.suportstudy.until.Until
+import com.example.suportstudy.until.Constrain
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,7 +28,7 @@ import retrofit2.Response
 
 class ChatGroupFragment : Fragment() {
 
-
+    var ref:DatabaseReference?=null
   var searchView:SearchView?=null
   var recyclerViewChatGroup:RecyclerView?=null
   var myLoader:LazyLoader?=null
@@ -35,24 +36,22 @@ class ChatGroupFragment : Fragment() {
   var listGSearch: ArrayList<Group>? = ArrayList<Group>()
   var groupAPI: GroupAPI? = null
   var participantAPI: ParticipantAPI? = null
+
+
     companion object {
         var groupChatListAdapter:GroupChatListAdapter?=null
-
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ChatGroupFragment().apply {
                 arguments = Bundle().apply {
-
                 }
             }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
         }
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,28 +61,26 @@ class ChatGroupFragment : Fragment() {
         recyclerViewChatGroup=view.findViewById(R.id.recyclerViewChatGroup);
         myLoader=view.findViewById(R.id.myLoader);
         searchView=view.findViewById(R.id.searchView);
-        groupAPI = Until.createRetrofit(GroupAPI::class.java)
-        participantAPI = Until.createRetrofit(ParticipantAPI::class.java)
-        getAllParticipant()
+        groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
+        participantAPI = Constrain.createRetrofit(ParticipantAPI::class.java)
 
+         ref = FirebaseDatabase.getInstance("https://suportstudy-72e5e-default-rtdb.firebaseio.com/")
+            .getReference("GroupChats")
+        getAllParticipant()
         searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if(query.equals("")){
                     getAllParticipant()
                 }else{
                     getAllParticipantSearch(query!!)
-
                 }
-
                 return false
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 if(newText.equals("")){
                     getAllParticipant()
                 }else{
                     getAllParticipantSearch(newText!!)
-
                 }
                 return false
             }
@@ -134,7 +131,8 @@ class ChatGroupFragment : Fragment() {
                        listG!!.addAll(response.body()!!)
                    }
 
-                    groupChatListAdapter =   GroupChatListAdapter(context!!, listG!!)
+                    groupChatListAdapter =   GroupChatListAdapter(context!!, listG!!,ref!!)
+                    groupChatListAdapter!!.notifyDataSetChanged()
                     recyclerViewChatGroup!!.adapter = groupChatListAdapter
                     recyclerViewChatGroup!!.visibility=View.VISIBLE
                     myLoader!!.visibility=View.GONE
@@ -192,7 +190,7 @@ class ChatGroupFragment : Fragment() {
 
                            }
                        }
-                       groupChatListAdapter =   GroupChatListAdapter(context!!, listGSearch!!)
+                       groupChatListAdapter =   GroupChatListAdapter(context!!, listGSearch!!,ref!!)
                        recyclerViewChatGroup!!.adapter = groupChatListAdapter
                        groupChatListAdapter!!.notifyDataSetChanged()
                        recyclerViewChatGroup!!.visibility=View.VISIBLE
@@ -205,6 +203,8 @@ class ChatGroupFragment : Fragment() {
             })
 
     }
+
+
 
 
 }

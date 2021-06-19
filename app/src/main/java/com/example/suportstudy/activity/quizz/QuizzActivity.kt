@@ -16,11 +16,11 @@ import androidx.lifecycle.MutableLiveData
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.MainActivity
-import com.example.suportstudy.activity.authencation.LoginAndRegisterMainActivity
+import com.example.suportstudy.activity.acount.LoginAndRegisterMainActivity
 import com.example.suportstudy.model.Question
 import com.example.suportstudy.service.QuestionAPI
 import com.example.suportstudy.until.ConnectivityReceiver
-import com.example.suportstudy.until.Until
+import com.example.suportstudy.until.Constrain
 import kotlinx.android.synthetic.main.activity_quizz.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,8 +48,8 @@ class QuizzActivity : AppCompatActivity(){
 
 
 
-        val quizzApi = Until.createRetrofit(QuestionAPI::class.java)
-        Until.showToast(applicationContext,isconected.toString())
+        val quizzApi = Constrain.createRetrofit(QuestionAPI::class.java)
+        Constrain.showToast(applicationContext,isconected.toString())
         questionView!!.visibility = View.GONE
         lazyLoader!!.visibility = View.VISIBLE
         CoroutineScope(Dispatchers.IO).launch {
@@ -78,11 +78,11 @@ class QuizzActivity : AppCompatActivity(){
             txtQ4.text = it[cau4!!].title
             txtQ5.text = it[cau5!!].title
 
-            Until.showQuestion(radio1_op1, radio1_op2, radio1_op3, radio1_op4, it, cau1)
-            Until.showQuestion(radio2_op1, radio2_op2, radio2_op3, radio2_op4, it, cau2)
-            Until.showQuestion(radio3_op1, radio3_op2, radio3_op3, radio3_op4, it, cau3)
-            Until.showQuestion(radio4_op1, radio4_op2, radio4_op3, radio4_op4, it, cau4)
-            Until.showQuestion(radio5_op1, radio5_op2, radio5_op3, radio5_op4, it, cau5)
+            Constrain.showQuestion(radio1_op1, radio1_op2, radio1_op3, radio1_op4, it, cau1)
+            Constrain.showQuestion(radio2_op1, radio2_op2, radio2_op3, radio2_op4, it, cau2)
+            Constrain.showQuestion(radio3_op1, radio3_op2, radio3_op3, radio3_op4, it, cau3)
+            Constrain.showQuestion(radio4_op1, radio4_op2, radio4_op3, radio4_op4, it, cau4)
+            Constrain.showQuestion(radio5_op1, radio5_op2, radio5_op3, radio5_op4, it, cau5)
 
             questionView!!.visibility = View.VISIBLE
             lazyLoader!!.visibility = View.GONE
@@ -152,7 +152,7 @@ class QuizzActivity : AppCompatActivity(){
                         startActivity(intent)
                         finish()
                     } else {
-                        Until.nextActivity(context, MainActivity::class.java)
+                        Constrain.nextActivity(context, MainActivity::class.java)
                         finish()
                     }
                     score = 0
