@@ -24,7 +24,6 @@ class ListMemberGroupActivity : AppCompatActivity() {
     var participantAPI:ParticipantAPI?=null
     var userAPI:UserAPI?=null
 
-
     var groupId:String?=null
     var listMemberGroupAdapter:ListMemberGroupAdapter?=null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +40,6 @@ class ListMemberGroupActivity : AppCompatActivity() {
         var intentGroupChat=intent
         groupId=intentGroupChat.getStringExtra("groupId")
     }
-
     fun getAllParticipantByGroupId(){
 
         participantAPI!!.getAllParticipant()
