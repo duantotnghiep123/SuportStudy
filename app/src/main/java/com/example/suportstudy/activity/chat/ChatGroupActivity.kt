@@ -44,7 +44,6 @@ class ChatGroupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_group)
         initDataView()
-
         displayMessage()
 
         btnSend!!.setOnClickListener {

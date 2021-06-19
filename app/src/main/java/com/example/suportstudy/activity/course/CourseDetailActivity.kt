@@ -42,9 +42,6 @@ class CourseDetailActivity : AppCompatActivity() {
     companion object {
         var imageUrl = ""
         var courseId: String? = null
-        var listG:ArrayList<Group>?=ArrayList<Group>() //
-
-
     }
 
 

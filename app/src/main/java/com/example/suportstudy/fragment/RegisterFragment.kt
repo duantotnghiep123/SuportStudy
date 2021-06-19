@@ -63,8 +63,6 @@ class RegisterFragment : Fragment() {
         sd!!.titleText = "Đang tạo tài khoản..."
         sd!!.setCancelable(false)
 
-//        var myintent=activity!!.intent
-//        isTutor=myintent.getBooleanExtra("isTutor", false)
 
         txtHome.setOnClickListener {
             LoginAndRegisterMainActivity.isTutor = false
