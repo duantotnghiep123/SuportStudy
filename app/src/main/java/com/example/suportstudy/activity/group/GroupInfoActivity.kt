@@ -15,8 +15,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 class GroupInfoActivity : AppCompatActivity() {
     var context=this@GroupInfoActivity
 
+    companion object{
+        var groupCreateBy:String?=null
+
+    }
+
     var groupId:String?=null
-    var groupCreateBy:String?=null
     var groupName:String?=null
     var groupDescription:String?=null
     var groupImage:String?=null

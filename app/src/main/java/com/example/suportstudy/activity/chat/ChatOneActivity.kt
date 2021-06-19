@@ -37,7 +37,6 @@ class ChatOneActivity : AppCompatActivity() {
     var hisName :String?=null
 
 
-
     var firebaseDatabase: FirebaseDatabase? = null
     var chatRef: DatabaseReference? = null
 
@@ -46,8 +45,6 @@ class ChatOneActivity : AppCompatActivity() {
     val data = MutableLiveData<List<Chat>>()
 
     var chatList=ArrayList<Chat>()
-
-    var chatApi: ChatAPI? = null
 
     var chatAdapter:ChatOneAdapter?=null
 
@@ -106,11 +103,17 @@ fun initDataView(){
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 chatList.clear()
                 for (ds in dataSnapshot.children) {
+
                     val chat: Chat? = ds.getValue(Chat::class.java)
-                    chatList.add(chat!!)
+                    if (chat!!.receiverUid.equals(senderUid) && chat.senderUid.equals(receiverUid) ||
+                        chat.receiverUid.equals(receiverUid) && chat.senderUid.equals(senderUid)
+                    ) {
+                        chatList.add(chat!!)
+                    }
+
                 }
-                chatAdapter= ChatOneAdapter(context, chatList)
-                recyclerView!!.adapter=chatAdapter
+                chatAdapter = ChatOneAdapter(context, chatList)
+                recyclerView!!.adapter = chatAdapter
                 recyclerView!!.scrollToPosition(chatList.size - 1)
 
             }
@@ -129,16 +132,13 @@ fun initDataView(){
         hashMap.put("timeSend", time)
         hashMap.put("messageType", "text")
         hashMap.put("message", message)
-        chatRef!!.push().setValue(hashMap).addOnCompleteListener( {
+        chatRef!!.push().setValue(hashMap).addOnCompleteListener({
             if (!it.isSuccessful) {
                 Constrain.showToast(context, "Gửi thành công")
             }
         })
 
     }
-
-
-
 }
 
 

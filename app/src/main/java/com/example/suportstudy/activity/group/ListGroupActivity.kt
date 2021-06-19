@@ -39,11 +39,8 @@ class ListGroupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_group)
-        rcvListGroup = findViewById(R.id.rcvListGroup)
-        noGroupLayout = findViewById(R.id.noGroupLayou)
-        myLoader = findViewById(R.id.myLoader)
-        groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
-        participantAPI = Constrain.createRetrofit(ParticipantAPI::class.java)
+        initViewData()
+
 
         var intent=intent
         typedisplayGroup=intent.getStringExtra("group")
@@ -56,6 +53,13 @@ class ListGroupActivity : AppCompatActivity() {
         }
 
 
+    }
+    fun initViewData(){
+        rcvListGroup = findViewById(R.id.rcvListGroup)
+        noGroupLayout = findViewById(R.id.noGroupLayou)
+        myLoader = findViewById(R.id.myLoader)
+        groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
+        participantAPI = Constrain.createRetrofit(ParticipantAPI::class.java)
     }
     fun displayAllGroup() {
         myLoader!!.visibility=View.VISIBLE
@@ -106,8 +110,8 @@ class ListGroupActivity : AppCompatActivity() {
 
     }
     fun getAllParticipant(){
-        myLoader!!.visibility=View.VISIBLE
 
+        myLoader!!.visibility=View.VISIBLE
         participantAPI!!.getAllParticipant()
             .enqueue(object : Callback<List<Participant>> {
                 override fun onResponse(
@@ -122,6 +126,9 @@ class ListGroupActivity : AppCompatActivity() {
                             if(listP!![i].uid.equals(ListCourseActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
                                 var idG=listP[i].groupId
                                 getALGroupById(idG)
+                            }else{
+                                myLoader!!.visibility=View.GONE
+                                noGroupLayout!!.visibility=View.VISIBLE
                             }
 
                         }
@@ -154,6 +161,7 @@ class ListGroupActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<List<Group>>, t: Throwable) {
                 }
             })
+        myLoader!!.visibility=View.GONE
 
     }
 

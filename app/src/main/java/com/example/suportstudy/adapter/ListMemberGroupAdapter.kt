@@ -12,6 +12,7 @@ import com.example.suportstudy.R
 import com.example.suportstudy.activity.chat.ChatOneActivity
 import com.example.suportstudy.activity.course.CourseDetailActivity
 import com.example.suportstudy.activity.course.ListCourseActivity
+import com.example.suportstudy.activity.group.GroupInfoActivity
 import com.example.suportstudy.model.Group
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.GroupAPI
@@ -50,7 +51,7 @@ class ListMemberGroupAdapter (
             holder.avatarIv!!.setImageResource(R.drawable.ic_gallery_grey)
         }
         holder.nameTv!!.text=name
-        if(users.isTurtor==true){
+        if(users.isTurtor==true && users._id.equals(GroupInfoActivity.groupCreateBy)){
             if(users._id.equals(ListCourseActivity.uid)){
                 holder.statusTv!!.text="Tôi"
             }else{
