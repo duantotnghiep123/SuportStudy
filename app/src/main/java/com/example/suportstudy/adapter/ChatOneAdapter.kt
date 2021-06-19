@@ -2,7 +2,6 @@ package com.example.suportstudy.adapter
 
 import android.content.Context
 import android.text.format.DateFormat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,19 +10,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.model.Chat
-import com.example.suportstudy.until.Until
 import com.squareup.picasso.Picasso
-import io.realm.mongodb.App
-import io.realm.mongodb.AppConfiguration
 import java.util.*
 
-class ChatAdapter(var context: Context, var chatList: List<Chat>) :RecyclerView.Adapter<ChatAdapter.MyViewHolder>(){
+class ChatOneAdapter(var context: Context, var chatList: List<Chat>) :RecyclerView.Adapter<ChatOneAdapter.MyViewHolder>(){
     private val MSG_TYPE_LEFT = 0
     private val MSG_TYPE_RIGHT = 1
-
-
-
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
         var profileIv: ImageView? = null
@@ -43,7 +37,6 @@ class ChatAdapter(var context: Context, var chatList: List<Chat>) :RecyclerView.
         }
 
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
 
         if (viewType == MSG_TYPE_RIGHT) {
@@ -54,7 +47,6 @@ class ChatAdapter(var context: Context, var chatList: List<Chat>) :RecyclerView.
             return MyViewHolder(view)
         }
     }
-
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val message: String = chatList.get(position).message!!
         val timeStamp: String = chatList.get(position).timeSend!!
@@ -62,7 +54,6 @@ class ChatAdapter(var context: Context, var chatList: List<Chat>) :RecyclerView.
         val cal = Calendar.getInstance(Locale.ENGLISH)
         cal.timeInMillis = timeStamp.toLong()
         val dateTime = DateFormat.format("dd/MM/yyyy hh:mm aa", cal).toString()
-
         // gán dữ liệu
         if (type == "text") {
             holder.messageTv!!.visibility = View.VISIBLE
@@ -74,14 +65,13 @@ class ChatAdapter(var context: Context, var chatList: List<Chat>) :RecyclerView.
             Picasso.with(context).load(message).placeholder(R.drawable.ic_gallery_grey)
                 .into(holder.messageIv)
         }
-        // gán dữ liệu
         holder.messageTv!!.text = message
         holder.timeTv!!.text = dateTime
     }
 
     override fun getItemViewType(position: Int): Int {
 
-        return if (chatList[position].senderUid.equals("60c5527bd45d2165ec51fd6f")) {
+        return if (chatList[position].senderUid.equals(ListCourseActivity.uid)) {
             return MSG_TYPE_RIGHT
         } else {
             return MSG_TYPE_LEFT

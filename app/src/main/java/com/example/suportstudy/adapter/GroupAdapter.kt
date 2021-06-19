@@ -8,10 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.chat.ChatGroupActivity
-import com.example.suportstudy.activity.course.CourseDetailActivity
 import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.model.Group
 import com.example.suportstudy.model.Participant
@@ -60,45 +58,46 @@ class GroupAdapter(
         }
          holder.itemView.setOnClickListener {
              if(holder.txtJoin!!.text.equals("Đã tham gia")){
-                 com.example.suportstudy.until.Until.showToast(context,"Đã tham gia")
                  var intent=Intent(context,ChatGroupActivity::class.java)
                  intent.putExtra("groupId",group._id)
                  intent.putExtra("groupCreateBy",group.createBy)
+                 intent.putExtra("groupImage",group.groupImage)
                  intent.putExtra("groupName",group.groupName)
                  intent.putExtra("groupDescription",group.groupDescription)
-                 intent.putExtra("groupId",group._id)
                  context.startActivity(intent)
              }
              if(holder.txtJoin!!.text.equals("Tham gia")){
-                 com.example.suportstudy.until.Until.showToast(context,"Bạn chưa tham gia nhóm này")
+                 com.example.suportstudy.until.Constrain.showToast(context,"Bạn chưa tham gia nhóm này")
              }
 
          }
         holder.txtJoin!!.setOnClickListener {
             if(holder.txtJoin!!.text.equals("Đã tham gia")){
-                com.example.suportstudy.until.Until.showToast(context,"Đã tham gia")
+                com.example.suportstudy.until.Constrain.showToast(context,"Đã tham gia")
             }
             if(holder.txtJoin!!.text.equals("Tham gia")){
-                com.example.suportstudy.until.Until.showToast(context,"Tham gia")
+                com.example.suportstudy.until.Constrain.showToast(context,"Tham gia")
+                var time=System.currentTimeMillis().toString()
+                Log.d("join", time+""+ListCourseActivity.uid+"__"+group._id)
+
+            participantAPI.insertParticipant(time,ListCourseActivity.uid, group._id!!,group.courseId!!)
+                   .enqueue(object : retrofit2.Callback<Participant> {
+                       override fun onResponse(
+                           call: retrofit2.Call<Participant>,
+                           response: Response<Participant>
+                       ) {
+                           if (response.isSuccessful) {
+                               holder.txtJoin!!.text="Đã tham gia"
+                               holder.txtHuy!!.visibility=View.VISIBLE
+                           }
+                       }
+                       override fun onFailure(call: retrofit2.Call<Participant>, t: Throwable) {
+                           Log.v("Data", "Error: " + t.message.toString())
+                       }
+                   })
             }
 
-            var time=System.currentTimeMillis().toString()
-            Log.d("join", time+""+ListCourseActivity.uid+"__"+group._id)
 
-//            participantAPI.insertParticipant(time,ListCourseActivity.uid, group._id!!)
-//                   .enqueue(object : retrofit2.Callback<Participant> {
-//                       override fun onResponse(
-//                           call: retrofit2.Call<Participant>,
-//                           response: Response<Participant>
-//                       ) {
-//                           if (response.isSuccessful) {
-//                              holder.txtJoin!!.text="Đã tham gia"
-//                           }
-//                       }
-//                       override fun onFailure(call: retrofit2.Call<Participant>, t: Throwable) {
-//                           Log.v("Data", "Error: " + t.message.toString())
-//                       }
-//                   })
 
         }
 

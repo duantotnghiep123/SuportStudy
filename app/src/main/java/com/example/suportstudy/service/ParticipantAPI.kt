@@ -19,6 +19,7 @@ interface ParticipantAPI {
         @Field("jointime") jointime: String?,
         @Field("uid") uid: String?,
         @Field("groupId") groupId: String,
+        @Field("courseId") courseId: String,
     ): Call<Participant>
 
 }

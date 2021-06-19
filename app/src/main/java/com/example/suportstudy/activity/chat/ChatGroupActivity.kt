@@ -1,27 +1,25 @@
 package com.example.suportstudy.activity.chat
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.ListCourseActivity
-import com.example.suportstudy.adapter.ChatAdapter
+import com.example.suportstudy.activity.group.GroupInfoActivity
 import com.example.suportstudy.adapter.GroupChatAdapter
-import com.example.suportstudy.model.Chat
 import com.example.suportstudy.model.GroupChat
-import com.example.suportstudy.until.Until
+import com.example.suportstudy.until.Constrain
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
 class ChatGroupActivity : AppCompatActivity() {
     var context=this@ChatGroupActivity
+
     var groupId:String?=null
     var groupCreateBy:String?=null
     var groupName:String?=null
@@ -52,12 +50,21 @@ class ChatGroupActivity : AppCompatActivity() {
         btnSend!!.setOnClickListener {
            var message=edtMessage!!.text.toString()
             if(message.equals("")){
-                Until.showToast(context,"Hãy nhập tin nhắn...")
+                Constrain.showToast(context,"Hãy nhập tin nhắn...")
             }else{
                 sendMessage(message)
-                Until.hideKeyBoard(context)
+                Constrain.hideKeyBoard(context)
             }
             edtMessage!!.setText("")
+        }
+        btnInfoGroup!!.setOnClickListener {
+            var intent= Intent(context,GroupInfoActivity::class.java)
+            intent.putExtra("groupId",groupId)
+            intent.putExtra("groupCreateBy",groupCreateBy)
+            intent.putExtra("groupImage",groupImage)
+            intent.putExtra("groupName",groupName)
+            intent.putExtra("groupDescription",groupDescription)
+            context.startActivity(intent)
         }
     }
 
@@ -94,6 +101,7 @@ class ChatGroupActivity : AppCompatActivity() {
         var  hashMap=HashMap<String, String>()
         hashMap.put("_id", time)
         hashMap.put("senderUid", senderUid!!)
+        hashMap.put("senderName", ListCourseActivity.name!!)
         hashMap.put("timeSend", time)
         hashMap.put("typeMessage", "text")
         hashMap.put("message", message)
@@ -101,7 +109,7 @@ class ChatGroupActivity : AppCompatActivity() {
 
         chatGroupRef!!.child(groupId!!).child("Message").push().setValue(hashMap).addOnCompleteListener( {
             if (it.isSuccessful) {
-                Until.showToast(context, "Gửi thành công")
+                Constrain.showToast(context, "Gửi thành công")
 
             }
         })

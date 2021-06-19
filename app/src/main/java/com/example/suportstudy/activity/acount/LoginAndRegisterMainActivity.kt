@@ -1,4 +1,4 @@
-package com.example.suportstudy.activity.authencation
+package com.example.suportstudy.activity.acount
 
 import android.content.Intent
 import android.os.Bundle

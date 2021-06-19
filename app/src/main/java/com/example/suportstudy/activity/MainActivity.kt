@@ -7,11 +7,11 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.authencation.LoginAndRegisterMainActivity
+import com.example.suportstudy.activity.acount.LoginAndRegisterMainActivity
 import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.activity.quizz.QuizzActivity
 import com.example.suportstudy.until.ConnectivityReceiver
-import com.example.suportstudy.until.Until
+import com.example.suportstudy.until.Constrain
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -23,10 +23,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        sharedPreferences = getSharedPreferences(Until.SHARED_REF_NAME, MODE_PRIVATE)
-        val _id = sharedPreferences!!.getString(Until.KEY_ID,"")
-        val email = sharedPreferences!!.getString(Until.KEY_EMAIL,"")
-        val isLogin = sharedPreferences!!.getBoolean(Until.KEY_LOGIN, false)
+        sharedPreferences = getSharedPreferences(Constrain.SHARED_REF_NAME, MODE_PRIVATE)
+        val _id = sharedPreferences!!.getString(Constrain.KEY_ID,"")
+        val email = sharedPreferences!!.getString(Constrain.KEY_EMAIL,"")
+        val isLogin = sharedPreferences!!.getBoolean(Constrain.KEY_LOGIN, false)
 
         if (isLogin == true) {
             val intent = Intent(this@MainActivity, ListCourseActivity::class.java)
@@ -37,9 +37,9 @@ class MainActivity : AppCompatActivity() {
         var  intent=intent
         isconected=intent.getBooleanExtra("is",false)
         if(isconected==false){
-            Until.showToast(applicationContext, isconected.toString())
+            Constrain.showToast(applicationContext, isconected.toString())
         }else{
-            Until.showToast(applicationContext, isconected.toString())
+            Constrain.showToast(applicationContext, isconected.toString())
         }
 
         btnTutor.setOnClickListener {

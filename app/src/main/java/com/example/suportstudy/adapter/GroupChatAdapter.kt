@@ -69,6 +69,7 @@ class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :Rec
         // gán dữ liệu
         holder.messageTv!!.text = message
         holder.timeTv!!.text = dateTime
+
     }
     override fun getItemViewType(position: Int): Int {
 
