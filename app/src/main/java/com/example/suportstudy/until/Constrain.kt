@@ -21,7 +21,7 @@ object Constrain {
     val appId = "duantotnghiep-aeidb";
 
     //    var baseUrl="http://192.168.3.107:10000"
-    var baseUrl = "http://192.168.1.6:3000"
+    var baseUrl = "http://192.168.1.4:3000"
 //    var baseUrl="http://172.20.10.3:10000"
 
     var SHARED_REF_NAME: String? = "savestatuslogin"
@@ -99,7 +99,4 @@ object Constrain {
         op3.text = list.get(index).option3
         op4.text = list.get(index).option4
     }
-
-
-
 }

@@ -1,5 +1,6 @@
 package com.example.suportstudy.activity.course
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -11,13 +12,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.HomeNavActivity
 import com.example.suportstudy.activity.acount.ProfileActivity
 import com.example.suportstudy.adapter.CourseAdapter
 import com.example.suportstudy.model.Course
 import com.example.suportstudy.service.CourseAPI
 import com.example.suportstudy.until.Constrain
+import kotlinx.android.synthetic.main.activity_list_course.*
 import kotlinx.coroutines.*
-
 class ListCourseActivity : AppCompatActivity() {
 
     var courseLayout: RelativeLayout? = null
@@ -75,6 +77,10 @@ class ListCourseActivity : AppCompatActivity() {
 
         courseAPI = Constrain.createRetrofit(CourseAPI::class.java)
         loadCourse()
+        menu.setOnClickListener{
+            val intent = Intent(this, HomeNavActivity::class.java)
+            startActivity(intent)
+        }
         IVProfile!!.setOnClickListener {
             Constrain.nextActivity(context,ProfileActivity::class.java)
 //            val editor = sharedPreferences!!.edit()
