@@ -40,4 +40,6 @@
     <color name="orange">#E8281A</color>
     <color name="orange50">#f76971</color>
     <color name="green">#44D54F</color>
+
+    <color name="placeholder_bg">#DADADA</color>
 </resources>

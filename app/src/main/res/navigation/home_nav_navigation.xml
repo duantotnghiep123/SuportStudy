@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_nav_navigation"
+    app:startDestination="@id/newsFeesFragment">
+    <fragment
+        android:id="@+id/newsFeesFragment"
+        android:name="com.example.suportstudy.fragment.NewsFeedFragment"
+        android:label="SubmitPinTransactionFragment"
+        tools:layout="@layout/fragment_news_feed" />
+
+</navigation>
