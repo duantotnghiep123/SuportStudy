@@ -103,7 +103,7 @@ class RegisterFragment : Fragment() {
                     name,
                     email,
                     password,
-                    "https://www.pngitem.com/pimgs/m/130-1300253_female-user-icon-png-download-user-image-color.png",
+                    "noImage",
                     isTutor
                 )
                 call.enqueue(object : retrofit2.Callback<Users> {
@@ -112,7 +112,6 @@ class RegisterFragment : Fragment() {
                         response: Response<Users>
                     ) {
                         sd!!.titleText = "Đang đăng nhập vào ứng dụng..."
-
                         if (response.isSuccessful) {
                             Log.d("respond", response.body().toString())
                             users = response.body()!!
@@ -127,6 +126,7 @@ class RegisterFragment : Fragment() {
                             editor.putString(Constrain.KEY_ID, _id)
                             editor.putString(Constrain.KEY_NAME, name)
                             editor.putString(Constrain.KEY_EMAIL, email)
+                            editor.putString(Constrain.KEY_IMAGE, image)
                             editor.putBoolean(Constrain.KEY_LOGIN, isLogin)
                             editor.putBoolean(Constrain.KEY_ISTUTOR, isTutor)
                             editor.apply()

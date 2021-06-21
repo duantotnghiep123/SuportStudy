@@ -81,6 +81,7 @@ class LoginFragment : Fragment() {
                     for (i in listUser!!.indices) {
                         var   _id=listUser!![i]._id
                         var   name=listUser!![i].name
+                        var   image=listUser!![i].name
                         var   userEmail=listUser!![i].email
                         var  userPassword=listUser!![i].password
                         var  istutor=listUser!![i].isTurtor
@@ -92,6 +93,7 @@ class LoginFragment : Fragment() {
                             val editor = sharedPreferences!!.edit()
                             editor.putString(Constrain.KEY_ID, _id)
                             editor.putString(Constrain.KEY_NAME, name)
+                            editor.putString(Constrain.KEY_NAME, image)
                             editor.putString(Constrain.KEY_EMAIL, userEmail)
                             editor.putBoolean(Constrain.KEY_LOGIN, isLogin)
                             editor.putBoolean(Constrain.KEY_ISTUTOR, istutor)

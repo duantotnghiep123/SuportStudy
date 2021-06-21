@@ -53,6 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView
+            android:id="@+id/txtTitle"
             android:text="Nhóm trong khóa"
             android:textStyle="bold"
             android:layout_gravity="center_horizontal"

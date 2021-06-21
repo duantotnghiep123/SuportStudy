@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
@@ -30,6 +31,7 @@ class ListGroupActivity : AppCompatActivity() {
      var noGroupLayout:LinearLayout?=null;
      var groupAdapter:GroupAdapter?=null;
      var myLoader:LazyLoader?=null
+    var txtTitle:TextView?=null
 
     var listGroup: ArrayList<Group>? = ArrayList<Group>()
     var typedisplayGroup:String?=null
@@ -42,24 +44,31 @@ class ListGroupActivity : AppCompatActivity() {
         initViewData()
 
 
-        var intent=intent
-        typedisplayGroup=intent.getStringExtra("group")
-
         if(typedisplayGroup.equals("allgroup")){
+            txtTitle!!.text="Nhóm trong khóa này"
             displayAllGroup()
         }
+
         if(typedisplayGroup.equals("groupMyJoin")){
+            txtTitle!!.text="Nhóm bạn đã tham gia"
             getAllParticipant()
         }
 
 
     }
     fun initViewData(){
+
+
         rcvListGroup = findViewById(R.id.rcvListGroup)
         noGroupLayout = findViewById(R.id.noGroupLayou)
+        txtTitle = findViewById(R.id.txtTitle)
         myLoader = findViewById(R.id.myLoader)
         groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
         participantAPI = Constrain.createRetrofit(ParticipantAPI::class.java)
+
+        var intent=intent
+        typedisplayGroup=intent.getStringExtra("group")
+
     }
     fun displayAllGroup() {
         myLoader!!.visibility=View.VISIBLE
@@ -126,6 +135,9 @@ class ListGroupActivity : AppCompatActivity() {
                             if(listP!![i].uid.equals(ListCourseActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
                                 var idG=listP[i].groupId
                                 getALGroupById(idG)
+                                myLoader!!.visibility=View.GONE
+                                noGroupLayout!!.visibility=View.GONE
+
                             }else{
                                 myLoader!!.visibility=View.GONE
                                 noGroupLayout!!.visibility=View.VISIBLE
@@ -155,7 +167,7 @@ class ListGroupActivity : AppCompatActivity() {
                     groupAdapter =   GroupAdapter(context, listG!!, participantAPI!!,groupAPI!!)
                     rcvListGroup!!.adapter = groupAdapter
                     rcvListGroup!!.visibility=View.VISIBLE
-                    myLoader!!.visibility=View.GONE
+
                 }
 
                 override fun onFailure(call: Call<List<Group>>, t: Throwable) {

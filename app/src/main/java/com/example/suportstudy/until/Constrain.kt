@@ -27,12 +27,16 @@ object Constrain {
     var SHARED_REF_NAME: String? = "savestatuslogin"
     var KEY_ID = "_id"
     var KEY_NAME = "name"
+    var KEY_IMAGE = "image"
     var KEY_EMAIL = "email"
     var KEY_LOGIN = "islogin"
     var KEY_ISTUTOR = "isTutor"
 
     val VALID_EMAIL_ADDRESS_REGEX =
         Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE)
+
+     val STORAGE_REQUEST_CODE = 300
+     val IMAGE_PICK_GALLERY_CODE = 400
 
     fun <T> nextActivity(context: Context, clazz: Class<T>) {
         var intent = Intent(context, clazz);
@@ -80,6 +84,15 @@ object Constrain {
         if (retrofit == null) {
             retrofit = Retrofit.Builder()
                 .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        }
+        return retrofit!!.create(clazz);
+    }
+    fun <T> createRetrofit2(clazz: Class<T>): T {
+        if (retrofit == null) {
+            retrofit = Retrofit.Builder()
+                .baseUrl("http://192.168.1.4:10000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         }

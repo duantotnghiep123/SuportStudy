@@ -45,6 +45,7 @@ class ListCourseActivity : AppCompatActivity() {
         var uid:String?=null
         var name:String?=null
         var email:String?=null
+        var image:String?=null
         var istutor:Boolean?=null
     }
 
@@ -53,29 +54,9 @@ class ListCourseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_course)
-
-        sharedPreferences = getSharedPreferences(Constrain.SHARED_REF_NAME, MODE_PRIVATE)
-
-         uid = sharedPreferences!!.getString(Constrain.KEY_ID, "")
-         name = sharedPreferences!!.getString(Constrain.KEY_NAME, "")
-         email = sharedPreferences!!.getString(Constrain.KEY_EMAIL, "")
-         istutor = sharedPreferences!!.getBoolean(Constrain.KEY_ISTUTOR, false)
-
-        Log.d("name", name!!)
+        initViewData()
 
 
-        rcvAndroidViewCourse = findViewById(R.id.rcvAndroidCourse)
-        rcvPythonCourse = findViewById(R.id.rcvPythonCourse)
-        rcvRectNatieCourse = findViewById(R.id.rcvRectNatieCourse)
-        rcvCSharpCourse = findViewById(R.id.rcvC)
-        IVProfile = findViewById(R.id.IVProfile)
-        lazyLoader = findViewById(R.id.myLoader)
-        courseLayout = findViewById(R.id.courseLayout)
-
-        lazyLoader!!.visibility = View.VISIBLE
-        courseLayout!!.visibility = View.GONE
-
-        courseAPI = Constrain.createRetrofit(CourseAPI::class.java)
         loadCourse()
         menu.setOnClickListener{
             val intent = Intent(this, HomeNavActivity::class.java)
@@ -89,6 +70,31 @@ class ListCourseActivity : AppCompatActivity() {
 //            startActivity(Intent(context,MainActivity::class.java))
 //            finish()
         }
+    }
+
+    fun initViewData(){
+        sharedPreferences = getSharedPreferences(Constrain.SHARED_REF_NAME, MODE_PRIVATE)
+
+        uid = sharedPreferences!!.getString(Constrain.KEY_ID, "")
+        name = sharedPreferences!!.getString(Constrain.KEY_NAME, "")
+        email = sharedPreferences!!.getString(Constrain.KEY_EMAIL, "")
+        image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")
+        istutor = sharedPreferences!!.getBoolean(Constrain.KEY_ISTUTOR, false)
+
+        Log.d("name", "_id : "+uid+" , name : " + name!! + " , image :"+ image)
+
+
+        rcvAndroidViewCourse = findViewById(R.id.rcvAndroidCourse)
+        rcvPythonCourse = findViewById(R.id.rcvPythonCourse)
+        rcvRectNatieCourse = findViewById(R.id.rcvRectNatieCourse)
+        rcvCSharpCourse = findViewById(R.id.rcvC)
+        IVProfile = findViewById(R.id.IVProfile)
+        lazyLoader = findViewById(R.id.myLoader)
+        courseLayout = findViewById(R.id.courseLayout)
+
+        lazyLoader!!.visibility = View.VISIBLE
+        courseLayout!!.visibility = View.GONE
+        courseAPI = Constrain.createRetrofit(CourseAPI::class.java)
     }
 
     fun loadCourse() {

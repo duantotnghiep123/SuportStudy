@@ -79,7 +79,6 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
 
 
-
     implementation 'com.github.zcweng:switch-button:0.0.3@aar'
     // sweetalertdialog
     implementation 'com.github.f0ris.sweetalert:library:1.6.2'
