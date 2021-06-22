@@ -64,11 +64,6 @@ class ListCourseActivity : AppCompatActivity() {
         }
         IVProfile!!.setOnClickListener {
             Constrain.nextActivity(context,ProfileActivity::class.java)
-//            val editor = sharedPreferences!!.edit()
-//            editor.clear()
-//            editor.commit()
-//            startActivity(Intent(context,MainActivity::class.java))
-//            finish()
         }
     }
 

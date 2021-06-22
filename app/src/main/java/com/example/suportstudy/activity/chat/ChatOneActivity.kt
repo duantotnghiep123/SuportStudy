@@ -11,7 +11,6 @@ import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.adapter.ChatOneAdapter
 import com.example.suportstudy.model.Chat
-import com.example.suportstudy.service.ChatAPI
 import com.example.suportstudy.until.Constrain
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
@@ -95,7 +94,7 @@ fun initDataView(){
     }
 
 
-    firebaseDatabase = FirebaseDatabase.getInstance("https://suportstudy-72e5e-default-rtdb.firebaseio.com/")
+    firebaseDatabase = FirebaseDatabase.getInstance(Constrain.firebaseUrl)
     chatRef = firebaseDatabase!!.getReference("Chats")
 }
     private fun displayMessage() {
@@ -137,7 +136,30 @@ fun initDataView(){
                 Constrain.showToast(context, "Gửi thành công")
             }
         })
+        var chatListRef = firebaseDatabase?.getReference("ChatList")
+            ?.child(senderUid!!)
+            ?.child(receiverUid!!)
+        chatListRef!!.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    chatListRef!!.child("id").setValue(receiverUid)
+                }
+            }
 
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
+        var chatRef2 = firebaseDatabase!!.getReference("ChatList")
+            .child(receiverUid!!)
+            .child(senderUid!!)
+        chatRef2.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    chatRef2.child("id").setValue(senderUid)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
     }
 }
 

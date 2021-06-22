@@ -44,6 +44,19 @@ interface UserAPI {
         @Part("old_image") old_image:RequestBody
     ): Call<Users>
 
+    @POST("/api/updateName")
+    @FormUrlEncoded
+    fun editName(
+        @Field("_id") id: String?,
+        @Field("name") name: String?,
+    ):Call<Users>
 
+
+    @POST("/api/updatePassword")
+    @FormUrlEncoded
+    fun editPassword(
+        @Field("_id") id: String?,
+        @Field("password") password: String?,
+    ):Call<Users>
 
 }
