@@ -8,8 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.course.ListCourseActivity
-import com.example.suportstudy.activity.group.GroupInfoActivity
+import com.example.suportstudy.activity.course.CourseTypeActivity
+import com.example.suportstudy.activity.group.InfoGroupActivity
 import com.example.suportstudy.adapter.GroupChatAdapter
 import com.example.suportstudy.model.GroupChat
 import com.example.suportstudy.until.Constrain
@@ -26,7 +26,7 @@ class ChatGroupActivity : AppCompatActivity() {
     var groupDescription:String?=null
     var groupImage:String?=null
 
-    var senderUid=ListCourseActivity.uid
+    var senderUid= CourseTypeActivity.uid
 
     var groupChatImage:CircleImageView?=null
     var txtGroupName:TextView?=null
@@ -57,7 +57,7 @@ class ChatGroupActivity : AppCompatActivity() {
             edtMessage!!.setText("")
         }
         btnInfoGroup!!.setOnClickListener {
-            var intent= Intent(context,GroupInfoActivity::class.java)
+            var intent= Intent(context,InfoGroupActivity::class.java)
             intent.putExtra("groupId",groupId)
             intent.putExtra("groupCreateBy",groupCreateBy)
             intent.putExtra("groupImage",groupImage)
@@ -83,7 +83,7 @@ class ChatGroupActivity : AppCompatActivity() {
         chatGroup_Recyclerview=findViewById(R.id.chatGroup_Recyclerview)
 
 
-        firebaseDatabase = FirebaseDatabase.getInstance("https://suportstudy-72e5e-default-rtdb.firebaseio.com/")
+        firebaseDatabase = FirebaseDatabase.getInstance(Constrain.firebaseUrl)
         chatGroupRef = firebaseDatabase!!.getReference("GroupChats")
 
 
@@ -100,7 +100,7 @@ class ChatGroupActivity : AppCompatActivity() {
         var  hashMap=HashMap<String, String>()
         hashMap.put("_id", time)
         hashMap.put("senderUid", senderUid!!)
-        hashMap.put("senderName", ListCourseActivity.name!!)
+        hashMap.put("senderName", CourseTypeActivity.name!!)
         hashMap.put("timeSend", time)
         hashMap.put("typeMessage", "text")
         hashMap.put("message", message)
@@ -109,7 +109,6 @@ class ChatGroupActivity : AppCompatActivity() {
         chatGroupRef!!.child(groupId!!).child("Message").push().setValue(hashMap).addOnCompleteListener( {
             if (it.isSuccessful) {
                 Constrain.showToast(context, "Gửi thành công")
-
             }
         })
 

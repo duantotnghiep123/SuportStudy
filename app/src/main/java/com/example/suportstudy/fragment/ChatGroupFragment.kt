@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseDetailActivity
+import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.adapter.GroupChatListAdapter
 import com.example.suportstudy.model.Group
@@ -64,7 +65,7 @@ class ChatGroupFragment : Fragment() {
         groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
         participantAPI = Constrain.createRetrofit(ParticipantAPI::class.java)
 
-         ref = FirebaseDatabase.getInstance("https://suportstudy-72e5e-default-rtdb.firebaseio.com/")
+         ref = FirebaseDatabase.getInstance(Constrain.firebaseUrl)
             .getReference("GroupChats")
         getAllParticipant()
         searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
@@ -101,7 +102,7 @@ class ChatGroupFragment : Fragment() {
                     if (response.code() == 200) {
                         var    listP = response.body()!!
                         for (i in listP!!.indices) {
-                            if(listP!![i].uid.equals(ListCourseActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
+                            if(listP!![i].uid.equals(CourseTypeActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
                                 if(listP[i].courseId.equals(CourseDetailActivity.courseId)){
                                     var idG=listP[i].groupId
                                     getALGroupById(idG)
@@ -156,7 +157,7 @@ class ChatGroupFragment : Fragment() {
                     if (response.code() == 200) {
                         var    listP = response.body()!!
                         for (i in listP!!.indices) {
-                            if(listP!![i].uid.equals(ListCourseActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
+                            if(listP!![i].uid.equals(CourseTypeActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
                                 if(listP[i].courseId.equals(CourseDetailActivity.courseId)){
                                     var idG=listP[i].groupId
                                     getALGroupByIdSearch(idG,keysearch)
@@ -178,7 +179,6 @@ class ChatGroupFragment : Fragment() {
 
     }
     private fun getALGroupByIdSearch(idG: String,keysearch: String) {
-
         groupAPI!!.getGroupById(idG)
             .enqueue(object : Callback<List<Group>> {
                 override fun onResponse(call: Call<List<Group>>, response: Response<List<Group>>) {

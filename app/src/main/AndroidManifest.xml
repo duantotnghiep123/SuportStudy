@@ -5,8 +5,8 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".until.App"
@@ -18,22 +18,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SuportStudy"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.TestImageActivity">
+        <activity android:name=".activity.course.CourseTypeActivity">
 
         </activity>
-        <activity android:name=".activity.chat.ChatOneActivity"></activity>
+        <activity android:name=".activity.TestImageActivity"></activity>
+        <activity android:name=".activity.chat.ChatOneActivity" />
         <activity android:name=".activity.group.ListMemberGroupActivity" />
-        <activity android:name=".activity.group.GroupInfoActivity" />
+        <activity android:name=".activity.group.InfoGroupActivity" />
         <activity android:name=".activity.chat.ChatGroupActivity" />
         <activity android:name=".activity.group.ListGroupActivity" />
         <activity android:name=".activity.document.ViewDocumentDetailActivity" />
         <activity android:name=".activity.home.HomeActivity" />
         <activity android:name=".activity.course.CourseDetailActivity" />
-        <activity android:name=".activity.course.CourseActivity" />
+        <activity android:name=".activity.course.ListCourseActivity" />
         <activity android:name=".activity.acount.LoginAndRegisterMainActivity" />
         <activity android:name=".activity.quizz.QuizzActivity" />
         <activity android:name=".activity.acount.ProfileActivity" />
-        <activity android:name=".activity.course.ListCourseActivity" />
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +41,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.HomeNavActivity"></activity>
+        <activity android:name=".activity.HomeNavActivity" />
     </application>
 
 </manifest>

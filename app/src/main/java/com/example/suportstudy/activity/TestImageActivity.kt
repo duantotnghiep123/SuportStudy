@@ -103,7 +103,7 @@ class TestImageActivity : AppCompatActivity() {
     private fun requestStoragetPermission() {
         requestPermissions(
             storagePermission!!,
-            STORAGE_REQUEST_CODE
+            Constrain.STORAGE_REQUEST_CODE
         )
     }
 
@@ -122,7 +122,7 @@ class TestImageActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         when (requestCode) {
-            STORAGE_REQUEST_CODE -> {
+            Constrain.STORAGE_REQUEST_CODE -> {
                 if (grantResults.size > 0) {
                     val writeStorageAccpted = grantResults[0] == PackageManager.PERMISSION_GRANTED
                     if (writeStorageAccpted) {

@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.course.ListCourseActivity
+import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.adapter.ChatOneAdapter
 import com.example.suportstudy.model.Chat
 import com.example.suportstudy.until.Constrain
@@ -29,8 +29,8 @@ class ChatOneActivity : AppCompatActivity() {
     var sendBtn: ImageView? = null
     var messageEt: EditText? = null
 
-    var senderUid = ListCourseActivity.uid
-    var senderName = ListCourseActivity.name
+    var senderUid = CourseTypeActivity.uid
+    var senderName = CourseTypeActivity.name
     var receiverUid:String?=null
     var hisImage :String?=null
     var hisName :String?=null

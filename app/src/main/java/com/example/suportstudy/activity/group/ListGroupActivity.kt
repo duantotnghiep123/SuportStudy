@@ -6,12 +6,11 @@ import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseDetailActivity
-import com.example.suportstudy.activity.course.ListCourseActivity
+import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.adapter.GroupAdapter
 import com.example.suportstudy.model.Group
 import com.example.suportstudy.model.Participant
@@ -35,7 +34,6 @@ class ListGroupActivity : AppCompatActivity() {
 
     var listGroup: ArrayList<Group>? = ArrayList<Group>()
     var typedisplayGroup:String?=null
-    var listP:List<Participant>?=ArrayList<Participant>()
     var listG:ArrayList<Group>?=ArrayList<Group>() //
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +74,7 @@ class ListGroupActivity : AppCompatActivity() {
         val chatFetchJob = Job()
         val errorHandler = CoroutineExceptionHandler() { coroutineContext, throwable ->
             throwable.printStackTrace()
-            Toast.makeText(this, "Errorconect", Toast.LENGTH_SHORT).show()
+            Constrain.showToast(context,"Error connection")
         }
         val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
         scope.launch(errorHandler) {
@@ -120,6 +118,7 @@ class ListGroupActivity : AppCompatActivity() {
     }
     fun getAllParticipant(){
 
+        var countid=0
         myLoader!!.visibility=View.VISIBLE
         participantAPI!!.getAllParticipant()
             .enqueue(object : Callback<List<Participant>> {
@@ -132,17 +131,16 @@ class ListGroupActivity : AppCompatActivity() {
                         Log.d("sizep", listP!!.size.toString())
                         for (i in listP!!.indices) {
                             Log.d("groupid",listP!![i].groupId)
-                            if(listP!![i].uid.equals(ListCourseActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
+                            if(listP!![i].uid.equals(CourseTypeActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
                                 var idG=listP[i].groupId
+                                countid++
                                 getALGroupById(idG)
-                                myLoader!!.visibility=View.GONE
-                                noGroupLayout!!.visibility=View.GONE
-
-                            }else{
-                                myLoader!!.visibility=View.GONE
-                                noGroupLayout!!.visibility=View.VISIBLE
                             }
-
+                        }
+                        Log.e("count",countid.toString())
+                        if(countid==0){
+                            myLoader!!.visibility=View.GONE
+                            noGroupLayout!!.visibility=View.VISIBLE
                         }
 
                     }
@@ -154,26 +152,34 @@ class ListGroupActivity : AppCompatActivity() {
                 }
             })
 
-
     }
     private fun getALGroupById(idG: String) {
-        listG!!.clear()
+
         groupAPI!!.getGroupById(idG)
             .enqueue(object : Callback<List<Group>> {
                 override fun onResponse(call: Call<List<Group>>, response: Response<List<Group>>) {
-                    listG!!.addAll(response.body()!!)
-                    Log.d("sizetest", listG!!.size.toString())
+                    if(response.isSuccessful){
+                        listG!!.addAll(response.body()!!)
+                        Log.d("sizetest", listG!!.size.toString())
 
-                    groupAdapter =   GroupAdapter(context, listG!!, participantAPI!!,groupAPI!!)
-                    rcvListGroup!!.adapter = groupAdapter
-                    rcvListGroup!!.visibility=View.VISIBLE
+                        if (listG!!.size==0){
+                            myLoader!!.visibility=View.GONE
+                            noGroupLayout!!.visibility=View.VISIBLE
+                        }else{
+                            myLoader!!.visibility=View.GONE
+                            noGroupLayout!!.visibility=View.GONE
 
+                            groupAdapter =   GroupAdapter(context, listG!!, participantAPI!!,groupAPI!!)
+                            rcvListGroup!!.adapter = groupAdapter
+                        }
+
+                    }
                 }
 
                 override fun onFailure(call: Call<List<Group>>, t: Throwable) {
                 }
             })
-        myLoader!!.visibility=View.GONE
+
 
     }
 

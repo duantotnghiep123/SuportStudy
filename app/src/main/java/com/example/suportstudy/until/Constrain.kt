@@ -2,18 +2,24 @@ package com.example.suportstudy.until
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.text.Html
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.AutoCompleteTextView
-import android.widget.LinearLayout
-import android.widget.RadioButton
-import android.widget.Toast
+import android.widget.*
+import androidx.recyclerview.widget.RecyclerView
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.example.suportstudy.R
 import com.example.suportstudy.model.Question
+import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.Exception
 import java.util.regex.Pattern
 
 object Constrain {
@@ -21,7 +27,7 @@ object Constrain {
     val appId = "duantotnghiep-aeidb";
 
     //    var baseUrl="http://192.168.3.107:10000"
-    var baseUrl = "http://192.168.1.7:3000"
+    var baseUrl = "http://192.168.1.11:3000"
     var firebaseUrl="https://suportstudy-72e5e-default-rtdb.firebaseio.com/"
 //    var baseUrl="http://172.20.10.3:10000"
 
@@ -55,26 +61,9 @@ object Constrain {
         inputManager.hideSoftInputFromWindow(context.currentFocus!!.windowToken, 0)
     }
 
-    fun searchView(
-        searchView: androidx.appcompat.widget.SearchView,
-        msg: String
-    ): androidx.appcompat.widget.SearchView {
-        searchView.setActivated(true)
-        searchView.setQueryHint(Html.fromHtml("<font color = #ACACAC>" + msg + "</font>"))
-        searchView.onActionViewExpanded()
-        searchView.setIconified(false)
-        searchView.clearFocus()
-        searchView.setFocusable(false)
-        val linearLayout1 = searchView.getChildAt(0) as LinearLayout
-        val linearLayout2 = linearLayout1.getChildAt(2) as LinearLayout
-        val linearLayout3 = linearLayout2.getChildAt(1) as LinearLayout
-        val autoComplete = linearLayout3.getChildAt(0) as AutoCompleteTextView
-        autoComplete.textSize = 15f
-        return searchView
-    }
+
     fun sweetdialog(context: Context, title: String):SweetAlertDialog{
-        var sd: SweetAlertDialog? = null
-        sd = SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE)
+        var sd = SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE)
         sd!!.titleText = title
         sd!!.setCancelable(false)
 
@@ -113,4 +102,34 @@ object Constrain {
         op3.text = list.get(index).option3
         op4.text = list.get(index).option4
     }
+
+
+    fun checkShowImage(context: Context,imageUrl:String,imageView: ImageView){
+        try {
+            if(!imageUrl.equals("")){
+                Picasso.with(context).load(imageUrl).placeholder(R.drawable.ic_gallery_grey).into(imageView)
+            }else{
+                imageView!!.setImageResource(R.drawable.ic_gallery_grey)
+            }
+        }catch (e: Exception){
+            imageView!!.setImageResource(R.drawable.ic_gallery_grey)
+        }
+    }
+    fun createDialog(context: Context,layout:Int):Dialog{
+        val dialog = Dialog(context)
+        dialog.setContentView(layout)
+        dialog!!.window!!.attributes.windowAnimations = R.style.DialogTheme
+        val window = dialog!!.window
+        window!!.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        if (dialog != null && dialog.window != null) {
+            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
+        dialog!!.setCancelable(false)
+
+        return dialog
+    }
+
 }

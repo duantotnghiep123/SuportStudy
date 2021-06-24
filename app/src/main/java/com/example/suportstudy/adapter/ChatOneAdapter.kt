@@ -10,7 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.course.ListCourseActivity
+import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.model.Chat
 import com.squareup.picasso.Picasso
 import java.util.*
@@ -26,7 +26,6 @@ class ChatOneAdapter(var context: Context, var chatList: List<Chat>) :RecyclerVi
         var timeTv:TextView? = null
         var isSeenTv:TextView? = null
         var messageLayout: LinearLayout? = null
-
         init {
             profileIv = itemView.findViewById(R.id.profileIv)
             messageTv = itemView.findViewById(R.id.messageTv)
@@ -71,7 +70,7 @@ class ChatOneAdapter(var context: Context, var chatList: List<Chat>) :RecyclerVi
 
     override fun getItemViewType(position: Int): Int {
 
-        return if (chatList[position].senderUid.equals(ListCourseActivity.uid)) {
+        return if (chatList[position].senderUid.equals(CourseTypeActivity.uid)) {
             return MSG_TYPE_RIGHT
         } else {
             return MSG_TYPE_LEFT

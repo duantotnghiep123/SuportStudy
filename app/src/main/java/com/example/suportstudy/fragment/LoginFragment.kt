@@ -12,6 +12,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
@@ -102,7 +103,7 @@ class LoginFragment : Fragment() {
                         }
                     }
                     if(checkLogin==true){
-                        Constrain.nextActivity(activity!!,ListCourseActivity::class.java)
+                        Constrain.nextActivity(activity!!,CourseTypeActivity::class.java)
                         activity!!.finish()
                     }else{
                         Constrain.showToast(activity!!,"Email hoặc mật khẩu không đúng")

@@ -1,7 +1,6 @@
 package com.example.suportstudy.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.adapter.AdapterOneChatlist
 import com.example.suportstudy.model.Chat
@@ -17,7 +17,6 @@ import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
 import com.google.firebase.database.*
-import io.realm.mongodb.User
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,7 +32,7 @@ var  rcvChatOne:RecyclerView?=null
 
     var noMessageLayout: LinearLayout? = null
 
-    var myUid=ListCourseActivity.uid
+    var myUid= CourseTypeActivity.uid
 
     var adapterOneChatlist:AdapterOneChatlist?=null
 

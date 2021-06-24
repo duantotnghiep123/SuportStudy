@@ -40,7 +40,6 @@ class AdapterOneChatlist(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         var user=list[position]
 
-        //        Log.d("ggggggggggggg","Adapter: "+ userList.get(position).getUid());
         val userImage: String = user.image
         val userName: String = user.name
         val hisUid: String = user._id
@@ -48,9 +47,6 @@ class AdapterOneChatlist(
 
         val lastMessage = lastMessageMap!![hisUid]
 
-        //set data
-
-        //set data
         holder.nameTv!!.text = userName
         if (lastMessage == null || lastMessage == "default") {
             holder.lastMessageTv!!.visibility = View.GONE

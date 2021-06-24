@@ -15,7 +15,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.MainActivity
 import com.example.suportstudy.activity.acount.LoginAndRegisterMainActivity
-import com.example.suportstudy.activity.course.ListCourseActivity
+import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
@@ -133,7 +133,7 @@ class RegisterFragment : Fragment() {
                             sd!!.dismiss()
                             Constrain.nextActivity(
                                 activity!!,
-                                ListCourseActivity::class.java
+                                CourseTypeActivity::class.java
                             )
                             activity!!.finish()
                         }

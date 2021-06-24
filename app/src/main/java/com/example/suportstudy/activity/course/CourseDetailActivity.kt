@@ -10,10 +10,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.*
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.group.ListGroupActivity
 import com.example.suportstudy.activity.home.HomeActivity
-import com.example.suportstudy.model.Group
 import com.example.suportstudy.model.Participant
 import com.example.suportstudy.service.GroupAPI
 import com.example.suportstudy.service.ParticipantAPI
@@ -29,7 +29,7 @@ class CourseDetailActivity : AppCompatActivity() {
 
     var txtCourseName: TextView? = null
     var txtDescription: TextView? = null
-    var IVCourse: ImageView? = null
+    var courseIv: ImageView? = null
     var btnJoin: Button? = null
     var btnGroup: Button? = null
     var context = this@CourseDetailActivity
@@ -37,7 +37,9 @@ class CourseDetailActivity : AppCompatActivity() {
     var groupAPI: GroupAPI? = null
     var participantAPI: ParticipantAPI? = null
 
+    var myUid=CourseTypeActivity.uid
 
+    var sd:SweetAlertDialog?=null
 
     companion object {
         var imageUrl = ""
@@ -49,19 +51,20 @@ class CourseDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_course_detail)
+        sd=Constrain.sweetdialog(context,"Đang tạo nhóm...")
         groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
         participantAPI = Constrain.createRetrofit(ParticipantAPI::class.java)
 
 
         txtCourseName = findViewById(R.id.txtCourseName)
         txtDescription = findViewById(R.id.txtDescription)
-        IVCourse = findViewById(R.id.IVCourse)
+        courseIv = findViewById(R.id.courseIv)
         btnJoin = findViewById(R.id.btnJoin)
         btnGroup = findViewById(R.id.btnCrearteClass)
 
 
 
-        if (ListCourseActivity.istutor == true) {
+        if (CourseTypeActivity.istutor == true) {
             btnGroup!!.text = "Tạo Nhóm"
             btnGroup!!.setOnClickListener {
                 createGroup()
@@ -90,27 +93,12 @@ class CourseDetailActivity : AppCompatActivity() {
 
         txtCourseName!!.text = name
         txtDescription!!.text = desciption
-        if (!imageUrl.equals("")) {
-            Picasso.with(context).load(imageUrl).placeholder(R.drawable.ic_gallery_grey)
-                .into(IVCourse)
-        } else {
-            IVCourse!!.setImageResource(R.drawable.ic_gallery_grey)
-        }
+
+        Constrain.checkShowImage(context, imageUrl,courseIv!!)
+
     }
     fun createGroup() {
-        Constrain.showToast(context,"TẠo nhom")
-        val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_create_group)
-        dialog!!.window!!.attributes.windowAnimations = R.style.DialogTheme
-        val window = dialog!!.window
-        window!!.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        if (dialog != null && dialog.window != null) {
-            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        }
-        dialog!!.setCancelable(false)
+        val dialog =Constrain.createDialog(context,R.layout.dialog_create_group)
         val btnHuy = dialog!!.findViewById<Button>(R.id.btnHuy)
         val btnTao = dialog!!.findViewById<Button>(R.id.btnTao)
         val edtName = dialog!!.findViewById<EditText>(R.id.edtName)
@@ -118,13 +106,12 @@ class CourseDetailActivity : AppCompatActivity() {
         val ivGroup = dialog!!.findViewById<CircleImageView>(R.id.IVGroup)
 
         btnTao.setOnClickListener {
-
-
+            sd!!.show()
             var groupName = edtName.text.toString()
             var groupDescription = edtDecription.text.toString()
             var time=System.currentTimeMillis().toString()
             groupAPI!!.insertGroup(
-                ListCourseActivity.uid,
+                myUid,
                 groupName,
                 groupDescription,
                 "",
@@ -139,7 +126,7 @@ class CourseDetailActivity : AppCompatActivity() {
                             var groupId= response.body()!!._id
                             participantAPI!!.insertParticipant(
                                time,
-                                ListCourseActivity.uid,
+                                myUid,
                                 groupId!!,
                                 courseId!!
                             ).enqueue(object :Callback<Participant>{
@@ -149,8 +136,8 @@ class CourseDetailActivity : AppCompatActivity() {
                                 ) {
                                    if(response.isSuccessful){
                                        Constrain.showToast(context,"Tạo nhóm thành công")
+                                       sd!!.dismiss()
                                        dialog.dismiss()
-
                                    }
                                 }
 

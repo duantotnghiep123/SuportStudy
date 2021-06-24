@@ -8,7 +8,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.acount.LoginAndRegisterMainActivity
-import com.example.suportstudy.activity.course.ListCourseActivity
+import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.quizz.QuizzActivity
 import com.example.suportstudy.until.ConnectivityReceiver
 import com.example.suportstudy.until.Constrain
@@ -29,18 +29,11 @@ class MainActivity : AppCompatActivity() {
         val isLogin = sharedPreferences!!.getBoolean(Constrain.KEY_LOGIN, false)
 
         if (isLogin == true) {
-            val intent = Intent(this@MainActivity, ListCourseActivity::class.java)
+            val intent = Intent(this@MainActivity, CourseTypeActivity::class.java)
             startActivity(intent)
             finish()
         }
 
-        var  intent=intent
-        isconected=intent.getBooleanExtra("is",false)
-        if(isconected==false){
-            Constrain.showToast(applicationContext, isconected.toString())
-        }else{
-            Constrain.showToast(applicationContext, isconected.toString())
-        }
 
         btnTutor.setOnClickListener {
             var intent=Intent(this@MainActivity, QuizzActivity::class.java)

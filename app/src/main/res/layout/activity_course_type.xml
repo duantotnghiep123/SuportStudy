@@ -5,13 +5,13 @@
     android:background="@color/grey05"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.course.ListCourseActivity">
+    tools:context=".activity.course.CourseTypeActivity">
+
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <RelativeLayout
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -22,10 +22,14 @@
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-
+                <TextView
+                    android:text="Hello"
+                    android:textSize="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
                 <TextView
                     android:id="@+id/txtName"
-                    android:text="java"
+                    android:text="Java"
                     android:textSize="20dp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
@@ -33,17 +37,18 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/avatarIv"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
                 android:layout_alignParentRight="true"
                 android:src="@drawable/avatar"
-                android:layout_width="40dp"
+                android:layout_width="70dp"
                 android:layout_height="40dp"/>
         </RelativeLayout>
         <androidx.appcompat.widget.SearchView
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/background_search"
             android:layout_width="match_parent"
@@ -51,7 +56,7 @@
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/thumbIv"
             android:layout_below="@id/toolbar"
-            android:src="@drawable/education"
+            android:src="@drawable/education2"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
@@ -61,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="210dp"/>
         <TextView
-            android:text="Course"
+            android:text="Categories"
             android:textSize="18dp"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"
@@ -69,8 +74,6 @@
             android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-
-
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -111,7 +114,7 @@
                     <TextView
                         android:textSize="20dp"
                         android:textColor="@color/black"
-                        android:text="Không có dữ liệu"
+                        android:text="Không có chủ đề"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
@@ -127,6 +130,8 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
+
+
     </LinearLayout>
 
 

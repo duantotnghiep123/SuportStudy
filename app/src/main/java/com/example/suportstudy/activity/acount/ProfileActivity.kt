@@ -1,13 +1,11 @@
 package com.example.suportstudy.activity.acount
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -20,21 +18,18 @@ import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.MainActivity
-import com.example.suportstudy.activity.course.ListCourseActivity
+import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.group.ListGroupActivity
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.until.Persmission
-import com.google.gson.annotations.Until
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-import io.realm.mongodb.User
 import kotlinx.android.synthetic.main.activity_test_image.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -69,7 +64,7 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         initViewData()
-        getDataProfile(ListCourseActivity.uid)
+        getDataProfile(CourseTypeActivity.uid)
 
 
         avatarIv!!.setOnClickListener {
@@ -123,7 +118,7 @@ class ProfileActivity : AppCompatActivity() {
     fun editImage() {
         var file = File(part_image)
         var requestId =
-            RequestBody.create(MediaType.parse("multipart/form_data"), ListCourseActivity.uid)
+            RequestBody.create(MediaType.parse("multipart/form_data"), CourseTypeActivity.uid)
         var requestOldImage = RequestBody.create(MediaType.parse("multipart/form_data"), image)
         val reqFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
         val body = MultipartBody.Part.createFormData("image", file.getName(), reqFile)
@@ -134,10 +129,9 @@ class ProfileActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         Constrain.showToast(context, "Đổi thành công")
 
-                        getDataProfile(ListCourseActivity.uid)
+                        getDataProfile(CourseTypeActivity.uid)
                     }
                 }
-
                 override fun onFailure(call: Call<Users>, t: Throwable) {
                     Constrain.showToast(context, "Thất bại")
 
@@ -157,7 +151,6 @@ class ProfileActivity : AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
                     var imgUrl = ""
-
                     for (i in response.body()!!.indices) {
                         imgUrl = response.body()!![i].image
                         name = response.body()!![i].name
@@ -170,7 +163,6 @@ class ProfileActivity : AppCompatActivity() {
                     editor.apply()
 
                     image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")!!
-                    Constrain.showToast(context, "image" + image)
                     nameTv!!.text = name
                     if (imgUrl.equals("noImage") || imgUrl.equals("")) {
                         avatarIv!!.setImageResource(R.drawable.loginimage)
@@ -218,12 +210,12 @@ class ProfileActivity : AppCompatActivity() {
             if (name.equals("")) {
                 Constrain.showToast(context, "Vui lòng nhập tên")
             } else {
-                userAPI!!.editName(ListCourseActivity.uid, name)
+                userAPI!!.editName(CourseTypeActivity.uid, name)
                     .enqueue(object : Callback<Users> {
                         override fun onResponse(call: Call<Users>, response: Response<Users>) {
                             if (response.isSuccessful) {
                                 Constrain.showToast(context, "Đổi thành công")
-                                getDataProfile(ListCourseActivity.uid)
+                                getDataProfile(CourseTypeActivity.uid)
                                 dialog.dismiss()
                             }
                         }
@@ -279,12 +271,12 @@ class ProfileActivity : AppCompatActivity() {
             } else if (!newpassword.equals(newcfpassword)) {
                 Constrain.showToast(context, "Mật khẩu xác nhận không đúng")
             } else {
-                userAPI!!.editPassword(ListCourseActivity.uid, newpassword)
+                userAPI!!.editPassword(CourseTypeActivity.uid, newpassword)
                     .enqueue(object : Callback<Users> {
                         override fun onResponse(call: Call<Users>, response: Response<Users>) {
                             if (response.isSuccessful) {
                                 Constrain.showToast(context, "Đổi thành công")
-                                getDataProfile(ListCourseActivity.uid)
+                                getDataProfile(CourseTypeActivity.uid)
                                 dialog.dismiss()
                             }
                         }
@@ -293,7 +285,6 @@ class ProfileActivity : AppCompatActivity() {
                             Constrain.showToast(context, "Đổi thất bại")
                             dialog.dismiss()
                             Log.e("err", t.message.toString())
-
                         }
 
                     })
