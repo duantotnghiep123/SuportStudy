@@ -10,7 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 
 object Persmission {
-     val STORAGE_REQUEST_CODE = 100
+    val STORAGE_REQUEST_CODE = 100
     val IMAGE_PICK_GALLERY_CODE =200
     var storagePermission: Array<String>? =arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 

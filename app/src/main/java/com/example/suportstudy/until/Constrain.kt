@@ -5,8 +5,11 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
+import android.provider.MediaStore
 import android.text.Html
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -17,6 +20,7 @@ import com.example.suportstudy.R
 import com.example.suportstudy.model.Question
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Exception
@@ -131,5 +135,21 @@ object Constrain {
 
         return dialog
     }
+
+    fun getRealPathFromURI(context: Activity,contentUri: Uri?): String? {
+
+        val proj = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor: Cursor = context.managedQuery(
+            contentUri,
+            proj,  // Which columns to return
+            null,  // WHERE clause; which rows to return (all rows)
+            null,  // WHERE clause selection arguments (none)
+            null
+        ) // Order-by clause (ascending by name)
+        val column_index: Int = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        cursor.moveToFirst()
+        return cursor.getString(column_index)
+    }
+
 
 }

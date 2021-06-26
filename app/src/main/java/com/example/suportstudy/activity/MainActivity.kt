@@ -10,7 +10,6 @@ import com.example.suportstudy.R
 import com.example.suportstudy.activity.acount.LoginAndRegisterMainActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.quizz.QuizzActivity
-import com.example.suportstudy.until.ConnectivityReceiver
 import com.example.suportstudy.until.Constrain
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -18,7 +17,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     var isTutor=false
     var isconected=false
-    private var connectivityReceiver: ConnectivityReceiver? = null
     var sharedPreferences: SharedPreferences? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,9 +55,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        connectivityReceiver = ConnectivityReceiver(homeLayout)
-        val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        registerReceiver(connectivityReceiver, intentFilter)
+
     }
 
 

@@ -45,11 +45,13 @@
                 android:layout_width="70dp"
                 android:layout_height="40dp"/>
         </RelativeLayout>
-        <androidx.appcompat.widget.SearchView
+        <SearchView
+            android:id="@+id/searchView"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
+            android:queryHint="Nhập đề tài cần tìm"
             android:background="@drawable/background_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

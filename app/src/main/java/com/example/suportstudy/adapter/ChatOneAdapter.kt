@@ -1,6 +1,7 @@
 package com.example.suportstudy.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.chat.ChatOneActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.model.Chat
 import com.squareup.picasso.Picasso
@@ -66,6 +68,10 @@ class ChatOneAdapter(var context: Context, var chatList: List<Chat>) :RecyclerVi
         }
         holder.messageTv!!.text = message
         holder.timeTv!!.text = dateTime
+
+        holder.itemView.setOnClickListener {
+
+        }
     }
 
     override fun getItemViewType(position: Int): Int {

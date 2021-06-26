@@ -67,7 +67,7 @@ class ListMemberGroupAdapter(
             if (holder.statusTv!!.text.equals("Tôi")) {
                 Constrain.showToast(context, "Bạn không thể gửi tin nhắn cho bạn")
             } else {
-                var intent: Intent = Intent(context, ChatOneActivity::class.java)
+                var intent = Intent(context, ChatOneActivity::class.java)
                 intent.putExtra("uid", users._id)
                 intent.putExtra("name", users.name)
                 intent.putExtra("image", users.image)

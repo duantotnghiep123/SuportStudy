@@ -15,6 +15,7 @@ import com.example.suportstudy.model.Group
 import com.example.suportstudy.model.Participant
 import com.example.suportstudy.service.GroupAPI
 import com.example.suportstudy.service.ParticipantAPI
+import com.example.suportstudy.until.Constrain
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import retrofit2.Call
@@ -29,13 +30,11 @@ class GroupAdapter(
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
         var IVGroup: CircleImageView? = null
         var txtJoin: TextView? = null
-//        var txtHuy: TextView? = null
         var txtGroupName: TextView? = null
         init {
             IVGroup = itemView.findViewById(R.id.IVGroup)
             txtGroupName = itemView.findViewById(R.id.txtGroupName)
             txtJoin = itemView.findViewById(R.id.txtJoin)
-//            txtHuy = itemView.findViewById(R.id.txtHuy)
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -45,14 +44,20 @@ class GroupAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         var  group:Group=list[position]
-//        getAllParticipant(group, holder.txtJoin!!,holder.txtHuy!!)
         getAllParticipant(group, holder.txtJoin!!)
+        var groupImage= group.groupImage!!
         holder.txtGroupName!!.text=group.groupName
-        if(!group.groupImage.equals("")){
-            Picasso.with(context).load(group.groupImage).placeholder(R.drawable.ic_gallery_grey).into(holder.IVGroup)
+        var pathImageUrl=""
+        if(groupImage.equals("noImage")){
+           pathImageUrl=""
         }else{
-            holder.IVGroup!!.setImageResource(R.drawable.loginimage)
+            pathImageUrl = Constrain.baseUrl + "/group/" + group.groupImage!!.substring(27)
         }
+
+        Constrain.checkShowImage(context,pathImageUrl, holder.IVGroup!!)
+
+
+
          holder.itemView.setOnClickListener {
              if(holder.txtJoin!!.text.equals("Đã tham gia")){
                  var intent=Intent(context,ChatGroupActivity::class.java)
@@ -64,14 +69,12 @@ class GroupAdapter(
                  context.startActivity(intent)
              }
               else if(holder.txtJoin!!.text.equals("Tham gia")){
-                 com.example.suportstudy.until.Constrain.showToast(context,"Bạn chưa tham gia nhóm này")
+                 Constrain.showToast(context,"Bạn chưa tham gia nhóm này")
              }
 
          }
         holder.txtJoin!!.setOnClickListener {
-//            if(holder.txtJoin!!.text.equals("Đã tham gia")){
-//                com.example.suportstudy.until.Constrain.showToast(context,"Đã tham gia")
-//            }
+
             if(holder.txtJoin!!.text.equals("Tham gia")){
                 var time=System.currentTimeMillis().toString()
 

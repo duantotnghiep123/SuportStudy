@@ -18,6 +18,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SuportStudy"
         android:usesCleartextTraffic="true">
+
+        <receiver android:name=".until.ConnectivityReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
+                <action android:name="android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.WifiManager.SUPLICANT_STATE_CHANGED_ACTION" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
         <activity android:name=".activity.course.CourseTypeActivity">
 
         </activity>

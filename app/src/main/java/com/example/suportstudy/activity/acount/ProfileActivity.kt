@@ -44,6 +44,7 @@ class ProfileActivity : AppCompatActivity() {
     var logoutLayout: RelativeLayout? = null
     var avatarIv: CircleImageView? = null
     var nameTv: TextView? = null
+    var finishTv: TextView? = null
 
     var sharedPreferences: SharedPreferences? = null
     var userAPI: UserAPI? = null
@@ -65,7 +66,10 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_profile)
         initViewData()
         getDataProfile(CourseTypeActivity.uid)
-
+        finishTv!!.setOnClickListener {
+            Constrain.nextActivity(context,CourseTypeActivity::class.java)
+            finish()
+        }
 
         avatarIv!!.setOnClickListener {
             if (!Persmission.checkStoragePermission(context)) {
@@ -91,11 +95,26 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         logoutLayout!!.setOnClickListener {
-            val editor = sharedPreferences!!.edit()
-            editor.clear()
-            editor.commit()
-            startActivity(Intent(context, MainActivity::class.java))
-            finish()
+
+            val dialog = Constrain.createDialog(context,R.layout.dialog_confirm)
+
+            var txtXacNhan = dialog.findViewById<TextView>(R.id.txtXacNhan)
+            var btnHuy = dialog.findViewById<AppCompatButton>(R.id.btnHuy)
+            var btnXacNhan = dialog.findViewById<AppCompatButton>(R.id.btnXacNhan)
+            txtXacNhan.setText("Bạn có muốn đăng xuất !")
+            btnXacNhan.setOnClickListener {
+                dialog.dismiss()
+                val editor = sharedPreferences!!.edit()
+                editor.clear()
+                editor.commit()
+                startActivity(Intent(context, MainActivity::class.java))
+                finish()
+            }
+            btnHuy.setOnClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
+
         }
     }
 
@@ -111,6 +130,7 @@ class ProfileActivity : AppCompatActivity() {
         logoutLayout = findViewById(R.id.logoutLayout)
         avatarIv = findViewById(R.id.avatarIv)
         nameTv = findViewById(R.id.nameTv)
+        finishTv = findViewById(R.id.finishTv)
         userAPI = Constrain.createRetrofit(UserAPI::class.java)
 
     }
@@ -128,7 +148,6 @@ class ProfileActivity : AppCompatActivity() {
                     Log.d("UploadImage", response.body().toString())
                     if (response.isSuccessful) {
                         Constrain.showToast(context, "Đổi thành công")
-
                         getDataProfile(CourseTypeActivity.uid)
                     }
                 }
@@ -170,11 +189,6 @@ class ProfileActivity : AppCompatActivity() {
                         var path = Constrain.baseUrl + "/profile/" + imgUrl.substring(30)
                         Picasso.with(context).load(path).into(avatarIv)
                     }
-                    if (key.equals("editimage") || key.equals("loadprofile")) {
-
-                    } else if (key.equals("editname")) {
-
-                    }
 
                 }
 
@@ -188,19 +202,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     fun editName() {
-        val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_edit_name)
-
-        dialog!!.window!!.attributes.windowAnimations = R.style.DialogTheme
-        val window = dialog!!.window
-        window!!.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        if (dialog != null && dialog.window != null) {
-            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        }
-        dialog!!.setCancelable(false)
+        val dialog = Constrain.createDialog(context,R.layout.dialog_edit_name)
         val edtName = dialog!!.findViewById<EditText>(R.id.edtName)
         val btnDoi = dialog!!.findViewById<Button>(R.id.btnDoi)
         val btnHuy = dialog!!.findViewById<Button>(R.id.btnHuy)
@@ -238,19 +240,8 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun editPassword() {
-        val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_edit_password)
+        val dialog = Constrain.createDialog(context,R.layout.dialog_edit_password)
 
-        dialog!!.window!!.attributes.windowAnimations = R.style.DialogTheme
-        val window = dialog!!.window
-        window!!.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        if (dialog != null && dialog.window != null) {
-            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        }
-        dialog!!.setCancelable(false)
         var edtNowPassword = dialog.findViewById<EditText>(R.id.edtNowPassword)
         var edtNewPassword = dialog.findViewById<EditText>(R.id.edtNewPassword)
         var edtCfNewPassword = dialog.findViewById<EditText>(R.id.edtCfNewPassword)
@@ -297,26 +288,13 @@ class ProfileActivity : AppCompatActivity() {
 
     }
     private fun deleteUser() {
-        val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_confirm)
+        val dialog = Constrain.createDialog(context,R.layout.dialog_confirm)
 
-        dialog!!.window!!.attributes.windowAnimations = R.style.DialogTheme
-        val window = dialog!!.window
-        window!!.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        if (dialog != null && dialog.window != null) {
-            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        }
-        dialog!!.setCancelable(false)
-
-        var txtXacNhan = dialog.findViewById<EditText>(R.id.txtXacNhan)
+        var txtXacNhan = dialog.findViewById<TextView>(R.id.txtXacNhan)
         var btnHuy = dialog.findViewById<AppCompatButton>(R.id.btnHuy)
         var btnXacNhan = dialog.findViewById<AppCompatButton>(R.id.btnXacNhan)
         txtXacNhan.setText("Bạn có muốn xóa tài khoản của bạn !")
         btnXacNhan.setOnClickListener {
-
         }
         btnHuy.setOnClickListener {
             dialog.dismiss()
@@ -348,9 +326,8 @@ class ProfileActivity : AppCompatActivity() {
         if (resultCode == RESULT_OK) {
             if (requestCode == Persmission.IMAGE_PICK_GALLERY_CODE) {
                 image_uri = data!!.data!!
-                part_image = getRealPathFromURI(image_uri)
+                part_image = Constrain.getRealPathFromURI(context,image_uri)
                 Constrain.showToast(context, part_image!!)
-
                 editImage()
 
             }
@@ -360,18 +337,5 @@ class ProfileActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    fun getRealPathFromURI(contentUri: Uri?): String? {
 
-        val proj = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor: Cursor = managedQuery(
-            contentUri,
-            proj,  // Which columns to return
-            null,  // WHERE clause; which rows to return (all rows)
-            null,  // WHERE clause selection arguments (none)
-            null
-        ) // Order-by clause (ascending by name)
-        val column_index: Int = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-        cursor.moveToFirst()
-        return cursor.getString(column_index)
-    }
 }
