@@ -258,7 +258,7 @@ class InfoGroupActivity : AppCompatActivity() {
                             groupDescriptionTv!!.text = response.body()!![i].groupDescription
                             var imageUrl=response.body()!![i].groupImage
 
-                            Constrain.checkShowImage(context, imageUrl!!, groupIv!!)
+                            Constrain.checkShowImage(context,R.drawable.avatar_default, imageUrl!!, groupIv!!)
                         }
                     }
                     override fun onFailure(call: Call<List<Group>>, t: Throwable) {

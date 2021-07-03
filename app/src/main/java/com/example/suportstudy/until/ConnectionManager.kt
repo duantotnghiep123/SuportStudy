@@ -17,7 +17,6 @@ class ConnectionManager(val context: Context):LiveData<Boolean> (){
     override fun onActive() {
         super.onActive()
         updateConnection()
-
         when{
             Build.VERSION.SDK_INT>=Build.VERSION_CODES.N->{
                 connectivityManager.registerDefaultNetworkCallback(connectivityManagerCallback())

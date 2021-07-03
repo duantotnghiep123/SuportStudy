@@ -69,9 +69,7 @@ class ChatOneAdapter(var context: Context, var chatList: List<Chat>) :RecyclerVi
         holder.messageTv!!.text = message
         holder.timeTv!!.text = dateTime
 
-        holder.itemView.setOnClickListener {
 
-        }
     }
 
     override fun getItemViewType(position: Int): Int {

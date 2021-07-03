@@ -45,8 +45,6 @@ class ListCourseActivity : AppCompatActivity() {
 
     }
     fun initViewData(){
-
-
         var intent=intent
         courseTypeId= intent.getStringExtra("_id")!!
         nameCourseType= intent.getStringExtra("name")!!
@@ -59,18 +57,17 @@ class ListCourseActivity : AppCompatActivity() {
         courseAPI = Constrain.createRetrofit(CourseAPI::class.java)
         noDataLayout=findViewById(R.id.noDataLayout)
         lazyLoader=findViewById(R.id.myLoader)
-
         lazyLoader!!.visibility=View.VISIBLE
 
-        Constrain.checkShowImage(context,imageCourseType,thumbIv!!)
+        Constrain.checkShowImage(context,R.drawable.ic_gallery_grey,imageCourseType,thumbIv!!)
         txtName!!.text=nameCourseType
 
     }
     fun loadCrouseByCourseTypeId(){
-        CourseController.getAllCourse(context).observe(context,{
-            for (i in it.indices){
-                if(it[i].courseType._id.equals(courseTypeId)){
-                    list.add(it[i])
+        CourseController.getAllCourse(context).observe(context,{listCourse->
+            for (i in listCourse.indices){
+                if(listCourse[i].courseType._id.equals(courseTypeId)){
+                    list.add(listCourse[i])
                 }
                 if(list.size==0){
                     noDataLayout!!.visibility=View.VISIBLE

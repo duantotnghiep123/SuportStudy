@@ -43,7 +43,7 @@ class CourseAdapter(var context: Context,var courseList: List<Course>) :Recycler
         var imageUrl=course.image
         holder.txtCourseName!!.text=name
 
-        Constrain.checkShowImage(context,imageUrl,holder.courseIv!!)
+        Constrain.checkShowImage(context,R.drawable.ic_gallery_grey,imageUrl,holder.courseIv!!)
 
         holder.itemView.setOnClickListener {
             var  intent= Intent(context,CourseDetailActivity::class.java)

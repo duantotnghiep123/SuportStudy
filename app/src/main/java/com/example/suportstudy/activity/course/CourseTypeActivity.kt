@@ -17,6 +17,8 @@ import com.example.suportstudy.model.CourseType
 import com.example.suportstudy.service.CourseTypeAPI
 import com.example.suportstudy.until.ConnectionManager
 import com.example.suportstudy.until.Constrain
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.iid.FirebaseInstanceId
 import com.makeramen.roundedimageview.RoundedImageView
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -41,8 +43,6 @@ class CourseTypeActivity : AppCompatActivity() {
         var istutor:Boolean?=null
     }
     var sharedPreferences: SharedPreferences? = null
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_course_type)
@@ -50,9 +50,7 @@ class CourseTypeActivity : AppCompatActivity() {
         avatarIv!!.setOnClickListener {
             Constrain.nextActivity(context, ProfileActivity::class.java)
         }
-
        getAllCourseType()
-
         searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 if (query.equals("")) {
@@ -65,15 +63,12 @@ class CourseTypeActivity : AppCompatActivity() {
                 }
                 return false
             }
-
             override fun onQueryTextChange(newText: String): Boolean {
                 if (newText.equals("")) {
                     thumbIv!!.visibility = View.VISIBLE
-
                     getAllCourseType()
                 } else {
                     thumbIv!!.visibility = View.GONE
-
                     searchCourse(newText)
                 }
                 return false
@@ -83,16 +78,14 @@ class CourseTypeActivity : AppCompatActivity() {
     }
 
     fun initview(){
-
-     val dialog=  Constrain.createDialog(context,R.layout.dialog_no_internet)
-
+     val dialog=  Constrain.createDialog(context, R.layout.dialog_no_internet)
         var networkContion=ConnectionManager(context)
-        networkContion.observe(context,{ isConeted->
-              if(isConeted){
+        networkContion.observe(context, { isConeted ->
+            if (isConeted) {
                 dialog.dismiss()
-              }else{
-                  dialog.show()
-              }
+            } else {
+                dialog.show()
+            }
         })
 
 
@@ -111,6 +104,7 @@ class CourseTypeActivity : AppCompatActivity() {
         email = sharedPreferences!!.getString(Constrain.KEY_EMAIL, "")
         image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")
         istutor = sharedPreferences!!.getBoolean(Constrain.KEY_ISTUTOR, false)
+        updateToken(FirebaseInstanceId.getInstance().getToken())
 
         Log.d("name", "_id : " + uid + " , name : " + name!! + " , image :" + image)
 
@@ -150,7 +144,10 @@ class CourseTypeActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
     }
-
+    fun updateToken(token: String?) {
+        val ref = FirebaseDatabase.getInstance(Constrain.firebaseUrl).getReference("Tokens")
+        ref.child(uid!!).child("token").setValue(token)
+    }
 
 
 }

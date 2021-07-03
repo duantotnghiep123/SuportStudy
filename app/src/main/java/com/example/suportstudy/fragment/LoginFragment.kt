@@ -18,7 +18,11 @@ import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.fragment_login.edtEmail
+import kotlinx.android.synthetic.main.fragment_login.edtPassword
+import kotlinx.android.synthetic.main.fragment_register.*
 import retrofit2.Response
+import java.util.regex.Matcher
 
 class LoginFragment : Fragment() {
     @SuppressLint("UseRequireInsteadOfGet")
@@ -50,17 +54,19 @@ class LoginFragment : Fragment() {
         sd=Constrain.sweetdialog(activity!!,"Đang đăng nhập")
 
         btnLogin.setOnClickListener {
-            sd!!.show()
             var email = edtEmail.text.toString()
             var password = edtPassword.text.toString()
+            val matcher: Matcher = Constrain.VALID_EMAIL_ADDRESS_REGEX.matcher(email)
+
             if(email.equals("")){
                 Constrain.showToast(activity!!,"Vui lòng nhập email")
-                sd!!.dismiss()
-
+                edtEmail.setFocusable(true)
+            }else if (!matcher.matches()) {
+                edtEmail.error = "Nhập đúng định dạng email !"
+                edtEmail.setFocusable(true)
             }else if(password.equals("")){
                 Constrain.showToast(activity!!,"Vui lòng nhập mật khẩu")
-                sd!!.dismiss()
-
+                edtPassword.setFocusable(true)
             }else{
                loginFuntion(email,password)
             }
@@ -70,6 +76,7 @@ class LoginFragment : Fragment() {
     }
 
     fun loginFuntion(email:String,password:String){
+        sd!!.show()
         val userAPI = Constrain.createRetrofit(UserAPI::class.java)
         var call = userAPI.getAllUsers()
         call.enqueue(object : retrofit2.Callback<List<Users>> {
@@ -89,7 +96,6 @@ class LoginFragment : Fragment() {
                         if (userEmail.equals(email) && userPassword.equals(password)
                         ) {
                             checkLogin=true
-                            Log.d("email",_id+ email)
                             isLogin=true
                             val editor = sharedPreferences!!.edit()
                             editor.putString(Constrain.KEY_ID, _id)
@@ -107,7 +113,6 @@ class LoginFragment : Fragment() {
                         activity!!.finish()
                     }else{
                         Constrain.showToast(activity!!,"Email hoặc mật khẩu không đúng")
-
                     }
                     sd!!.dismiss()
                 }

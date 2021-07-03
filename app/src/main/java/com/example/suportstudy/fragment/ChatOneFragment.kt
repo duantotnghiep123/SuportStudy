@@ -28,7 +28,6 @@ var  rcvChatOne:RecyclerView?=null
     var chatlistList: ArrayList<Chatlist>? = null
     var userList: ArrayList<Users>? = null
     var reference: DatabaseReference? = null
-    var refUser: DatabaseReference? = null
 
     var noMessageLayout: LinearLayout? = null
 
@@ -61,7 +60,7 @@ var  rcvChatOne:RecyclerView?=null
         chatlistList=ArrayList<Chatlist>()
         userList=ArrayList<Users>()
         reference =
-            FirebaseDatabase.getInstance().getReference("ChatList").child(myUid!!)
+        FirebaseDatabase.getInstance().getReference("ChatList").child(myUid!!)
         reference!!.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 chatlistList!!.clear()

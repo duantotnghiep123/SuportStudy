@@ -91,6 +91,7 @@ class CourseDetailActivity : AppCompatActivity() {
     }
     fun initViewData(){
         sd=Constrain.sweetdialog(context,"Đang tạo nhóm...")
+
         groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
         participantAPI = Constrain.createRetrofit(ParticipantAPI::class.java)
 
@@ -118,7 +119,7 @@ class CourseDetailActivity : AppCompatActivity() {
         txtCourseName!!.text = name
         txtDescription!!.text = desciption
 
-        Constrain.checkShowImage(context, imageUrl,courseIv!!)
+        Constrain.checkShowImage(context,R.drawable.ic_gallery_grey, imageUrl,courseIv!!)
 
     }
     @RequiresApi(Build.VERSION_CODES.M)
@@ -170,23 +171,21 @@ class CourseDetailActivity : AppCompatActivity() {
         var createBy =   RequestBody.create(MediaType.parse("multipart/form_data"), createBy)
         var groupName =   RequestBody.create(MediaType.parse("multipart/form_data"), groupName)
         var groupDescription =   RequestBody.create(MediaType.parse("multipart/form_data"), groupDescription)
-        var courseId =   RequestBody.create(MediaType.parse("multipart/form_data"), courseId)
+        var courseID =   RequestBody.create(MediaType.parse("multipart/form_data"), courseId)
         val reqFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
         val image = MultipartBody.Part.createFormData("group", file.getName(), reqFile)
 
-        groupAPI!!.createGroupWithImage(createBy,groupName,groupDescription,image,courseId)
+        groupAPI!!.createGroupWithImage(createBy,groupName,groupDescription,image,courseID)
             .enqueue(object : Callback<Group>{
                 override fun onResponse(call: Call<Group>, response: Response<Group>) {
                     if (response.isSuccessful) {
                         var groupId= response.body()!!._id
-                        participant(time!!, myUid!!, groupId!!, courseId!!.toString())
+                        participant(time!!, myUid!!, groupId!!, courseId!!)
                     }
                 }
-
                 override fun onFailure(call: Call<Group>, t: Throwable) {
                      Log.e("Error",t.message.toString())
                 }
-
             } )
 
     }
@@ -210,9 +209,7 @@ class CourseDetailActivity : AppCompatActivity() {
 
                     }
                 }
-
                 override fun onFailure(call: retrofit2.Call<com.example.suportstudy.model.Group>, t: Throwable) {
-
                     Log.v("Data", "Error: " + t.message.toString())
                 }
             })
@@ -222,7 +219,7 @@ class CourseDetailActivity : AppCompatActivity() {
             time,
             myUid,
             groupId!!,
-            Companion.courseId!!
+            courseId
         ).enqueue(object :Callback<Participant>{
             override fun onResponse(
                 call: Call<Participant>,

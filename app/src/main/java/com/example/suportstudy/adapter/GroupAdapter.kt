@@ -54,7 +54,7 @@ class GroupAdapter(
             pathImageUrl = Constrain.baseUrl + "/group/" + group.groupImage!!.substring(27)
         }
 
-        Constrain.checkShowImage(context,pathImageUrl, holder.IVGroup!!)
+        Constrain.checkShowImage(context,R.drawable.ic_gallery_grey,pathImageUrl, holder.IVGroup!!)
 
 
 
@@ -103,7 +103,6 @@ class GroupAdapter(
         return list.size
     }
     fun getAllParticipant(group: Group,txtJoin: TextView){
-
         participantAPI!!.getAllParticipant()
             .enqueue(object : Callback<List<Participant>> {
                 override fun onResponse(
@@ -112,19 +111,12 @@ class GroupAdapter(
                 ) {
                     if (response.code() == 200) {
                      var    listP = response.body()!!
-                        Log.d("sizep", listP!!.size.toString())
+                        txtJoin.text="Tham gia"
                         for (i in listP!!.indices) {
-                            Log.d("groupid",listP!![i].groupId)
                             if(listP!![i].uid.equals(CourseTypeActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
                                 if(group._id.equals(listP!![i].groupId)){
                                     txtJoin.text="Đã tham gia"
                                 }
-                            }
-                            if(!listP!![i].uid.equals(CourseTypeActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
-                                if(group._id.equals(listP!![i].groupId)){
-                                    txtJoin.text="Tham gia"
-                                }
-
                             }
                         }
 

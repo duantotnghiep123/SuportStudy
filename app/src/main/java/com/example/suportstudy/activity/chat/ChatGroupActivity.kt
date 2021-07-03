@@ -38,7 +38,6 @@ class ChatGroupActivity : AppCompatActivity() {
     var groupChatAdapter:GroupChatAdapter?=null
     var groupChatList=ArrayList<GroupChat>()
 
-    var firebaseDatabase: FirebaseDatabase? = null
     var chatGroupRef: DatabaseReference? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,18 +80,10 @@ class ChatGroupActivity : AppCompatActivity() {
         edtMessage=findViewById(R.id.edtMessage)
         btnSend=findViewById(R.id.btnSend)
         chatGroup_Recyclerview=findViewById(R.id.chatGroup_Recyclerview)
+        chatGroupRef = Constrain.initFirebase("GroupChats")
 
 
-        firebaseDatabase = FirebaseDatabase.getInstance(Constrain.firebaseUrl)
-        chatGroupRef = firebaseDatabase!!.getReference("GroupChats")
-
-
-
-        if(!groupImage.equals("")){
-            Picasso.with(context).load(groupImage).into(groupChatImage)
-        }else{
-            groupChatImage!!.setImageResource(R.drawable.loginimage)
-        }
+        Constrain.checkShowImage(context,R.drawable.avatar_default,groupImage!!,groupChatImage!!)
         txtGroupName!!.text=groupName
     }
     private fun sendMessage(message: String) {
@@ -125,7 +116,6 @@ class ChatGroupActivity : AppCompatActivity() {
                 groupChatAdapter= GroupChatAdapter(context, groupChatList)
                 chatGroup_Recyclerview!!.adapter=groupChatAdapter
                 chatGroup_Recyclerview!!.scrollToPosition(groupChatList.size - 1)
-
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}

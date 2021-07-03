@@ -65,8 +65,7 @@ class ChatGroupFragment : Fragment() {
         groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
         participantAPI = Constrain.createRetrofit(ParticipantAPI::class.java)
 
-         ref = FirebaseDatabase.getInstance(Constrain.firebaseUrl)
-            .getReference("GroupChats")
+         ref =Constrain.initFirebase("GroupChats")
         getAllParticipant()
         searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -187,7 +186,7 @@ class ChatGroupFragment : Fragment() {
                        for (i in listG!!.indices){
                            if (listG!![i].groupName!!.contains(keysearch)){
                                listGSearch!!.add(listG!![i])
-
+                               break
                            }
                        }
                        groupChatListAdapter =   GroupChatListAdapter(context!!, listGSearch!!,ref!!)

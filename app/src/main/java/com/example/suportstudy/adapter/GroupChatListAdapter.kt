@@ -12,6 +12,7 @@ import com.example.suportstudy.R
 import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.fragment.ChatGroupFragment
 import com.example.suportstudy.model.Group
+import com.example.suportstudy.until.Constrain
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
@@ -42,12 +43,7 @@ class GroupChatListAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         var  group: Group =list[position]
-        try {
-            Picasso.with(context).load(group.groupImage)
-                .into(holder.groupChatIv)
-        } catch (e: Exception) {
-            holder.groupChatIv!!.setImageResource(R.drawable.loginimage)
-        }
+        Constrain.checkShowImage(context,R.drawable.avatar_default,group.groupImage!!,holder.groupChatIv!!)
         holder.groupNameTv!!.text=group.groupName
         loadLastMessage(group,holder)
 

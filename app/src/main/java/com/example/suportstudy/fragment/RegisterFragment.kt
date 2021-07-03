@@ -27,7 +27,7 @@ import java.util.regex.Matcher
 class RegisterFragment : Fragment() {
     var isTutor = false
     var sd: SweetAlertDialog? = null
-    var users: Users? = null
+
     var isLogin = false
     var sharedPreferences: SharedPreferences? = null
 
@@ -76,7 +76,6 @@ class RegisterFragment : Fragment() {
             var name = edtName.text.toString()
             var password = edtPassword.text.toString()
             val matcher: Matcher = Constrain.VALID_EMAIL_ADDRESS_REGEX.matcher(email)
-
             if (name.equals("")) {
                 edtName.error = "Vui lòng nhập tên !"
                 edtName.setFocusable(true)
@@ -113,13 +112,12 @@ class RegisterFragment : Fragment() {
                     ) {
                         sd!!.titleText = "Đang đăng nhập vào ứng dụng..."
                         if (response.isSuccessful) {
-                            Log.d("respond", response.body().toString())
-                            users = response.body()!!
-                            var _id = users!!._id
-                            var name = users!!.name
-                            var email = users!!.name
-                            var image = users!!.image
-                            var password = users!!.password
+                            var   users = response.body()!!
+                            var _id = users._id
+                            var name = users.name
+                            var email = users.name
+                            var image = users.image
+                            var password = users.password
 
                             isLogin = true
                             val editor = sharedPreferences!!.edit()

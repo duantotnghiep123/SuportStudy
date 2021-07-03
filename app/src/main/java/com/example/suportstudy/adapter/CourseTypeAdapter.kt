@@ -36,7 +36,7 @@ class CourseTypeAdapter (var context: Context, var courseList: List<CourseType>)
     override fun onBindViewHolder(holder: CourseTypeAdapter.MyViewHolder, position: Int) {
         var courseType=courseList.get(position)
         holder.txtCourseName!!.setText(courseType.name)
-        Constrain.checkShowImage(context,courseType.image, holder.courseIv!!)
+        Constrain.checkShowImage(context,R.drawable.ic_gallery_grey,courseType.image, holder.courseIv!!)
         holder.itemView.setOnClickListener {
             var intent=Intent(context,ListCourseActivity::class.java)
             intent.putExtra("_id",courseType._id)

@@ -1,13 +1,16 @@
 package com.example.suportstudy.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.chat.ChatOneActivity
 import com.example.suportstudy.model.Users
+import com.example.suportstudy.until.Constrain
 import com.google.firebase.database.DatabaseReference
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
@@ -44,7 +47,6 @@ class AdapterOneChatlist(
         val userName: String = user.name
         val hisUid: String = user._id
         holder.senderName!!.visibility=View.GONE
-
         val lastMessage = lastMessageMap!![hisUid]
 
         holder.nameTv!!.text = userName
@@ -54,11 +56,14 @@ class AdapterOneChatlist(
             holder.lastMessageTv!!.visibility = View.VISIBLE
             holder.lastMessageTv!!.text = lastMessage
         }
-        try {
-            Picasso.with(context).load(userImage).placeholder(R.drawable.avatar_default)
-                .into(holder.chatIv)
-        } catch (e: Exception) {
-           holder.chatIv!!.setImageResource(R.drawable.avatar_default)
+        Constrain.checkShowImage(context,R.drawable.avatar_default,userImage, holder.chatIv!!)
+
+        holder.itemView.setOnClickListener {
+            var intent = Intent(context, ChatOneActivity::class.java)
+            intent.putExtra("hisUid", user._id)
+            intent.putExtra("hisName", user.name)
+            intent.putExtra("hisImage", user.image)
+            context.startActivity(intent)
         }
     }
     fun setLastMessageMap(userId: String?, lastMessage: String?) {

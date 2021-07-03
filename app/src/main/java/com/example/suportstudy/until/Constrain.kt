@@ -10,28 +10,25 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.provider.MediaStore
-import android.text.Html
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
-import androidx.recyclerview.widget.RecyclerView
+import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.Toast
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
 import com.example.suportstudy.model.Question
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
-import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.coroutines.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.Exception
 import java.util.regex.Pattern
 
 object Constrain {
 
-    val appId = "duantotnghiep-aeidb";
-
     //    var baseUrl="http://192.168.3.107:10000"
-    var baseUrl = "http://192.168.1.11:3000"
+    var baseUrl = "http://192.168.1.4:3000"
     var firebaseUrl="https://suportstudy-72e5e-default-rtdb.firebaseio.com/"
 //    var baseUrl="http://172.20.10.3:10000"
 
@@ -43,12 +40,20 @@ object Constrain {
     var KEY_LOGIN = "islogin"
     var KEY_ISTUTOR = "isTutor"
 
-    val VALID_EMAIL_ADDRESS_REGEX =
-        Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE)
+    val VALID_EMAIL_ADDRESS_REGEX =Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE)
 
-     val STORAGE_REQUEST_CODE = 300
-     val IMAGE_PICK_GALLERY_CODE = 400
 
+    var CHANNEL_ID = "1000"
+    var NOTIFICATION_ID = 100
+
+    var NOTIFICATION_URL = "https://fcm.googleapis.com/fcm/send"
+    var SERVER_KEY ="AAAAT1UYtF0:APA91bELQ_x37OR3dXL_ZlUk3a3AE6qj6Xe7_JwaDfzpNP6S5TOk2CahSW_NPCRkZu2LC-TQReQl5gw0Ji_tlpB7-xmOKXQ8ZKmMhJTuToL3CQO13ihh-ilUypMVL4OwnaynaW6A9u6A"
+
+
+    var NOTIFICATION_CHAT_TEXT="notification_chat_text"
+    var NOTIFICATION_CHAT_IMAGE="notification_chat_image"
+    var NOTIFICATION_CHAT_GROUP_TEXT="notification_chat_group_text"
+    var NOTIFICATION_CHAT_GROUP_IMAGE="notification_chat_group_image"
     fun <T> nextActivity(context: Context, clazz: Class<T>) {
         var intent = Intent(context, clazz);
         context.startActivity(intent)
@@ -58,19 +63,16 @@ object Constrain {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 
-
     fun hideKeyBoard(context: Activity) {
         @SuppressLint("ServiceCast") val inputManager: InputMethodManager =
             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(context.currentFocus!!.windowToken, 0)
     }
 
-
     fun sweetdialog(context: Context, title: String):SweetAlertDialog{
         var sd = SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE)
         sd!!.titleText = title
         sd!!.setCancelable(false)
-
         return sd
     }
     var retrofit: Retrofit? = null
@@ -108,18 +110,22 @@ object Constrain {
     }
 
 
-    fun checkShowImage(context: Context,imageUrl:String,imageView: ImageView){
+    fun checkShowImage(context: Context,defautImage:Int, imageUrl: String, imageView: ImageView){
         try {
-            if(!imageUrl.equals("")){
-                Picasso.with(context).load(imageUrl).placeholder(R.drawable.ic_gallery_grey).into(imageView)
+            if(imageUrl.equals("noImage")){
+                imageView!!.setImageResource(defautImage)
+            }else if(imageUrl.equals("")){
+                imageView!!.setImageResource(defautImage)
             }else{
-                imageView!!.setImageResource(R.drawable.ic_gallery_grey)
+                Picasso.with(context).load(imageUrl).placeholder(defautImage).into(
+                    imageView
+                )
             }
         }catch (e: Exception){
             imageView!!.setImageResource(R.drawable.ic_gallery_grey)
         }
     }
-    fun createDialog(context: Context,layout:Int):Dialog{
+    fun createDialog(context: Context, layout: Int):Dialog{
         val dialog = Dialog(context)
         dialog.setContentView(layout)
         dialog!!.window!!.attributes.windowAnimations = R.style.DialogTheme
@@ -136,8 +142,7 @@ object Constrain {
         return dialog
     }
 
-    fun getRealPathFromURI(context: Activity,contentUri: Uri?): String? {
-
+    fun getRealPathFromURI(context: Activity, contentUri: Uri?): String? {
         val proj = arrayOf(MediaStore.Images.Media.DATA)
         val cursor: Cursor = context.managedQuery(
             contentUri,
@@ -150,6 +155,12 @@ object Constrain {
         cursor.moveToFirst()
         return cursor.getString(column_index)
     }
+
+    fun initFirebase(path:String):DatabaseReference{
+        var ref=FirebaseDatabase.getInstance(firebaseUrl).getReference(path)
+        return ref
+    }
+
 
 
 }

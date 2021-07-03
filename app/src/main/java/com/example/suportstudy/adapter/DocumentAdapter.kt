@@ -39,7 +39,7 @@ class DocumentAdapter(var context: Context, var list: ArrayList<Document>) :
         holder.txtTitle.text = list[position].title
         var imageUrl=list[position].image
 
-        Constrain.checkShowImage(context,imageUrl,holder.imageView)
+        Constrain.checkShowImage(context,R.drawable.ic_gallery_grey,imageUrl,holder.imageView)
         holder.itemView.setOnClickListener { v: View? ->
             val intent = Intent(context, ViewDocumentDetailActivity::class.java)
             intent.putExtra("position", position + 1)

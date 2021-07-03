@@ -1,25 +1,20 @@
 package com.example.suportstudy.activity.acount
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.database.Cursor
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
-import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.MainActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.group.ListGroupActivity
+import com.example.suportstudy.controller.UserController
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
@@ -50,14 +45,11 @@ class ProfileActivity : AppCompatActivity() {
     var userAPI: UserAPI? = null
 
     var image_uri: Uri? = null
-    var part_image: String? = null
-
+    var path_imageStorage: String? = null
 
     var image = ""
-    var email = ""
     var password = ""
     var name = ""
-    var key = ""
 
 
     @SuppressLint("NewApi")
@@ -70,7 +62,6 @@ class ProfileActivity : AppCompatActivity() {
             Constrain.nextActivity(context,CourseTypeActivity::class.java)
             finish()
         }
-
         avatarIv!!.setOnClickListener {
             if (!Persmission.checkStoragePermission(context)) {
                 Persmission.requestStoragetPermission(context)
@@ -78,7 +69,6 @@ class ProfileActivity : AppCompatActivity() {
                 Persmission.pickFromGallery(context)
             }
         }
-
         listGroupLayout!!.setOnClickListener {
             var intent = Intent(context, ListGroupActivity::class.java)
             intent.putExtra("group", "groupMyJoin")
@@ -93,11 +83,8 @@ class ProfileActivity : AppCompatActivity() {
         deletedUserLayout!!.setOnClickListener {
             deleteUser()
         }
-
         logoutLayout!!.setOnClickListener {
-
             val dialog = Constrain.createDialog(context,R.layout.dialog_confirm)
-
             var txtXacNhan = dialog.findViewById<TextView>(R.id.txtXacNhan)
             var btnHuy = dialog.findViewById<AppCompatButton>(R.id.btnHuy)
             var btnXacNhan = dialog.findViewById<AppCompatButton>(R.id.btnXacNhan)
@@ -122,7 +109,6 @@ class ProfileActivity : AppCompatActivity() {
 
     fun initViewData() {
         sharedPreferences = getSharedPreferences(Constrain.SHARED_REF_NAME, MODE_PRIVATE)
-
         listGroupLayout = findViewById(R.id.listGroupLayout)
         changeNameLayout = findViewById(R.id.changeNameLayout)
         changepasswordLayout = findViewById(R.id.changepasswordLayout)
@@ -132,20 +118,18 @@ class ProfileActivity : AppCompatActivity() {
         nameTv = findViewById(R.id.nameTv)
         finishTv = findViewById(R.id.finishTv)
         userAPI = Constrain.createRetrofit(UserAPI::class.java)
-
     }
 
     fun editImage() {
-        var file = File(part_image)
+        var file = File(path_imageStorage)
         var requestId =
             RequestBody.create(MediaType.parse("multipart/form_data"), CourseTypeActivity.uid)
         var requestOldImage = RequestBody.create(MediaType.parse("multipart/form_data"), image)
         val reqFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
-        val body = MultipartBody.Part.createFormData("image", file.getName(), reqFile)
+        val body = MultipartBody.Part.createFormData("user", file.getName(), reqFile)
         userAPI!!.editImage(requestId, body, requestOldImage)
             .enqueue(object : Callback<Users> {
                 override fun onResponse(call: Call<Users>, response: Response<Users>) {
-                    Log.d("UploadImage", response.body().toString())
                     if (response.isSuccessful) {
                         Constrain.showToast(context, "Đổi thành công")
                         getDataProfile(CourseTypeActivity.uid)
@@ -153,52 +137,77 @@ class ProfileActivity : AppCompatActivity() {
                 }
                 override fun onFailure(call: Call<Users>, t: Throwable) {
                     Constrain.showToast(context, "Thất bại")
-
                     t.printStackTrace()
                     Log.e("ERROR", t.toString())
                 }
             })
-
-
     }
 
     private fun getDataProfile(uid: String?) {
-        userAPI!!.getAllUsersByID(uid).enqueue(object : Callback<List<Users>> {
-            override fun onResponse(
-                call: Call<List<Users>>,
-                response: Response<List<Users>>
-            ) {
-                if (response.isSuccessful) {
-                    var imgUrl = ""
-                    for (i in response.body()!!.indices) {
-                        imgUrl = response.body()!![i].image
-                        name = response.body()!![i].name
-                        password = response.body()!![i].password
 
-                    }
-                    Constrain.showToast(context, image)
-                    val editor = sharedPreferences!!.edit()
-                    editor.putString(Constrain.KEY_IMAGE, imgUrl)
-                    editor.apply()
-
-                    image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")!!
-                    nameTv!!.text = name
-                    if (imgUrl.equals("noImage") || imgUrl.equals("")) {
-                        avatarIv!!.setImageResource(R.drawable.loginimage)
-                    } else {
-                        var path = Constrain.baseUrl + "/profile/" + imgUrl.substring(30)
-                        Picasso.with(context).load(path).into(avatarIv)
-                    }
-
-                }
+        var data=UserController.getUserProfile(context,uid!!)
+        data.observe(context,{listUser->
+            var imgUrl = ""
+            for (i in listUser!!.indices) {
+                imgUrl = listUser!![i].image
+                name = listUser!![i].name
+                password = listUser!![i].password
 
             }
+            Constrain.showToast(context, image)
+            val editor = sharedPreferences!!.edit()
+            editor.putString(Constrain.KEY_IMAGE, imgUrl)
+            editor.apply()
 
-            override fun onFailure(call: Call<List<Users>>, t: Throwable) {
-                Log.e("err", t.message.toString())
+            image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")!!
+            nameTv!!.text = name
+            if (imgUrl.equals("noImage") || imgUrl.equals("")) {
+                avatarIv!!.setImageResource(R.drawable.loginimage)
+            } else {
+                Log.e("path",imgUrl.substring(imgUrl.lastIndexOf("/")+1))
+                var path = Constrain.baseUrl + "/profile/" + imgUrl.substring(imgUrl.lastIndexOf("/")+1)
+
+                Picasso.with(context).load(path).into(avatarIv)
             }
-
         })
+//        userAPI!!.getAllUsersByID(uid).enqueue(object : Callback<List<Users>> {
+//            override fun onResponse(
+//                call: Call<List<Users>>,
+//                response: Response<List<Users>>
+//            ) {
+//                if (response.isSuccessful) {
+//                    var imgUrl = ""
+//                    for (i in response.body()!!.indices) {
+//                        imgUrl = response.body()!![i].image
+//                        name = response.body()!![i].name
+//                        password = response.body()!![i].password
+//
+//                    }
+//                    Constrain.showToast(context, image)
+//                    val editor = sharedPreferences!!.edit()
+//                    editor.putString(Constrain.KEY_IMAGE, imgUrl)
+//                    editor.apply()
+//
+//                    image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")!!
+//                    nameTv!!.text = name
+//                    if (imgUrl.equals("noImage") || imgUrl.equals("")) {
+//                        avatarIv!!.setImageResource(R.drawable.loginimage)
+//                    } else {
+//                        Log.e("path",imgUrl.substring(imgUrl.lastIndexOf("/")+1))
+//                        var path = Constrain.baseUrl + "/profile/" + imgUrl.substring(imgUrl.lastIndexOf("/")+1)
+//
+//                        Picasso.with(context).load(path).into(avatarIv)
+//                    }
+//
+//                }
+//
+//            }
+//
+//            override fun onFailure(call: Call<List<Users>>, t: Throwable) {
+//                Log.e("err", t.message.toString())
+//            }
+//
+//        })
     }
 
     fun editName() {
@@ -238,7 +247,6 @@ class ProfileActivity : AppCompatActivity() {
         }
         dialog.show()
     }
-
     private fun editPassword() {
         val dialog = Constrain.createDialog(context,R.layout.dialog_edit_password)
 
@@ -301,7 +309,6 @@ class ProfileActivity : AppCompatActivity() {
         }
         dialog.show()
     }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
@@ -321,13 +328,11 @@ class ProfileActivity : AppCompatActivity() {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK) {
             if (requestCode == Persmission.IMAGE_PICK_GALLERY_CODE) {
                 image_uri = data!!.data!!
-                part_image = Constrain.getRealPathFromURI(context,image_uri)
-                Constrain.showToast(context, part_image!!)
+                path_imageStorage = Constrain.getRealPathFromURI(context,image_uri)
                 editImage()
 
             }

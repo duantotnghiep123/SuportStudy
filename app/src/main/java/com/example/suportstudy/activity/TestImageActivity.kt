@@ -34,13 +34,8 @@ import java.io.File
 class TestImageActivity : AppCompatActivity() {
     var context = this@TestImageActivity
     var apiService: ApiService? = null
-
-    private val STORAGE_REQUEST_CODE = 100
-    private val IMAGE_PICK_GALLERY_CODE = 200
-    var image_uri: Uri? = null
     var part_image: String? = null
     var storagePermission: Array<String>? = null
-    var bitmap:Bitmap?=null
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +58,7 @@ class TestImageActivity : AppCompatActivity() {
 
     }
     fun loadimgae(){
+
         var file=File(part_image)
         val reqFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
         val body = MultipartBody.Part.createFormData("myFile", file.getName(), reqFile)
@@ -103,7 +99,7 @@ class TestImageActivity : AppCompatActivity() {
     private fun requestStoragetPermission() {
         requestPermissions(
             storagePermission!!,
-            Constrain.STORAGE_REQUEST_CODE
+            Persmission.STORAGE_REQUEST_CODE
         )
     }
 
@@ -112,7 +108,7 @@ class TestImageActivity : AppCompatActivity() {
         galleryIntent.type = "image/*"
         startActivityForResult(
             galleryIntent,
-            IMAGE_PICK_GALLERY_CODE
+            Persmission.IMAGE_PICK_GALLERY_CODE
         )
     }
 
@@ -122,7 +118,7 @@ class TestImageActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         when (requestCode) {
-            Constrain.STORAGE_REQUEST_CODE -> {
+            Persmission.STORAGE_REQUEST_CODE -> {
                 if (grantResults.size > 0) {
                     val writeStorageAccpted = grantResults[0] == PackageManager.PERMISSION_GRANTED
                     if (writeStorageAccpted) {
@@ -138,7 +134,7 @@ class TestImageActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK) {
-            if (requestCode ==IMAGE_PICK_GALLERY_CODE) {
+            if (requestCode ==Persmission.IMAGE_PICK_GALLERY_CODE) {
                 val pickedImage: Uri = data!!.data!!
                 img.setImageURI(pickedImage)
                part_image=  getRealPathFromURI(pickedImage)
