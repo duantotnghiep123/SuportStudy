@@ -6,6 +6,6 @@ import retrofit2.http.GET
 
 
 interface QuestionAPI {
-    @GET("/api/getAllQuestion")
+    @GET("/api/questions")
     suspend fun getAllQuestion(): Response<List<Question>>
 }

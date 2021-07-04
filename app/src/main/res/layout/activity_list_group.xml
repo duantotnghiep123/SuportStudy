@@ -52,7 +52,10 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+
         <TextView
+            android:id="@+id/txtTitle"
             android:text="Nhóm trong khóa"
             android:textStyle="bold"
             android:layout_gravity="center_horizontal"
@@ -62,10 +65,14 @@
             android:textSize="23dp"
             android:textColor="@color/black"
             android:layout_height="wrap_content"/>
+        <SearchView
+            android:id="@+id/searchView"
+            android:background="@drawable/background_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvListGroup"
             android:layout_marginTop="20dp"
-            android:visibility="invisible"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="vertical"
             android:layout_width="match_parent"

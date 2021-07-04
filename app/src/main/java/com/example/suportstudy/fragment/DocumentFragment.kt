@@ -11,6 +11,7 @@ import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseDetailActivity
 import com.example.suportstudy.adapter.DocumentAdapter
 import com.example.suportstudy.model.Document
+import com.example.suportstudy.until.Constrain
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -23,7 +24,6 @@ class DocumentFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
         }
     }
 
@@ -36,10 +36,11 @@ class DocumentFragment : Fragment() {
 
         var view=inflater.inflate(R.layout.fragment_document, container, false)
 
+
         recyclerView = view.findViewById<RecyclerView>(R.id.rcvDocument)
         list = ArrayList()
         for (i in 1..23) {
-            list!!.add(Document("Android bài $i", CourseDetailActivity.imageUrl))
+            list!!.add(Document("Bài $i", CourseDetailActivity.imageUrl))
         }
         documentAdapter = DocumentAdapter(activity!!, list!!)
         recyclerView!!.adapter = documentAdapter

@@ -15,7 +15,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.MainActivity
 import com.example.suportstudy.activity.acount.LoginAndRegisterMainActivity
-import com.example.suportstudy.activity.course.ListCourseActivity
+import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
@@ -27,7 +27,7 @@ import java.util.regex.Matcher
 class RegisterFragment : Fragment() {
     var isTutor = false
     var sd: SweetAlertDialog? = null
-    var users: Users? = null
+
     var isLogin = false
     var sharedPreferences: SharedPreferences? = null
 
@@ -76,7 +76,6 @@ class RegisterFragment : Fragment() {
             var name = edtName.text.toString()
             var password = edtPassword.text.toString()
             val matcher: Matcher = Constrain.VALID_EMAIL_ADDRESS_REGEX.matcher(email)
-
             if (name.equals("")) {
                 edtName.error = "Vui lòng nhập tên !"
                 edtName.setFocusable(true)
@@ -103,7 +102,7 @@ class RegisterFragment : Fragment() {
                     name,
                     email,
                     password,
-                    "https://www.pngitem.com/pimgs/m/130-1300253_female-user-icon-png-download-user-image-color.png",
+                    "noImage",
                     isTutor
                 )
                 call.enqueue(object : retrofit2.Callback<Users> {
@@ -112,28 +111,27 @@ class RegisterFragment : Fragment() {
                         response: Response<Users>
                     ) {
                         sd!!.titleText = "Đang đăng nhập vào ứng dụng..."
-
                         if (response.isSuccessful) {
-                            Log.d("respond", response.body().toString())
-                            users = response.body()!!
-                            var _id = users!!._id
-                            var name = users!!.name
-                            var email = users!!.name
-                            var image = users!!.image
-                            var password = users!!.password
+                            var   users = response.body()!!
+                            var _id = users._id
+                            var name = users.name
+                            var email = users.name
+                            var image = users.image
+                            var password = users.password
 
                             isLogin = true
                             val editor = sharedPreferences!!.edit()
                             editor.putString(Constrain.KEY_ID, _id)
                             editor.putString(Constrain.KEY_NAME, name)
                             editor.putString(Constrain.KEY_EMAIL, email)
+                            editor.putString(Constrain.KEY_IMAGE, image)
                             editor.putBoolean(Constrain.KEY_LOGIN, isLogin)
                             editor.putBoolean(Constrain.KEY_ISTUTOR, isTutor)
                             editor.apply()
                             sd!!.dismiss()
                             Constrain.nextActivity(
                                 activity!!,
-                                ListCourseActivity::class.java
+                                CourseTypeActivity::class.java
                             )
                             activity!!.finish()
                         }
