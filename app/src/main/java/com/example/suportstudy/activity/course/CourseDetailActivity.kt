@@ -1,15 +1,16 @@
 package com.example.suportstudy.activity.course
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.RequiresApi
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.group.ListGroupActivity
 import com.example.suportstudy.activity.home.HomeActivity
@@ -18,26 +19,35 @@ import com.example.suportstudy.model.Participant
 import com.example.suportstudy.service.GroupAPI
 import com.example.suportstudy.service.ParticipantAPI
 import com.example.suportstudy.until.Constrain
-import com.squareup.picasso.Picasso
+import com.example.suportstudy.until.Persmission
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 class CourseDetailActivity : AppCompatActivity() {
 
     var txtCourseName: TextView? = null
     var txtDescription: TextView? = null
-    var IVCourse: ImageView? = null
+    var courseIv: ImageView? = null
     var btnJoin: Button? = null
-    var btnGroup: Button? = null
+    var btnCreateGroup: Button? = null
+    var  ivGroup: CircleImageView? = null
     var context = this@CourseDetailActivity
 
     var groupAPI: GroupAPI? = null
     var participantAPI: ParticipantAPI? = null
 
+    var myUid=CourseTypeActivity.uid
 
+    var sd:SweetAlertDialog?=null
+    var image_uri: Uri? = null
+    var part_image: String? = null
 
     companion object {
         var imageUrl = ""
@@ -45,39 +55,57 @@ class CourseDetailActivity : AppCompatActivity() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_course_detail)
+        initViewData()
+        loadDetail()
+
+        btnCreateGroup!!.setOnClickListener {
+            if(btnCreateGroup!!.text.equals("Tạo Nhóm")){
+                createGroup()
+            }else if(btnCreateGroup!!.text.equals("Nhóm thảo luận")){
+                var intent=Intent(context,ListGroupActivity::class.java)
+                intent.putExtra("group","allgroup")
+                startActivity(intent)
+            }
+        }
+
+        btnJoin!!.setOnClickListener {
+            var intent = Intent(context, HomeActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (CourseTypeActivity.istutor == true) {
+            btnCreateGroup!!.text = "Tạo Nhóm"
+        } else {
+            btnCreateGroup!!.text = "Nhóm thảo luận"
+
+        }
+
+    }
+    fun initViewData(){
+        sd=Constrain.sweetdialog(context,"Đang tạo nhóm...")
+
         groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
         participantAPI = Constrain.createRetrofit(ParticipantAPI::class.java)
 
 
         txtCourseName = findViewById(R.id.txtCourseName)
         txtDescription = findViewById(R.id.txtDescription)
-        IVCourse = findViewById(R.id.IVCourse)
+        courseIv = findViewById(R.id.courseIv)
         btnJoin = findViewById(R.id.btnJoin)
-        btnGroup = findViewById(R.id.btnCrearteClass)
+        btnCreateGroup = findViewById(R.id.btnCrearteClass)
 
-
-
-        if (ListCourseActivity.istutor == true) {
-            btnGroup!!.text = "Tạo Nhóm"
-            btnGroup!!.setOnClickListener {
-                createGroup()
-            }
+        if (CourseTypeActivity.istutor == true) {
+            btnCreateGroup!!.text = "Tạo Nhóm"
         } else {
-            btnGroup!!.text = "Nhóm thảo luận"
-            btnGroup!!.setOnClickListener {
-                var intent=Intent(context,ListGroupActivity::class.java)
-                intent.putExtra("group","allgroup")
-                startActivity(intent)
-            }
-        }
-        loadDetail()
-        btnJoin!!.setOnClickListener {
-            var intent = Intent(context, HomeActivity::class.java)
-            startActivity(intent)
+            btnCreateGroup!!.text = "Nhóm thảo luận"
         }
     }
 
@@ -90,82 +118,45 @@ class CourseDetailActivity : AppCompatActivity() {
 
         txtCourseName!!.text = name
         txtDescription!!.text = desciption
-        if (!imageUrl.equals("")) {
-            Picasso.with(context).load(imageUrl).placeholder(R.drawable.ic_gallery_grey)
-                .into(IVCourse)
-        } else {
-            IVCourse!!.setImageResource(R.drawable.ic_gallery_grey)
-        }
+
+        Constrain.checkShowImage(context,R.drawable.ic_gallery_grey, imageUrl,courseIv!!)
+
     }
+    @RequiresApi(Build.VERSION_CODES.M)
     fun createGroup() {
-        Constrain.showToast(context,"TẠo nhom")
-        val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_create_group)
-        dialog!!.window!!.attributes.windowAnimations = R.style.DialogTheme
-        val window = dialog!!.window
-        window!!.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        if (dialog != null && dialog.window != null) {
-            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        }
-        dialog!!.setCancelable(false)
+        val dialog =Constrain.createDialog(context,R.layout.dialog_create_group)
         val btnHuy = dialog!!.findViewById<Button>(R.id.btnHuy)
         val btnTao = dialog!!.findViewById<Button>(R.id.btnTao)
         val edtName = dialog!!.findViewById<EditText>(R.id.edtName)
         val edtDecription = dialog!!.findViewById<EditText>(R.id.edtDecription)
-        val ivGroup = dialog!!.findViewById<CircleImageView>(R.id.IVGroup)
+         ivGroup = dialog!!.findViewById<CircleImageView>(R.id.IVGroup)
+
+        ivGroup!!.setOnClickListener {
+            if (!Persmission.checkStoragePermission(context)) {
+                Persmission.requestStoragetPermission(context)
+            } else {
+                Persmission.pickFromGallery(context)
+
+            }
+        }
 
         btnTao.setOnClickListener {
-
-
+            sd!!.show()
             var groupName = edtName.text.toString()
             var groupDescription = edtDecription.text.toString()
             var time=System.currentTimeMillis().toString()
-            groupAPI!!.insertGroup(
-                ListCourseActivity.uid,
-                groupName,
-                groupDescription,
-                "",
-                courseId!!
-            )
-                .enqueue(object : retrofit2.Callback<com.example.suportstudy.model.Group> {
-                    override fun onResponse(
-                        call: retrofit2.Call<com.example.suportstudy.model.Group>,
-                        response: Response<com.example.suportstudy.model.Group>
-                    ) {
-                        if (response.isSuccessful) {
-                            var groupId= response.body()!!._id
-                            participantAPI!!.insertParticipant(
-                               time,
-                                ListCourseActivity.uid,
-                                groupId!!,
-                                courseId!!
-                            ).enqueue(object :Callback<Participant>{
-                                override fun onResponse(
-                                    call: Call<Participant>,
-                                    response: Response<Participant>
-                                ) {
-                                   if(response.isSuccessful){
-                                       Constrain.showToast(context,"Tạo nhóm thành công")
-                                       dialog.dismiss()
+           if (image_uri==null){
+               createGroupNoImage(myUid,groupName,groupDescription,"noImage",courseId,time)
+               sd!!.dismiss()
+               dialog.dismiss()
+           }else{
+               createGroupWithImage(myUid!!,groupName,groupDescription,time)
+               sd!!.dismiss()
+               dialog.dismiss()
+           }
 
-                                   }
-                                }
 
-                                override fun onFailure(call: Call<Participant>, t: Throwable) {
-                                }
 
-                            })
-                        }
-                    }
-
-                    override fun onFailure(call: retrofit2.Call<com.example.suportstudy.model.Group>, t: Throwable) {
-
-                        Log.v("Data", "Error: " + t.message.toString())
-                    }
-                })
 
         }
         btnHuy.setOnClickListener {
@@ -173,12 +164,115 @@ class CourseDetailActivity : AppCompatActivity() {
         }
         dialog.show()
     }
-    override fun onBackPressed() {
-        Constrain.showToast(context, "fff")
-        super.onBackPressed()
+
+    private fun createGroupWithImage(createBy:String,groupName:String,groupDescription:String,time:String) {
+        var file = File(part_image)
+
+        var createBy =   RequestBody.create(MediaType.parse("multipart/form_data"), createBy)
+        var groupName =   RequestBody.create(MediaType.parse("multipart/form_data"), groupName)
+        var groupDescription =   RequestBody.create(MediaType.parse("multipart/form_data"), groupDescription)
+        var courseID =   RequestBody.create(MediaType.parse("multipart/form_data"), courseId)
+        val reqFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
+        val image = MultipartBody.Part.createFormData("group", file.getName(), reqFile)
+
+        groupAPI!!.createGroupWithImage(createBy,groupName,groupDescription,image,courseID)
+            .enqueue(object : Callback<Group>{
+                override fun onResponse(call: Call<Group>, response: Response<Group>) {
+                    if (response.isSuccessful) {
+                        var groupId= response.body()!!._id
+                        participant(time!!, myUid!!, groupId!!, courseId!!)
+                    }
+                }
+                override fun onFailure(call: Call<Group>, t: Throwable) {
+                     Log.e("Error",t.message.toString())
+                }
+            } )
+
     }
-    override fun onNavigateUp(): Boolean {
-        return super.onNavigateUp()
-        Constrain.showToast(context, "fff")
+
+    private fun createGroupNoImage(myUid: String?, groupName: String, groupDescription: String, image: String, courseId: String?, time: String?) {
+        groupAPI!!.createGroupNoImage(
+            myUid,
+            groupName,
+            groupDescription,
+            image,
+            courseId!!
+        )
+            .enqueue(object : Callback<Group> {
+                override fun onResponse(
+                    call: Call<Group>,
+                    response: Response<Group>
+                ) {
+                    if (response.isSuccessful) {
+                        var groupId= response.body()!!._id
+                        participant(time!!, myUid!!, groupId!!,courseId!!)
+
+                    }
+                }
+                override fun onFailure(call: retrofit2.Call<com.example.suportstudy.model.Group>, t: Throwable) {
+                    Log.v("Data", "Error: " + t.message.toString())
+                }
+            })
+    }
+    fun participant(time:String,myUid:String,groupId:String,courseId:String){
+        participantAPI!!.insertParticipant(
+            time,
+            myUid,
+            groupId!!,
+            courseId
+        ).enqueue(object :Callback<Participant>{
+            override fun onResponse(
+                call: Call<Participant>,
+                response: Response<Participant>
+            ) {
+                if(response.isSuccessful){
+                    Constrain.showToast(context,"Tạo nhóm thành công")
+                    sd!!.dismiss()
+
+                }
+            }
+
+            override fun onFailure(call: Call<Participant>, t: Throwable) {
+                Log.e("Error",t.message.toString())
+
+            }
+
+        })
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            Persmission.STORAGE_REQUEST_CODE -> {
+                if (grantResults.size > 0) {
+                    val writeStorageAccpted = grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    if (writeStorageAccpted) {
+                        Persmission.pickFromGallery(context)
+                    } else {
+                        Constrain.showToast(context, "Bật quyen thư viện")
+                    }
+                }
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == Persmission.IMAGE_PICK_GALLERY_CODE) {
+                image_uri = data!!.data!!
+                ivGroup!!.setImageURI(image_uri)
+
+                part_image = Constrain.getRealPathFromURI(context,image_uri)
+                Constrain.showToast(context, part_image!!)
+                Log.e("imageUri", image_uri.toString())
+            }
+
+
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

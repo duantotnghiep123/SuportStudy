@@ -41,7 +41,6 @@ class ListMemberGroupActivity : AppCompatActivity() {
         groupId=intentGroupChat.getStringExtra("groupId")
     }
     fun getAllParticipantByGroupId(){
-
         participantAPI!!.getAllParticipant()
             .enqueue(object :Callback<List<Participant>>{
                 override fun onResponse(
@@ -56,7 +55,6 @@ class ListMemberGroupActivity : AppCompatActivity() {
                         }
                     }
                 }
-
                 override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
 
                 }
@@ -74,7 +72,6 @@ class ListMemberGroupActivity : AppCompatActivity() {
                    }
 
                 }
-
                 override fun onFailure(call: Call<List<Users>>, t: Throwable) {
 
                 }

@@ -17,6 +17,7 @@
 
     <!-- Color of Background. -->
     <color name="backgroundColor">#0E803D</color>
+    <color name="green">#0E803D</color>
     <color name="colorOfStroke">#60585d</color>
 
     <!-- Color of name and result in activity_result. -->
@@ -39,7 +40,7 @@
     <color name="background_layout">#FAFAFA</color>
     <color name="orange">#E8281A</color>
     <color name="orange50">#f76971</color>
-    <color name="green">#44D54F</color>
 
     <color name="placeholder_bg">#DADADA</color>
+    <color name="grey05">#F6F6F6</color>
 </resources>

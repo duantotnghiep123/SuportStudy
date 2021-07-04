@@ -30,7 +30,6 @@ class HomeActivity : AppCompatActivity() {
         btnDocument.setOnClickListener {
             fm.beginTransaction().hide(active).show(fragmentDocument).commit()
             active = fragmentDocument
-
         }
         btnChat.setOnClickListener {
             fm.beginTransaction().hide(active).show(fragmentChat).commit()

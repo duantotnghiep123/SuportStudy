@@ -19,7 +19,6 @@ import com.example.suportstudy.activity.MainActivity
 import com.example.suportstudy.activity.acount.LoginAndRegisterMainActivity
 import com.example.suportstudy.model.Question
 import com.example.suportstudy.service.QuestionAPI
-import com.example.suportstudy.until.ConnectivityReceiver
 import com.example.suportstudy.until.Constrain
 import kotlinx.android.synthetic.main.activity_quizz.*
 import kotlinx.coroutines.CoroutineScope
@@ -37,7 +36,6 @@ class QuizzActivity : AppCompatActivity(){
     var isconected=false
     var lazyLoader: LazyLoader? = null
     var questionView: NestedScrollView? = null
-    private var connectivityReceiver: ConnectivityReceiver? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

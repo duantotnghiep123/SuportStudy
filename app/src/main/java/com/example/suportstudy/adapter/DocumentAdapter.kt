@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.document.ViewDocumentDetailActivity
 import com.example.suportstudy.model.Document
+import com.example.suportstudy.until.Constrain
 import com.makeramen.roundedimageview.RoundedImageView
 import com.squareup.picasso.Picasso
 import java.util.*
@@ -20,12 +21,9 @@ import kotlin.collections.ArrayList
 class DocumentAdapter(var context: Context, var list: ArrayList<Document>) :
     Adapter<DocumentAdapter.ViewHolder>() {
 
-
-
      inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var txtTitle: TextView
         var imageView: RoundedImageView
-
         init {
             txtTitle = itemView.findViewById(R.id.txt)
             imageView = itemView.findViewById(R.id.img)
@@ -40,12 +38,8 @@ class DocumentAdapter(var context: Context, var list: ArrayList<Document>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.txtTitle.text = list[position].title
         var imageUrl=list[position].image
-        if(!imageUrl.equals("")){
-            Picasso.with(context).load(imageUrl).placeholder(R.drawable.ic_gallery_grey).into(holder.imageView)
-        }else{
-            holder.imageView!!.setImageResource(R.drawable.ic_gallery_grey)
-        }
 
+        Constrain.checkShowImage(context,R.drawable.ic_gallery_grey,imageUrl,holder.imageView)
         holder.itemView.setOnClickListener { v: View? ->
             val intent = Intent(context, ViewDocumentDetailActivity::class.java)
             intent.putExtra("position", position + 1)

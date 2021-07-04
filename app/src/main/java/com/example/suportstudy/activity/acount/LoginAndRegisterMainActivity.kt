@@ -19,14 +19,12 @@ class LoginAndRegisterMainActivity : AppCompatActivity() {
 
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_and_register_main)
         var intent:Intent=intent
         po=intent.getIntExtra("positionRegister",1);
         isTutor=intent.getBooleanExtra("isTutor",false);
-
 
         viewPager = findViewById(R.id.viewpager_Login_Register)
         tabLayout = findViewById(R.id.tablayout_Login__Register)
@@ -43,7 +41,6 @@ class LoginAndRegisterMainActivity : AppCompatActivity() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager!!.setCurrentItem(tab.position)
             }
-
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
