@@ -32,6 +32,10 @@ interface GroupAPI {
     @FormUrlEncoded
     fun getGroupById(@Field("_id") _id: String?): Call<List<Group>>
 
+    @POST("/api/findGroupByName")
+    @FormUrlEncoded
+    fun getGroupByName(@Field("groupName") _id: String?): Call<List<Group>>
+
     @POST("/api/findGroupId")
     @FormUrlEncoded
     fun getGroupById2(@Field("_id") _id: String?): Response<List<Group>>

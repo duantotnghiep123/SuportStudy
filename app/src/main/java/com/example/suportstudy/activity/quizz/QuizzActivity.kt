@@ -47,7 +47,6 @@ class QuizzActivity : AppCompatActivity(){
 
 
         val quizzApi = Constrain.createRetrofit(QuestionAPI::class.java)
-        Constrain.showToast(applicationContext,isconected.toString())
         questionView!!.visibility = View.GONE
         lazyLoader!!.visibility = View.VISIBLE
         CoroutineScope(Dispatchers.IO).launch {

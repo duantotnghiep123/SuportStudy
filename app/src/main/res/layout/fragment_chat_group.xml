@@ -24,6 +24,7 @@
         app:lazyloader_thirdDotColor="#FFD600" />
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -32,8 +33,29 @@
         android:focusable="false"
         app:queryBackground="@null"
         app:queryHint="Nhập tên nhóm cần tìm" />
+    <LinearLayout
+        android:id="@+id/noDataLayout"
+        android:visibility="gone"
+        android:gravity="center_horizontal"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+
+            android:src="@drawable/nogroup"
+            android:scaleType="fitXY"
+            android:layout_width="350dp"
+            android:layout_height="250dp"/>
+        <TextView
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:text="Không có dữ liệu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_below="@+id/searchView"
         android:id="@+id/recyclerViewChatGroup"
         android:layout_width="match_parent"
