@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 
-object Until {
+object Utils {
 
     fun reportMessage(context: Context?, message: String?) {
         val toast = Toast.makeText(context, message, Toast.LENGTH_LONG)

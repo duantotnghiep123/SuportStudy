@@ -5,10 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.MutableLiveData
 import com.example.suportstudy.R
@@ -60,16 +57,17 @@ class InfoGroupActivity : AppCompatActivity() {
             context.startActivity(intent)
         }
         leaveGroupLayout!!.setOnClickListener {
-            var dialog=Constrain.createDialog(context,R.layout.dialog_confirm)
-            var txtXacnhan=dialog.txtXacNhan
+            val dialog = Constrain.createDialog(context,R.layout.dialog_confirm2)
+            var txtXacNhan = dialog.findViewById<TextView>(R.id.confirmTv)
+            var btnHuy = dialog.findViewById<LinearLayout>(R.id.cancelBtn)
+            var btnXacNhan = dialog.findViewById<LinearLayout>(R.id.dongyBtn)
+            txtXacNhan.setText("Bạn có muốn đăng xuất !")
             if(leaveGroupTv!!.text.equals("Rời nhóm")){
-                txtXacnhan.text="Bạn muốn rời nhóm ?"
+                txtXacNhan.text="Bạn muốn rời nhóm ?"
             }
             else if(leaveGroupTv!!.text.equals("Xóa nhóm")){
-                txtXacnhan.text="Bạn muốn xóa nhóm ?"
+                txtXacNhan.text="Bạn muốn xóa nhóm ?"
             }
-            var btnHuy=dialog.btnHuy
-            var btnXacNhan=dialog.btnXacNhan
 
             btnHuy.setOnClickListener { dialog.dismiss() }
             btnXacNhan.setOnClickListener {
@@ -182,7 +180,7 @@ class InfoGroupActivity : AppCompatActivity() {
         btnDoi.setOnClickListener {
             var groupName=edtName.text.toString()
             if(groupName.equals("")){
-                Constrain.showToast(context,"Vui lòng nhập tên nhóm")
+                Constrain.showToast("Vui lòng nhập tên nhóm")
             }else{
                 groupAPI!!.updateGroupName(groupId,groupName).enqueue(object :Callback<Group>{
                     override fun onResponse(call: Call<Group>, response: Response<Group>) {
@@ -209,6 +207,7 @@ class InfoGroupActivity : AppCompatActivity() {
     }
 
     fun initViewData() {
+        Constrain.context=context
         groupIv = findViewById(R.id.groupImage)
         groupNameTv = findViewById(R.id.groupNameTv)
         groupDescriptionTv = findViewById(R.id.groupDescriptionTv)
@@ -243,7 +242,7 @@ class InfoGroupActivity : AppCompatActivity() {
         val chatFetchJob = Job()
         val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
             throwable.printStackTrace()
-            Constrain.showToast(context, "Data error")
+            Constrain.showToast("Data error")
         }
         val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
         scope.launch(errorHandler) {
@@ -277,8 +276,6 @@ class InfoGroupActivity : AppCompatActivity() {
                 call: Call<Participant>,
                 response: Response<Participant>
             ) {
-                Constrain.showToast(context, idpartincipant)
-
                 if (response.isSuccessful) {
 
                 }

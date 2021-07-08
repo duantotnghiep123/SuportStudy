@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
@@ -32,6 +33,7 @@ class ChatGroupFragment : Fragment() {
     var ref:DatabaseReference?=null
   var searchView:SearchView?=null
   var recyclerViewChatGroup:RecyclerView?=null
+  var noDataLayout:LinearLayout?=null
   var myLoader:LazyLoader?=null
   var listG: ArrayList<Group>? = ArrayList<Group>()
   var listGSearch: ArrayList<Group>? = ArrayList<Group>()
@@ -61,6 +63,7 @@ class ChatGroupFragment : Fragment() {
         var view=inflater.inflate(R.layout.fragment_chat_group, container, false)
         recyclerViewChatGroup=view.findViewById(R.id.recyclerViewChatGroup);
         myLoader=view.findViewById(R.id.myLoader);
+        noDataLayout=view.findViewById(R.id.noDataLayout);
         searchView=view.findViewById(R.id.searchView);
         groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
         participantAPI = Constrain.createRetrofit(ParticipantAPI::class.java)
@@ -90,7 +93,7 @@ class ChatGroupFragment : Fragment() {
     }
 
     fun getAllParticipant(){
-        listG!!.clear()
+        var countData=0;
         myLoader!!.visibility=View.VISIBLE
         participantAPI!!.getAllParticipant()
             .enqueue(object : Callback<List<Participant>> {
@@ -98,16 +101,25 @@ class ChatGroupFragment : Fragment() {
                     call: Call<List<Participant>>,
                     response: Response<List<Participant>>
                 ) {
-                    if (response.code() == 200) {
+                    if (response.isSuccessful) {
                         var    listP = response.body()!!
                         for (i in listP!!.indices) {
                             if(listP!![i].uid.equals(CourseTypeActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
                                 if(listP[i].courseId.equals(CourseDetailActivity.courseId)){
                                     var idG=listP[i].groupId
+                                    countData++
                                     getALGroupById(idG)
+
                                 }
 
                             }
+
+                        }
+                        if(countData==0){
+                            myLoader!!.visibility=View.GONE
+                            noDataLayout!!.visibility=View.VISIBLE
+                        }else{
+                            noDataLayout!!.visibility=View.GONE
 
                         }
 
@@ -122,7 +134,6 @@ class ChatGroupFragment : Fragment() {
     }
     @SuppressLint("UseRequireInsteadOfGet")
     private fun getALGroupById(idG: String) {
-
         groupAPI!!.getGroupById(idG)
             .enqueue(object : Callback<List<Group>> {
                 override fun onResponse(call: Call<List<Group>>, response: Response<List<Group>>) {
@@ -130,10 +141,9 @@ class ChatGroupFragment : Fragment() {
                     if(response.isSuccessful){
                        listG!!.addAll(response.body()!!)
                    }
-
                     groupChatListAdapter =   GroupChatListAdapter(context!!, listG!!,ref!!)
-                    groupChatListAdapter!!.notifyDataSetChanged()
                     recyclerViewChatGroup!!.adapter = groupChatListAdapter
+                    groupChatListAdapter!!.notifyDataSetChanged()
                     recyclerViewChatGroup!!.visibility=View.VISIBLE
                     myLoader!!.visibility=View.GONE
                 }

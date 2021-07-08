@@ -3,8 +3,6 @@ package com.example.suportstudy.activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.acount.LoginAndRegisterMainActivity
@@ -21,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        sharedPreferences = getSharedPreferences(Constrain.SHARED_REF_NAME, MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
         val isLogin = sharedPreferences!!.getBoolean(Constrain.KEY_LOGIN, false)
         if (isLogin == true) {
             val intent = Intent(context, CourseTypeActivity::class.java)
