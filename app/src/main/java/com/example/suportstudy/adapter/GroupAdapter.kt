@@ -18,6 +18,7 @@ import com.example.suportstudy.service.ParticipantAPI
 import com.example.suportstudy.until.Constrain
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,6 +33,7 @@ class GroupAdapter(
         var txtJoin: TextView? = null
         var txtGroupName: TextView? = null
         init {
+            Constrain.context=context
             IVGroup = itemView.findViewById(R.id.IVGroup)
             txtGroupName = itemView.findViewById(R.id.txtGroupName)
             txtJoin = itemView.findViewById(R.id.txtJoin)
@@ -69,15 +71,13 @@ class GroupAdapter(
                  context.startActivity(intent)
              }
               else if(holder.txtJoin!!.text.equals("Tham gia")){
-                 Constrain.showToast(context,"Bạn chưa tham gia nhóm này")
+                 Constrain.showToast("Bạn chưa tham gia nhóm này")
              }
 
          }
         holder.txtJoin!!.setOnClickListener {
-
             if(holder.txtJoin!!.text.equals("Tham gia")){
                 var time=System.currentTimeMillis().toString()
-
             participantAPI.insertParticipant(time,CourseTypeActivity.uid, group._id!!,group.courseId!!)
                    .enqueue(object : Callback<Participant> {
                        override fun onResponse(
@@ -94,8 +94,6 @@ class GroupAdapter(
                    })
             }
 
-
-
         }
 
     }
@@ -103,30 +101,39 @@ class GroupAdapter(
         return list.size
     }
     fun getAllParticipant(group: Group,txtJoin: TextView){
-        participantAPI!!.getAllParticipant()
-            .enqueue(object : Callback<List<Participant>> {
-                override fun onResponse(
-                    call: Call<List<Participant>>,
-                    response: Response<List<Participant>>
-                ) {
-                    if (response.code() == 200) {
-                     var    listP = response.body()!!
-                        txtJoin.text="Tham gia"
-                        for (i in listP!!.indices) {
-                            if(listP!![i].uid.equals(CourseTypeActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
-                                if(group._id.equals(listP!![i].groupId)){
-                                    txtJoin.text="Đã tham gia"
+        val chatFetchJob = Job()
+        val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            throwable.printStackTrace()
+            Constrain.showToast("Data error")
+        }
+        val scope = CoroutineScope(chatFetchJob + Dispatchers.IO)
+        scope.launch(errorHandler) {
+            participantAPI!!.getAllParticipant()
+                .enqueue(object : Callback<List<Participant>> {
+                    override fun onResponse(
+                        call: Call<List<Participant>>,
+                        response: Response<List<Participant>>
+                    ) {
+                        if (response.isSuccessful) {
+                            var    listP = response.body()!!
+                            txtJoin.text="Tham gia"
+                            for (i in listP!!.indices) {
+                                if(listP!![i].uid.equals(CourseTypeActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
+                                    if(group._id.equals(listP!![i].groupId)){
+                                        txtJoin.text="Đã tham gia"
+                                    }
                                 }
                             }
+
                         }
 
                     }
+                    override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
+                        Log.v("Data", "Error:" + t.message.toString())
+                    }
+                })
 
-                }
-                override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
-                    Log.v("Data", "Error:" + t.message.toString())
-                }
-            })
+        }
 
 
     }

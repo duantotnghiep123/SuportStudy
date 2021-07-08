@@ -1,5 +1,6 @@
 package com.example.suportstudy.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -68,8 +69,8 @@ var  rcvChatOne:RecyclerView?=null
                     val chatlist: Chatlist? = ds.getValue(Chatlist::class.java)
                     chatlistList!!.add(chatlist!!)
                 }
-
                 loadChats()
+
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -77,22 +78,22 @@ var  rcvChatOne:RecyclerView?=null
             }
         })
     }
+    @SuppressLint("UseRequireInsteadOfGet")
     private fun loadChats() {
-        var listUser:List<Users>
         userAPI!!.getAllUsers()
             .enqueue(object :Callback<List<Users>>{
                 override fun onResponse(call: Call<List<Users>>, response: Response<List<Users>>) {
                     if(response.isSuccessful){
-                        listUser= response.body()!!
+                    var    listUser= response.body()!!
 
                         for (i in listUser.indices){
                             var id=listUser[i]._id
-
                             for (j in chatlistList!!.indices){
                                 if (id.equals(chatlistList!![j].id)) {
                                     userList!!.add(listUser[i])
                                     break
                                 }
+
                             }
                         }
 

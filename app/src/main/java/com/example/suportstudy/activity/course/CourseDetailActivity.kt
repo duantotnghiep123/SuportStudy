@@ -90,6 +90,7 @@ class CourseDetailActivity : AppCompatActivity() {
 
     }
     fun initViewData(){
+        Constrain.context=context
         sd=Constrain.sweetdialog(context,"Đang tạo nhóm...")
 
         groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
@@ -226,7 +227,7 @@ class CourseDetailActivity : AppCompatActivity() {
                 response: Response<Participant>
             ) {
                 if(response.isSuccessful){
-                    Constrain.showToast(context,"Tạo nhóm thành công")
+                    Constrain.showToast("Tạo nhóm thành công")
                     sd!!.dismiss()
 
                 }
@@ -252,7 +253,7 @@ class CourseDetailActivity : AppCompatActivity() {
                     if (writeStorageAccpted) {
                         Persmission.pickFromGallery(context)
                     } else {
-                        Constrain.showToast(context, "Bật quyen thư viện")
+                        Constrain.showToast( "Bật quyền thư viện")
                     }
                 }
             }
@@ -267,7 +268,6 @@ class CourseDetailActivity : AppCompatActivity() {
                 ivGroup!!.setImageURI(image_uri)
 
                 part_image = Constrain.getRealPathFromURI(context,image_uri)
-                Constrain.showToast(context, part_image!!)
                 Log.e("imageUri", image_uri.toString())
             }
 
