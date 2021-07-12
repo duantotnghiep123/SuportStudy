@@ -19,9 +19,7 @@ import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.until.Persmission
-import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.activity_test_image.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -46,10 +44,12 @@ class ProfileActivity : AppCompatActivity() {
 
     var image_uri: Uri? = null
     var path_imageStorage: String? = null
-
+    lateinit var uid:String
     var image = ""
     var password = ""
     var name = ""
+
+
 
 
     @SuppressLint("NewApi")
@@ -57,7 +57,7 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         initViewData()
-        getDataProfile(CourseTypeActivity.uid)
+        getDataProfile(uid)
         finishTv!!.setOnClickListener {
             Constrain.nextActivity(context,CourseTypeActivity::class.java)
             finish()
@@ -84,10 +84,10 @@ class ProfileActivity : AppCompatActivity() {
             deleteUser()
         }
         logoutLayout!!.setOnClickListener {
-            val dialog = Constrain.createDialog(context,R.layout.dialog_confirm)
-            var txtXacNhan = dialog.findViewById<TextView>(R.id.txtXacNhan)
-            var btnHuy = dialog.findViewById<AppCompatButton>(R.id.btnHuy)
-            var btnXacNhan = dialog.findViewById<AppCompatButton>(R.id.btnXacNhan)
+            val dialog = Constrain.createDialog(context,R.layout.dialog_confirm2)
+            var txtXacNhan = dialog.findViewById<TextView>(R.id.confirmTv)
+            var btnHuy = dialog.findViewById<LinearLayout>(R.id.cancelBtn)
+            var btnXacNhan = dialog.findViewById<LinearLayout>(R.id.dongyBtn)
             txtXacNhan.setText("Bạn có muốn đăng xuất !")
             btnXacNhan.setOnClickListener {
                 dialog.dismiss()
@@ -108,7 +108,9 @@ class ProfileActivity : AppCompatActivity() {
 
 
     fun initViewData() {
-        sharedPreferences = getSharedPreferences(Constrain.SHARED_REF_NAME, MODE_PRIVATE)
+        Constrain.context=context
+        sharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
+        uid= sharedPreferences!!.getString(Constrain.KEY_ID,"")!!
         listGroupLayout = findViewById(R.id.listGroupLayout)
         changeNameLayout = findViewById(R.id.changeNameLayout)
         changepasswordLayout = findViewById(R.id.changepasswordLayout)
@@ -131,12 +133,12 @@ class ProfileActivity : AppCompatActivity() {
             .enqueue(object : Callback<Users> {
                 override fun onResponse(call: Call<Users>, response: Response<Users>) {
                     if (response.isSuccessful) {
-                        Constrain.showToast(context, "Đổi thành công")
+                        Constrain.showToast("Đổi thành công")
                         getDataProfile(CourseTypeActivity.uid)
                     }
                 }
                 override fun onFailure(call: Call<Users>, t: Throwable) {
-                    Constrain.showToast(context, "Thất bại")
+                    Constrain.showToast( "Thất bại")
                     t.printStackTrace()
                     Log.e("ERROR", t.toString())
                 }
@@ -144,7 +146,6 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun getDataProfile(uid: String?) {
-
         var data=UserController.getUserProfile(context,uid!!)
         data.observe(context,{listUser->
             var imgUrl = ""
@@ -152,13 +153,10 @@ class ProfileActivity : AppCompatActivity() {
                 imgUrl = listUser!![i].image
                 name = listUser!![i].name
                 password = listUser!![i].password
-
             }
-            Constrain.showToast(context, image)
             val editor = sharedPreferences!!.edit()
             editor.putString(Constrain.KEY_IMAGE, imgUrl)
             editor.apply()
-
             image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")!!
             nameTv!!.text = name
             if (imgUrl.equals("noImage") || imgUrl.equals("")) {
@@ -166,8 +164,7 @@ class ProfileActivity : AppCompatActivity() {
             } else {
                 Log.e("path",imgUrl.substring(imgUrl.lastIndexOf("/")+1))
                 var path = Constrain.baseUrl + "/profile/" + imgUrl.substring(imgUrl.lastIndexOf("/")+1)
-
-                Picasso.with(context).load(path).into(avatarIv)
+                Constrain.checkShowImage(context,R.drawable.avatar_default,path,avatarIv!!)
             }
         })
 //        userAPI!!.getAllUsersByID(uid).enqueue(object : Callback<List<Users>> {
@@ -219,20 +216,20 @@ class ProfileActivity : AppCompatActivity() {
         btnDoi.setOnClickListener {
             var name = edtName.text.toString()
             if (name.equals("")) {
-                Constrain.showToast(context, "Vui lòng nhập tên")
+                Constrain.showToast("Vui lòng nhập tên")
             } else {
                 userAPI!!.editName(CourseTypeActivity.uid, name)
                     .enqueue(object : Callback<Users> {
                         override fun onResponse(call: Call<Users>, response: Response<Users>) {
                             if (response.isSuccessful) {
-                                Constrain.showToast(context, "Đổi thành công")
+                                Constrain.showToast( "Đổi thành công")
                                 getDataProfile(CourseTypeActivity.uid)
                                 dialog.dismiss()
                             }
                         }
 
                         override fun onFailure(call: Call<Users>, t: Throwable) {
-                            Constrain.showToast(context, "Đổi thất bại")
+                            Constrain.showToast( "Đổi thất bại")
                             dialog.dismiss()
                             Log.e("err", t.message.toString())
                         }
@@ -260,28 +257,28 @@ class ProfileActivity : AppCompatActivity() {
             var newpassword = edtNewPassword.text.toString()
             var newcfpassword = edtCfNewPassword.text.toString()
             if (oldpassword.equals("")) {
-                Constrain.showToast(context, "Nhập mật khẩu cũ")
+                Constrain.showToast( "Nhập mật khẩu cũ")
             } else if (newpassword.equals("")) {
-                Constrain.showToast(context, "Nhập mật khẩu mới")
+                Constrain.showToast( "Nhập mật khẩu mới")
             } else if (newcfpassword.equals("")) {
-                Constrain.showToast(context, "Nhập mật khẩu xác nhận")
+                Constrain.showToast( "Nhập mật khẩu xác nhận")
             } else if (!oldpassword.equals(password)) {
-                Constrain.showToast(context, "Mật khẩu cũ không đúng")
+                Constrain.showToast( "Mật khẩu cũ không đúng")
             } else if (!newpassword.equals(newcfpassword)) {
-                Constrain.showToast(context, "Mật khẩu xác nhận không đúng")
+                Constrain.showToast( "Mật khẩu xác nhận không đúng")
             } else {
                 userAPI!!.editPassword(CourseTypeActivity.uid, newpassword)
                     .enqueue(object : Callback<Users> {
                         override fun onResponse(call: Call<Users>, response: Response<Users>) {
                             if (response.isSuccessful) {
-                                Constrain.showToast(context, "Đổi thành công")
+                                Constrain.showToast( "Đổi thành công")
                                 getDataProfile(CourseTypeActivity.uid)
                                 dialog.dismiss()
                             }
                         }
 
                         override fun onFailure(call: Call<Users>, t: Throwable) {
-                            Constrain.showToast(context, "Đổi thất bại")
+                            Constrain.showToast("Đổi thất bại")
                             dialog.dismiss()
                             Log.e("err", t.message.toString())
                         }
@@ -296,11 +293,11 @@ class ProfileActivity : AppCompatActivity() {
 
     }
     private fun deleteUser() {
-        val dialog = Constrain.createDialog(context,R.layout.dialog_confirm)
-
-        var txtXacNhan = dialog.findViewById<TextView>(R.id.txtXacNhan)
-        var btnHuy = dialog.findViewById<AppCompatButton>(R.id.btnHuy)
-        var btnXacNhan = dialog.findViewById<AppCompatButton>(R.id.btnXacNhan)
+        val dialog = Constrain.createDialog(context,R.layout.dialog_confirm2)
+        var txtXacNhan = dialog.findViewById<TextView>(R.id.confirmTv)
+        var btnHuy = dialog.findViewById<LinearLayout>(R.id.cancelBtn)
+        var btnXacNhan = dialog.findViewById<LinearLayout>(R.id.dongyBtn)
+        txtXacNhan.setText("Bạn có muốn đăng xuất !")
         txtXacNhan.setText("Bạn có muốn xóa tài khoản của bạn !")
         btnXacNhan.setOnClickListener {
         }
@@ -321,7 +318,7 @@ class ProfileActivity : AppCompatActivity() {
                     if (writeStorageAccpted) {
                         Persmission.pickFromGallery(context)
                     } else {
-                        Constrain.showToast(context, "Bật quyen thư viện")
+                        Constrain.showToast( "Bật quyen thư viện")
                     }
                 }
             }

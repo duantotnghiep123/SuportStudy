@@ -40,10 +40,13 @@ class ListGroupActivity : AppCompatActivity() {
     var typedisplayGroup:String?=null
     var listG:ArrayList<Group>?=ArrayList<Group>() //
 
-    var querySearch=""
+    var queryS=""
+    var newtextS=""
     var listSearch:ArrayList<Group>?=ArrayList<Group>() //
 
     var searchView:SearchView?=null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,16 +54,41 @@ class ListGroupActivity : AppCompatActivity() {
         initViewData()
 
 
-        if(typedisplayGroup.equals("allgroup")){
-            txtTitle!!.text="Nhóm trong khóa này"
-            displayAllGroup()
-        }
-
+//        if(typedisplayGroup.equals("allgroup")){
+//            txtTitle!!.text="Nhóm trong khóa này"
+//            displayAllGroup()
+//        }
         if(typedisplayGroup.equals("groupMyJoin")){
             txtTitle!!.text="Nhóm bạn đã tham gia"
             getAllParticipant()
 
 
+            searchView!!.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    if (query.equals("")){
+                        listG!!.clear()
+                        getAllParticipant()
+                    }else{
+                         queryS=query!!
+                        listG!!.clear()
+                        getAllParticipantSearch()
+                    }
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if (newText.equals("")){
+                        listG!!.clear()
+                        getAllParticipant()
+                    }else{
+                        queryS=newText!!
+                        listG!!.clear()
+                        getAllParticipantSearch()
+                    }
+                    return false
+                }
+
+            })
 
         }
 
@@ -69,7 +97,7 @@ class ListGroupActivity : AppCompatActivity() {
     }
     fun initViewData(){
 
-
+        Constrain.context=context
         rcvListGroup = findViewById(R.id.rcvListGroup)
         noGroupLayout = findViewById(R.id.noGroupLayou)
         txtTitle = findViewById(R.id.txtTitle)
@@ -79,8 +107,12 @@ class ListGroupActivity : AppCompatActivity() {
 
         searchView=findViewById(R.id.searchView)
 
+
         var intent=intent
         typedisplayGroup=intent.getStringExtra("group")
+
+
+
 
     }
     fun displayAllGroup() {
@@ -89,7 +121,7 @@ class ListGroupActivity : AppCompatActivity() {
         val chatFetchJob = Job()
         val errorHandler = CoroutineExceptionHandler() { coroutineContext, throwable ->
             throwable.printStackTrace()
-            Constrain.showToast(context,"Error connection")
+            Constrain.showToast("Error connection")
         }
         val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
         scope.launch(errorHandler) {
@@ -132,82 +164,127 @@ class ListGroupActivity : AppCompatActivity() {
 
     }
     fun getAllParticipant(){
-
         var countid=0
         myLoader!!.visibility=View.VISIBLE
-        participantAPI!!.getAllParticipant()
-            .enqueue(object : Callback<List<Participant>> {
-                override fun onResponse(
-                    call: Call<List<Participant>>,
-                    response: Response<List<Participant>>
-                ) {
-                    if (response.code() == 200) {
-                        var    listP = response.body()!!
-                        Log.d("sizep", listP!!.size.toString())
-                        for (i in listP!!.indices) {
-                            Log.d("groupid",listP!![i].groupId)
-                            if(listP!![i].uid.equals(CourseTypeActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
-                                var idG=listP[i].groupId
-                                countid++
-                                getALGroupById(idG)
-                            }
-                        }
-                        Log.e("count",countid.toString())
-                        if(countid==0){
-                            myLoader!!.visibility=View.GONE
-                            noGroupLayout!!.visibility=View.VISIBLE
-                        }
-
-                    }
-
-
-                }
-                override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
-                    Log.v("Data", "Error:" + t.message.toString())
-                }
-            })
-
-    }
-    private fun getALGroupById(idG: String) {
-
         val chatFetchJob = Job()
         val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
             throwable.printStackTrace()
-            Constrain.showToast(context, "Data error")
+            Constrain.showToast("Data error")
         }
         val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
         scope.launch(errorHandler) {
-            groupAPI!!.getGroupById(idG)
-                .enqueue(object : Callback<List<Group>> {
-                    override fun onResponse(call: Call<List<Group>>, response: Response<List<Group>>) {
-                        if(response.isSuccessful){
-                            listG!!.addAll(response.body()!!)
-                            Log.d("sizetest", listG!!.size.toString())
 
-                            if (listG!!.size==0){
+            participantAPI!!.getAllParticipant()
+                .enqueue(object : Callback<List<Participant>> {
+                    override fun onResponse(
+                        call: Call<List<Participant>>,
+                        response: Response<List<Participant>>
+                    ) {
+                        if (response.isSuccessful) {
+                            var    listP = response.body()!!
+                            for (i in listP!!.indices) {
+                                if(listP!![i].uid.equals(CourseTypeActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
+                                    var idG=listP[i].groupId
+                                    countid++
+                                    getALGroupById(idG)
+                                }
+                            }
+                            if(countid==0){
                                 myLoader!!.visibility=View.GONE
                                 noGroupLayout!!.visibility=View.VISIBLE
-                            }else{
-                                myLoader!!.visibility=View.GONE
-                                noGroupLayout!!.visibility=View.GONE
-
-                                groupAdapter =   GroupAdapter(context, listG!!, participantAPI!!,groupAPI!!)
-                                rcvListGroup!!.adapter = groupAdapter
                             }
+                        }
+                    }
+                    override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
+                        Log.v("Data", "Error:" + t.message.toString())
+                    }
+                })
+        }
 
+    }
+    fun getAllParticipantSearch(){
+        var countid=0
+        myLoader!!.visibility=View.VISIBLE
+        val chatFetchJob = Job()
+        val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            throwable.printStackTrace()
+            Constrain.showToast("Data error")
+        }
+        val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
+        scope.launch(errorHandler) {
+
+            participantAPI!!.getAllParticipant()
+                .enqueue(object : Callback<List<Participant>> {
+                    override fun onResponse(
+                        call: Call<List<Participant>>,
+                        response: Response<List<Participant>>
+                    ) {
+                        if (response.isSuccessful) {
+                            var    listP = response.body()!!
+                            for (i in listP!!.indices) {
+                                if(listP!![i].uid.equals(CourseTypeActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
+                                    var idG=listP[i].groupId
+                                    countid++
+                                    getALGroupBySearch(idG)
+                                }
+                            }
+                            if(countid==0){
+                                myLoader!!.visibility=View.GONE
+                                noGroupLayout!!.visibility=View.VISIBLE
+                            }
+                        }
+                    }
+                    override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
+                        Log.v("Data", "Error:" + t.message.toString())
+                    }
+                })
+        }
+
+    }
+    private fun getALGroupById(idG: String) {
+        groupAPI!!.getGroupById(idG)
+            .enqueue(object : Callback<List<Group>> {
+                override fun onResponse(call: Call<List<Group>>, response: Response<List<Group>>) {
+                    if(response.isSuccessful){
+                        listG!!.addAll(response.body()!!)
+                        if (listG!!.size==0){
+                            myLoader!!.visibility=View.GONE
+                            noGroupLayout!!.visibility=View.VISIBLE
+                        }else{
+                            myLoader!!.visibility=View.GONE
+                            noGroupLayout!!.visibility=View.GONE
+                            groupAdapter =   GroupAdapter(context, listG!!, participantAPI!!,groupAPI!!)
+                            rcvListGroup!!.adapter = groupAdapter
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<List<Group>>, t: Throwable) {
+                }
+            })
+    }
+    private fun getALGroupBySearch(idG: String) {
+        groupAPI!!.getGroupById(idG)
+            .enqueue(object : Callback<List<Group>> {
+                override fun onResponse(call: Call<List<Group>>, response: Response<List<Group>>) {
+                    if(response.isSuccessful){
+                        listG!!.addAll(response.body()!!)
+                        for (i in listG!!.indices){
+                            if (queryS.contains(listG!![i].groupName!!)){
+                                listSearch!!.add(listG!![i])
+                                break
+                            }
                         }
                     }
 
-                    override fun onFailure(call: Call<List<Group>>, t: Throwable) {
-                    }
-                })
+                    groupAdapter =   GroupAdapter(context, listSearch!!, participantAPI!!,groupAPI!!)
+                    rcvListGroup!!.adapter = groupAdapter
+                }
 
-        }
-
-
-
+                override fun onFailure(call: Call<List<Group>>, t: Throwable) {
+                }
+            })
     }
-
 
 
 }

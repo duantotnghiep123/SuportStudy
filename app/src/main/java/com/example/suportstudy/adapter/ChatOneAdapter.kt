@@ -1,7 +1,6 @@
 package com.example.suportstudy.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +8,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.chat.ChatOneActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.model.Chat
+import com.example.suportstudy.until.Constrain
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.Query
+import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -29,6 +34,7 @@ class ChatOneAdapter(var context: Context, var chatList: List<Chat>) :RecyclerVi
         var isSeenTv:TextView? = null
         var messageLayout: LinearLayout? = null
         init {
+            Constrain.context=context
             profileIv = itemView.findViewById(R.id.profileIv)
             messageTv = itemView.findViewById(R.id.messageTv)
             timeTv = itemView.findViewById(R.id.timeTv)
@@ -69,22 +75,60 @@ class ChatOneAdapter(var context: Context, var chatList: List<Chat>) :RecyclerVi
         holder.messageTv!!.text = message
         holder.timeTv!!.text = dateTime
 
+        holder.itemView.setOnClickListener {
+            var dialog= Constrain.createDialog(context, R.layout.dialog_confirm2)
+            var confirmTv=dialog.findViewById<TextView>(R.id.confirmTv)
+            var huyBtn=dialog.findViewById<LinearLayout>(R.id.cancelBtn)
+            var dongYBtn=dialog.findViewById<LinearLayout>(R.id.dongyBtn)
+            confirmTv.setText("Bạn có muốn xóa tin nhắn ?")
+            dongYBtn.setOnClickListener {
+                deleteMessage(chatList[position]._id)
+                dialog.dismiss()
+            }
+            huyBtn.setOnClickListener {
+              dialog.dismiss()
+            }
+            dialog.show()
+        }
+
 
     }
 
-    override fun getItemViewType(position: Int): Int {
+    private fun deleteMessage(_id: String?) {
+        var  userSharedPreferences = context.getSharedPreferences(Constrain.SHARED_REF_USER,
+            AppCompatActivity.MODE_PRIVATE
+        )
+        var uid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")
+        var chatRef= Constrain.initFirebase("Chats")
+        val query: Query = chatRef.orderByChild("_id").equalTo(_id)
+        query.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (ds in dataSnapshot.children) {
+                    if (ds.child("senderUid").value == uid) {
+                        ds.ref.removeValue().addOnSuccessListener {
+                            Constrain.showToast("Xóa thành công")
+                            ChatOneActivity.chatAdapter!!.notifyDataSetChanged()
+                            ChatOneActivity.recyclerView!!.scrollToPosition(chatList.size - 1)
+                        }
+                    } else {
+                      Constrain.showToast("Chỉ được xóa tin nhăn của bạn")
+                    }
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {Constrain.showToast("Xóa không thành công")}
+        })
+    }
 
+    override fun getItemViewType(position: Int): Int {
         return if (chatList[position].senderUid.equals(CourseTypeActivity.uid)) {
             return MSG_TYPE_RIGHT
         } else {
             return MSG_TYPE_LEFT
         }
-
     }
 
     override fun getItemCount(): Int {
         return chatList.size
     }
-
 
 }
