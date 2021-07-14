@@ -47,10 +47,8 @@ class ChatGroupActivity : AppCompatActivity() {
     var btnSend:ImageView?=null
 
     var groupChatList=ArrayList<GroupChat>()
-
     var groupCourseAPI:GroupCourseAPI?=null
     var chatGroupRef: DatabaseReference? = null
-
     companion object{
         var groupChatAdapter:GroupChatAdapter?=null
         var chatGroup_Recyclerview:RecyclerView?=null
