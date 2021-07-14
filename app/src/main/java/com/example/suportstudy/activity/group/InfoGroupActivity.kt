@@ -1,37 +1,40 @@
 package com.example.suportstudy.activity.group
 
-import android.app.Dialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.MutableLiveData
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
-import com.example.suportstudy.model.Course
-import com.example.suportstudy.model.Group
-import com.example.suportstudy.model.Participant
-import com.example.suportstudy.service.CourseAPI
-import com.example.suportstudy.service.GroupAPI
-import com.example.suportstudy.service.ParticipantAPI
+import com.example.suportstudy.model.GroupCourse
+
+import com.example.suportstudy.service.GroupCourseAPI
 import com.example.suportstudy.until.Constrain
+import com.example.suportstudy.until.Persmission
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_confirm.*
 import kotlinx.coroutines.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 class InfoGroupActivity : AppCompatActivity() {
     var context = this@InfoGroupActivity
     var myUid = CourseTypeActivity.uid
-    var participantAPI: ParticipantAPI? = null
-    var groupAPI: GroupAPI? = null
+    var groupCourseAPI: GroupCourseAPI? = null
 
     companion object {
         var groupCreateBy: String? = null
@@ -49,166 +52,174 @@ class InfoGroupActivity : AppCompatActivity() {
     var changeGroupNameLayout: RelativeLayout? = null
     var viewMemberLayout: RelativeLayout? = null
     var leaveGroupLayout: RelativeLayout? = null
+    var finishLayout: RelativeLayout? = null
+    val groupCoursedata = MutableLiveData<List<GroupCourse>>()
+
+    var image_uri: Uri? = null
+    var path_imageStorage: String? = null
+
+    var sd:SweetAlertDialog?=null
+
+    var isTurtor:Boolean = false
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_group_info)
-        initViewData()
 
+        initViewData()
         viewMemberLayout!!.setOnClickListener {
             var intent = Intent(context, ListMemberGroupActivity::class.java)
             intent.putExtra("groupId", groupId)
             context.startActivity(intent)
         }
+        groupIv!!.setOnClickListener {
+            if (isTurtor==true){
+                if (!Persmission.checkStoragePermission(context)) {
+                    Persmission.requestStoragetPermission(context)
+                } else {
+                    Persmission.pickFromGallery(context)
+                }
+            }
+        }
         leaveGroupLayout!!.setOnClickListener {
-            var dialog=Constrain.createDialog(context,R.layout.dialog_confirm)
-            var txtXacnhan=dialog.txtXacNhan
-            if(leaveGroupTv!!.text.equals("Rời nhóm")){
-                txtXacnhan.text="Bạn muốn rời nhóm ?"
+            val dialog = Constrain.createDialog(context, R.layout.dialog_confirm)
+            var txtXacNhan = dialog.findViewById<TextView>(R.id.messagCfTv)
+            var btnHuy = dialog.findViewById<LinearLayout>(R.id.cancelBtn)
+            var btnXacNhan = dialog.findViewById<LinearLayout>(R.id.dongyBtn)
+            txtXacNhan.setText("Bạn có muốn đăng xuất !")
+            if (leaveGroupTv!!.text.equals("Rời nhóm")) {
+                txtXacNhan.text = "Bạn muốn rời nhóm ?"
+            } else if (leaveGroupTv!!.text.equals("Xóa nhóm")) {
+                txtXacNhan.text = "Bạn muốn xóa nhóm ?"
             }
-            else if(leaveGroupTv!!.text.equals("Xóa nhóm")){
-                txtXacnhan.text="Bạn muốn xóa nhóm ?"
-            }
-            var btnHuy=dialog.btnHuy
-            var btnXacNhan=dialog.btnXacNhan
-
             btnHuy.setOnClickListener { dialog.dismiss() }
             btnXacNhan.setOnClickListener {
                 if (leaveGroupTv!!.text.equals("Rời nhóm")) {
-                    participantAPI!!.getAllParticipant().enqueue(object : Callback<List<Participant>> {
-                        override fun onResponse(
-                            call: Call<List<Participant>>,
-                            response: Response<List<Participant>>
-                        ) {
-                            if (response.isSuccessful) {
-                                var list = response.body()
-                                var idpartincipant = ""
-                                for (i in list!!.indices) {
-                                    if (list[i].uid.equals(myUid) && list[i].groupId.equals(groupId)) {
-                                        idpartincipant = list[i]._id
-                                        break
-                                    }
-                                }
-                                participantAPI!!.leaveGroup(idpartincipant)
-                                    .enqueue(object : Callback<Participant> {
-                                        override fun onResponse(
-                                            call: Call<Participant>,
-                                            response: Response<Participant>
-                                        ) {
-
-                                            if (response.isSuccessful) {
-                                                Constrain.nextActivity(
-                                                    context,
-                                                    CourseTypeActivity::class.java
-                                                )
-                                                finish()
-                                            }
-                                        }
-                                        override fun onFailure(call: Call<Participant>, t: Throwable) {
-                                            Log.e("err", t.message.toString())
-                                        }
-                                    })
-                            }
-                        }
-                        override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
-                            Log.e("err", t.message.toString())
-
-                        }
-
-                    })
-
+                    leaveGroup()
+                    dialog.dismiss()
                 } else if (leaveGroupTv!!.text.equals("Xóa nhóm")) {
-                    participantAPI!!.getAllParticipant().enqueue(object : Callback<List<Participant>> {
-                        override fun onResponse(
-                            call: Call<List<Participant>>,
-                            response: Response<List<Participant>>
-                        ) {
-                            if (response.isSuccessful) {
-                                var list = response.body()
-                                var idpartincipant = ""
-                                for (i in list!!.indices) {
-                                    if (list[i].groupId.equals(groupId)) {
-                                        idpartincipant = list[i]._id
-                                        deleteParticipantByID(idpartincipant)
-                                    }
-                                }
-                                Log.e("groupId", groupId!!)
-                                groupAPI!!.deleteGroup(groupId)
-                                    .enqueue(object :Callback<Group>{
-                                        override fun onResponse(
-                                            call: Call<Group>,
-                                            response: Response<Group>
-                                        ) {
-                                            if (response.isSuccessful) {
-                                                Constrain.nextActivity(
-                                                    context,
-                                                    CourseTypeActivity::class.java
-                                                )
-                                                finish()
-                                            }                                    }
-
-                                        override fun onFailure(call: Call<Group>, t: Throwable) {
-                                            Log.e("err", t.message.toString())
-                                        }
-
-                                    })
-
-
-                            }
-                        }
-
-                        override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
-                            Log.e("err", t.message.toString())
-
-                        }
-
-                    })
+                    deleteGroup()
+                    dialog.dismiss()
                 }
-                dialog.dismiss()
             }
-             dialog.show()
-
+            dialog.show()
         }
         changeGroupNameLayout!!.setOnClickListener {
-            updateGroupName()
+            if (isTurtor==true){
+                updateGroupName()
+            }else{
+                Constrain.showToast("Bạn không thể đổi tên nhóm")
+            }
         }
     }
 
-    private fun updateGroupName() {
-       val dialog= Constrain.createDialog(context,R.layout.dialog_edit_name)
-        val edtName=dialog.findViewById<EditText>(R.id.edtName)
-        val btnHuy=dialog.findViewById<AppCompatButton>(R.id.btnHuy)
-        val btnDoi=dialog.findViewById<AppCompatButton>(R.id.btnDoi)
-        edtName.setText(groupName)
-        btnDoi.setOnClickListener {
-            var groupName=edtName.text.toString()
-            if(groupName.equals("")){
-                Constrain.showToast(context,"Vui lòng nhập tên nhóm")
-            }else{
-                groupAPI!!.updateGroupName(groupId,groupName).enqueue(object :Callback<Group>{
-                    override fun onResponse(call: Call<Group>, response: Response<Group>) {
+    private fun deleteGroup() {
+        groupCoursedata.observe(context,{
+            var listjoin=it[0].participant
+            for (i in listjoin!!.indices){
+                groupCourseAPI!!.deleteUserGroup(listjoin[i]._id).enqueue(object :Callback<GroupCourse>{
+                    override fun onResponse(
+                        call: Call<GroupCourse>,
+                        response: Response<GroupCourse>
+                    ) {
                         if(response.isSuccessful){
-                           getGroupById()
-                            dialog.dismiss()
+                            groupCourseAPI!!.deleteGroup(groupId).enqueue(object :Callback<GroupCourse>{
+                                override fun onResponse(
+                                    call: Call<GroupCourse>,
+                                    response: Response<GroupCourse>
+                                ) {
+                                    Constrain.showToast("Đã xóa nhóm")
+                                    Constrain.nextActivity(context,CourseTypeActivity::class.java)
+                                    finish()
+                                }
+                                override fun onFailure(call: Call<GroupCourse>, t: Throwable) {
+                                    Log.e("err1", t.message.toString())
+                                }
+                            })
                         }
                     }
 
-                    override fun onFailure(call: Call<Group>, t: Throwable) {
-                        Log.e("err", t.message.toString())
+                    override fun onFailure(call: Call<GroupCourse>, t: Throwable) {
+                        Log.e("err2", t.message.toString())
+
                     }
 
                 })
             }
+        })
+    }
+
+    private fun leaveGroup() {
+        groupCoursedata.observe(context,{
+            var listJoin= it!![0].participant
+            for (i in listJoin!!.indices){
+                if(listJoin[i].uid!!.equals(CourseTypeActivity.uid)){
+                    var idjoin=listJoin[i]._id
+                    groupCourseAPI!!.deleteUserGroup(idjoin).enqueue(object :Callback<GroupCourse>{
+                        override fun onResponse(
+                            call: Call<GroupCourse>,
+                            response: Response<GroupCourse>
+                        ) {
+                            Constrain.showToast("Đã rời nhóm")
+                            Constrain.nextActivity(context,CourseTypeActivity::class.java)
+                            finish()
+                        }
+
+                        override fun onFailure(call: Call<GroupCourse>, t: Throwable) {
+                            Log.e("Error",t.message.toString())
+                        }
+
+                    })
+                }
+            }
+        })
+    }
+
+    private fun updateGroupName() {
+        val dialog = Constrain.createDialog(context, R.layout.dialog_edit_name)
+        val edtName = dialog.findViewById<EditText>(R.id.edtName)
+        val btnHuy = dialog.findViewById<AppCompatButton>(R.id.btnHuy)
+        val btnDoi = dialog.findViewById<AppCompatButton>(R.id.btnDoi)
+        edtName.setText(groupNameTv!!.text.toString())
+        btnDoi.setOnClickListener {
+            var groupName = edtName.text.toString()
+            if (groupName.equals("")) {
+                Constrain.showToast("Vui lòng nhập tên nhóm")
+            } else {
+                groupCourseAPI!!.updateGroupName(groupId!!, groupName)
+                    .enqueue(object : Callback<GroupCourse> {
+                        override fun onResponse(
+                            call: Call<GroupCourse>,
+                            response: Response<GroupCourse>
+                        ) {
+                            if (response.isSuccessful) {
+                                getGroupById()
+                                showUiProfile()
+                                dialog.dismiss()
+                            }
+                        }
+                        override fun onFailure(call: Call<GroupCourse>, t: Throwable) {
+                            Log.e("err", t.message.toString())
+                        }
+
+                    })
+
+            }
 
         }
-
         btnHuy.setOnClickListener { dialog.dismiss() }
         dialog.show()
-
-
-
     }
 
     fun initViewData() {
+        var  userSharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
+        isTurtor = userSharedPreferences!!.getBoolean(Constrain.KEY_ISTUTOR, false)!!
+
+        Constrain.context = context
+        var intentGroupChat = intent
+        groupId = intentGroupChat.getStringExtra("groupId")
+        groupCreateBy = intentGroupChat.getStringExtra("groupCreateBy")
         groupIv = findViewById(R.id.groupImage)
         groupNameTv = findViewById(R.id.groupNameTv)
         groupDescriptionTv = findViewById(R.id.groupDescriptionTv)
@@ -216,78 +227,130 @@ class InfoGroupActivity : AppCompatActivity() {
         changeGroupNameLayout = findViewById(R.id.changeGroupNameLayout)
         viewMemberLayout = findViewById(R.id.viewMemberLayout)
         leaveGroupLayout = findViewById(R.id.leaveGroupLayout)
+        finishLayout = findViewById(R.id.finishLayout)
+        sd=Constrain.sweetdialog(context,"Đang xử lí...")
 
-        participantAPI = Constrain.createRetrofit(ParticipantAPI::class.java)
-        groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
+        groupCourseAPI = Constrain.createRetrofit(GroupCourseAPI::class.java)
 
-
-        var intentGroupChat = intent
-        groupId = intentGroupChat.getStringExtra("groupId")
-        groupCreateBy = intentGroupChat.getStringExtra("groupCreateBy")
-        groupName = intentGroupChat.getStringExtra("groupName")
-        groupDescription = intentGroupChat.getStringExtra("groupDescription")
-        groupImage = intentGroupChat.getStringExtra("groupImage")
-
-
+        getGroupById()
+        showUiProfile()
         if (!groupCreateBy.equals(CourseTypeActivity.uid)) {
             leaveGroupTv!!.text = "Rời nhóm"
         } else {
             leaveGroupTv!!.text = "Xóa nhóm"
         }
-        getGroupById()
-
-
+        finishLayout!!.setOnClickListener {
+            finish()
+        }
     }
-
-    fun getGroupById(){
+    fun getGroupById() {
         val chatFetchJob = Job()
         val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
             throwable.printStackTrace()
-            Constrain.showToast(context, "Data error")
+            Constrain.showToast("Data error")
         }
         val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
         scope.launch(errorHandler) {
-            groupAPI!!.getGroupById(groupId)
-                .enqueue(object :Callback<List<Group>>{
+            groupCourseAPI!!.getAllGroupByID(groupId!!)
+                .enqueue(object : Callback<List<GroupCourse>> {
                     override fun onResponse(
-                        call: Call<List<Group>>,
-                        response: Response<List<Group>>
+                        call: Call<List<GroupCourse>>,
+                        response: Response<List<GroupCourse>>
                     ) {
-                        for (i in response.body()!!.indices){
-                            groupNameTv!!.text = response.body()!![i].groupName
-                            groupDescriptionTv!!.text = response.body()!![i].groupDescription
-                            var imageUrl=response.body()!![i].groupImage
-
-                            Constrain.checkShowImage(context,R.drawable.avatar_default, imageUrl!!, groupIv!!)
+                        if (response.isSuccessful) {
+                            groupCoursedata.postValue(response.body())
                         }
                     }
-                    override fun onFailure(call: Call<List<Group>>, t: Throwable) {
-                        Log.e("err", t.message.toString())
+                    override fun onFailure(call: Call<List<GroupCourse>>, t: Throwable) {
+                        Log.e("Error", t.message.toString())
                     }
-
                 })
-
         }
-
     }
 
-    fun deleteParticipantByID(idpartincipant:String) {
-        participantAPI!!.leaveGroup(idpartincipant).enqueue(object : Callback<Participant> {
-            override fun onResponse(
-                call: Call<Participant>,
-                response: Response<Participant>
-            ) {
-                Constrain.showToast(context, idpartincipant)
-
-                if (response.isSuccessful) {
-
-                }
-            }
-
-            override fun onFailure(call: Call<Participant>, t: Throwable) {
-                Log.e("err", t.message.toString())
-            }
-
+    fun showUiProfile() {
+        groupCoursedata.observe(context, { listGroupId ->
+            groupName = listGroupId[0].groupName
+            groupDescription = listGroupId[0].groupDescription
+            groupImage = listGroupId[0].groupImage
+            groupNameTv!!.text = groupName
+            groupDescriptionTv!!.text = groupDescription
+            var path = Constrain.baseUrl + "/group/" + groupImage!!.substring(groupImage!!.lastIndexOf("/")+1)
+            Constrain.checkShowImage(context, R.drawable.avatar_default, path!!, groupIv!!)
         })
     }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            Persmission.STORAGE_REQUEST_CODE -> {
+                if (grantResults.size > 0) {
+                    val writeStorageAccpted = grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    if (writeStorageAccpted) {
+                        Persmission.pickFromGallery(context)
+                    } else {
+                        Constrain.showToast( "Bật quyen thư viện")
+                    }
+                }
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == Persmission.IMAGE_PICK_GALLERY_CODE) {
+                image_uri = data!!.data!!
+                path_imageStorage = Constrain.getRealPathFromURI(context,image_uri)
+                editGroupImage()
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+    fun editGroupImage() {
+        sd!!.show()
+        groupCourseAPI!!.getAllGroupByID(groupId!!)
+            .enqueue(object : Callback<List<GroupCourse>> {
+                override fun onResponse(
+                    call: Call<List<GroupCourse>>,
+                    response: Response<List<GroupCourse>>
+                ) {
+                    if (response.isSuccessful) {
+                        var imageGroup=response.body()!![0].groupImage
+                        var file = File(path_imageStorage)
+                        var requestId =
+                            RequestBody.create(MediaType.parse("multipart/form_data"), groupId)
+                        var requestOldImage = RequestBody.create(MediaType.parse("multipart/form_data"), imageGroup)
+
+                        val reqFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
+                        val body = MultipartBody.Part.createFormData("group", file.getName(), reqFile)
+
+                        groupCourseAPI!!.updateGroupImage(requestId,body,requestOldImage).enqueue(object :Callback<GroupCourse>{
+                            override fun onResponse(call: Call<GroupCourse>, response: Response<GroupCourse>) {
+                                if (response.isSuccessful) {
+                                    Constrain.showToast("Đổi thành công")
+                                    getGroupById()
+                                    showUiProfile()
+                                    sd!!.dismiss()
+                                }                }
+
+                            override fun onFailure(call: Call<GroupCourse>, t: Throwable) {
+                                Constrain.showToast( "Thất bại")
+                                t.printStackTrace()
+                                Log.e("ERROR", t.toString())
+                                sd!!.dismiss()}
+
+                        })                    }
+                }
+
+                override fun onFailure(call: Call<List<GroupCourse>>, t: Throwable) {
+                    Log.e("Error", t.message.toString())
+                }
+
+            })
+
+    }
+
+
 }

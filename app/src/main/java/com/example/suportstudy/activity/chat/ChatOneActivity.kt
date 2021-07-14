@@ -1,5 +1,6 @@
 package com.example.suportstudy.activity.chat
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -12,12 +13,13 @@ import com.android.volley.*
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.call.CallingActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.adapter.ChatOneAdapter
 import com.example.suportstudy.model.Chat
 import com.example.suportstudy.until.Constrain
 import com.google.firebase.database.*
-import com.squareup.picasso.Picasso
+import com.stringee.StringeeClient
 import kotlinx.coroutines.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -27,20 +29,20 @@ import kotlin.collections.HashMap
 
 
 class ChatOneActivity : AppCompatActivity() {
-    var recyclerView: RecyclerView? = null
     var avatarIv: ImageView? = null
-    var btnCall: Button? = null
+    var btnCall: ImageView? = null
 
     var txtName: TextView? = null
     var ChatConnectionTV: TextView? = null
     var sendBtn: ImageView? = null
     var messageEt: EditText? = null
 
-    var senderUid = CourseTypeActivity.uid
-    var senderName = CourseTypeActivity.name
+
+    var hisName :String?=null
+    var senderUid :String?=null
+    var senderName :String?=null
     var receiverUid:String?=null
     var hisImage :String?=null
-    var hisName :String?=null
 
     var chatRef: DatabaseReference? = null
 
@@ -50,8 +52,12 @@ class ChatOneActivity : AppCompatActivity() {
 
     var chatList=ArrayList<Chat>()
 
-    var chatAdapter:ChatOneAdapter?=null
+    companion object{
+        var recyclerView: RecyclerView? = null
 
+        var chatAdapter:ChatOneAdapter?=null
+
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,26 +71,49 @@ class ChatOneActivity : AppCompatActivity() {
         sendBtn!!.setOnClickListener {
             val message = messageEt!!.getText().toString().trim { it <= ' ' }
             if (TextUtils.isEmpty(message)) {
-                Constrain.showToast(context, "Nhập tin nhắn")
+                Constrain.showToast("Nhập tin nhắn")
             } else {
 
                 sendMessage(message)
-                getToken(message,senderName!!, receiverUid!!, CourseTypeActivity.image!!)
+                Constrain.hideKeyBoard(context)
 
             }
 
             messageEt!!.setText("")
         }
+        btnCall!!.setOnClickListener {
+            val client: StringeeClient = CourseTypeActivity.client!!
+            if (client.isConnected) {
+                val intent = Intent(context, CallingActivity::class.java)
+                intent.putExtra("from", client.userId)
+                intent.putExtra("to", receiverUid)
+                intent.putExtra("is_video_call", true)
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                //Put for chat
+                intent.putExtra("hisName", hisName)
+                intent.putExtra("hisUid", receiverUid)
+                intent.putExtra("sendID", senderUid)
+                intent.putExtra("hisImage", hisImage)
+                startActivity(intent)
+            } else {
+                Constrain.showToast("Không thể kết nối video call. Vui lòng thử lại sau!")
+
+            }
+        }
 
     }
 fun initDataView(){
+     Constrain.context=context
+    chatRef=Constrain.initFirebase("Chats")
+
+     var  userSharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
+    senderUid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")
+    senderName = userSharedPreferences!!.getString(Constrain.KEY_NAME, "")
 
     var intentChat=intent
     receiverUid=intentChat.getStringExtra("hisUid")
     hisName=intentChat.getStringExtra("hisName")
     hisImage=intentChat.getStringExtra("hisImage")
-
-    Log.e("data",receiverUid+ "_"+hisName+"_"+hisImage)
 
 
     recyclerView = findViewById(R.id.chat_Recyclerview)
@@ -98,13 +127,8 @@ fun initDataView(){
     recyclerView!!.setHasFixedSize(true)
 
     txtName!!.text=hisName
-    if(!hisImage.equals("")){
-        Picasso.with(context).load(hisName).into(avatarIv)
-    }else{
-        avatarIv!!.setImageResource(R.drawable.loginimage)
-    }
-
-    chatRef = Constrain.initFirebase("Chats")
+    var pathImageUsers = Constrain.baseUrl + "/profile/" + hisImage!!.substring(hisImage!!.lastIndexOf("/")+1)
+    Constrain.checkShowImage(context,R.drawable.avatar_default,pathImageUsers!!,avatarIv!!)
 }
     private fun displayMessage() {
         chatRef!!.addValueEventListener(object : ValueEventListener {
@@ -118,7 +142,6 @@ fun initDataView(){
                     ) {
                         chatList.add(chat!!)
                     }
-
                 }
                 chatAdapter = ChatOneAdapter(context, chatList)
                 recyclerView!!.adapter = chatAdapter
@@ -129,7 +152,6 @@ fun initDataView(){
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
-
     private fun sendMessage(message: String) {
         var  time=System.currentTimeMillis().toString()
         var  hashMap=HashMap<String, String>()
@@ -141,8 +163,10 @@ fun initDataView(){
         hashMap.put("messageType", "text")
         hashMap.put("message", message)
         chatRef!!.push().setValue(hashMap).addOnCompleteListener({
-            if (!it.isSuccessful) {
-                Constrain.showToast(context, "Gửi thành công")
+            if (it.isSuccessful) {
+                Constrain.showToast("Gửi thành công")
+                getToken(message, senderName!!, receiverUid!!, CourseTypeActivity.image!!)
+
             }
         })
         var chatListRef = Constrain.initFirebase("ChatList")
@@ -169,9 +193,7 @@ fun initDataView(){
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
-
-
-    private fun getToken(message: String,senderName: String, hisID: String ,myImage: String) {
+    private fun getToken(message: String, senderName: String, hisID: String, myImage: String) {
         val database = FirebaseDatabase.getInstance().getReference("Tokens").child(hisID)
         database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -184,6 +206,7 @@ fun initDataView(){
                     data.put("hisUid", senderUid)
                     data.put("hisName", senderName)
                     data.put("hisImage", myImage)
+                    data.put("notificationType", "chatOne")
                     to.put("to", token)
                     to.put("data", data)
                     sendNotification(to)
@@ -216,7 +239,6 @@ fun initDataView(){
                 map["Content-Type"] = "application/json"
                 return map
             }
-
             override fun getBodyContentType(): String {
                 return "application/json"
             }

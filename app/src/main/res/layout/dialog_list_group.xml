@@ -11,7 +11,7 @@
     >
 
      <LinearLayout
-         android:id="@+id/noGroupLayou"
+         android:id="@+id/noDataLayout"
          android:visibility="gone"
          android:gravity="center_horizontal"
          android:layout_centerInParent="true"

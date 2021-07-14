@@ -1,12 +1,15 @@
 package com.example.suportstudy.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.course.ListCourseActivity
@@ -22,7 +25,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ChatOneFragment : Fragment() {
-var  rcvChatOne:RecyclerView?=null
+   var  rcvChatOne:RecyclerView?=null
 
 
     var chatlistList: ArrayList<Chatlist>? = null
@@ -30,12 +33,16 @@ var  rcvChatOne:RecyclerView?=null
     var reference: DatabaseReference? = null
 
     var noMessageLayout: LinearLayout? = null
+    var loader: LazyLoader? = null
 
     var myUid= CourseTypeActivity.uid
 
     var adapterOneChatlist:AdapterOneChatlist?=null
 
     var userAPI:UserAPI?=null
+    var searchView:SearchView?=null
+
+    var listSearch:ArrayList<Users>?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,17 +57,38 @@ var  rcvChatOne:RecyclerView?=null
     ): View? {
         var view=inflater.inflate(R.layout.fragment_chat_one, container, false)
         initViewData(view)
-        // Inflate the layout for this fragment
+        searchView!!.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if(query.equals("")){
+                   loadChats()
+                }else{
+                    searchloadChats(query.toString())
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if(newText.equals("")){
+                    loadChats()
+                }else{
+                    searchloadChats(newText.toString())
+                }
+                return false
+            }
+        })
         return view
     }
     fun initViewData(view: View){
+        listSearch=ArrayList()
+        searchView=view.findViewById(R.id.searchView)
         rcvChatOne=view.findViewById(R.id.rcvChatOne)
+        loader=view.findViewById(R.id.myLoader)
+        noMessageLayout=view.findViewById(R.id.noDataLayout)
         userAPI=Constrain.createRetrofit(UserAPI::class.java)
-
-        chatlistList=ArrayList<Chatlist>()
-        userList=ArrayList<Users>()
-        reference =
-        FirebaseDatabase.getInstance().getReference("ChatList").child(myUid!!)
+        chatlistList=ArrayList()
+        userList=ArrayList()
+        reference =Constrain.initFirebase("ChatList").child(myUid!!)
+        loader!!.visibility=View.VISIBLE
         reference!!.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 chatlistList!!.clear()
@@ -68,26 +96,22 @@ var  rcvChatOne:RecyclerView?=null
                     val chatlist: Chatlist? = ds.getValue(Chatlist::class.java)
                     chatlistList!!.add(chatlist!!)
                 }
-
                 loadChats()
             }
-
             override fun onCancelled(databaseError: DatabaseError) {
-
             }
         })
     }
+    @SuppressLint("UseRequireInsteadOfGet")
     private fun loadChats() {
-        var listUser:List<Users>
         userAPI!!.getAllUsers()
             .enqueue(object :Callback<List<Users>>{
                 override fun onResponse(call: Call<List<Users>>, response: Response<List<Users>>) {
                     if(response.isSuccessful){
-                        listUser= response.body()!!
-
+                    var    listUser= response.body()!!
+                        userList!!.clear()
                         for (i in listUser.indices){
                             var id=listUser[i]._id
-
                             for (j in chatlistList!!.indices){
                                 if (id.equals(chatlistList!![j].id)) {
                                     userList!!.add(listUser[i])
@@ -95,31 +119,67 @@ var  rcvChatOne:RecyclerView?=null
                                 }
                             }
                         }
-
-                        adapterOneChatlist =
-                            AdapterOneChatlist(
-                                context!!, userList!!
-                            )
+                        adapterOneChatlist =  AdapterOneChatlist( context!!, userList!!   )
                         rcvChatOne!!.adapter = adapterOneChatlist
                         adapterOneChatlist!!.notifyDataSetChanged()
 
                         for (i in userList!!.indices) {
                             lastMessage(userList!![i]._id) // id  dzAZNw7EBJchnky8eJnrFepjBU73
                         }
+                        if (userList!!.size==0){
+                            noMessageLayout!!.visibility=View.VISIBLE
+                        }else{
+                            noMessageLayout!!.visibility=View.GONE
+                        }
+                        loader!!.visibility=View.GONE
 
                     }
                 }
-
                 override fun onFailure(call: Call<List<Users>>, t: Throwable) {
-
                 }
-
             })
+    }
+    private fun searchloadChats(query: String) {
+        userAPI!!.getAllUsers()
+            .enqueue(object :Callback<List<Users>>{
+                override fun onResponse(call: Call<List<Users>>, response: Response<List<Users>>) {
+                    if(response.isSuccessful){
+                    var    listUser= response.body()!!
+                        userList!!.clear()
 
+                        for (i in listUser.indices){
+                            var id=listUser[i]._id
+                            for (j in chatlistList!!.indices){
+                                if (id.equals(chatlistList!![j].id)) {
+                                    if (listUser!![i].name.toLowerCase().contains(query.toLowerCase())) {
+                                        userList!!.add(listUser[i])
+                                    }
+                                    break
+                                }
+                            }
+                            adapterOneChatlist =  AdapterOneChatlist( context!!, userList!!   )
+                            rcvChatOne!!.adapter = adapterOneChatlist
+                            adapterOneChatlist!!.notifyDataSetChanged()
+                        }
 
+                        for (i in userList!!.indices) {
+                            lastMessage(userList!![i]._id) // id  dzAZNw7EBJchnky8eJnrFepjBU73
+                        }
+                        if (userList!!.size==0){
+                            noMessageLayout!!.visibility=View.VISIBLE
+                        }else{
+                            noMessageLayout!!.visibility=View.GONE
+                        }
+                        loader!!.visibility=View.GONE
+
+                    }
+                }
+                override fun onFailure(call: Call<List<Users>>, t: Throwable) {
+                }
+            })
     }
     private fun lastMessage(userId: String) { // id  dzAZNw7EBJchnky8eJnrFepjBU73
-        val reference = FirebaseDatabase.getInstance(Constrain.firebaseUrl).getReference("Chats")
+        val reference = Constrain.initFirebase("Chats")
         reference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 var theLastMessage = "default"
@@ -130,14 +190,11 @@ var  rcvChatOne:RecyclerView?=null
                     if (sender == null || receiver == null) {
                         continue
                     }
-                    var i = 0
                     if (chat.receiverUid.equals(myUid) &&
                         chat.senderUid.equals(userId) ||
                         chat.receiverUid.equals(userId) &&
                         chat.senderUid.equals(myUid)
                     ) {
-                        i++
-
                         if (chat.messageType.equals("image")) {
                             theLastMessage = "Sent a photo"
                         }
@@ -150,6 +207,7 @@ var  rcvChatOne:RecyclerView?=null
                     userId,
                     theLastMessage
                 )
+
                 adapterOneChatlist!!.notifyDataSetChanged()
             }
 
@@ -158,7 +216,6 @@ var  rcvChatOne:RecyclerView?=null
     }
 
     companion object {
-
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ChatOneFragment().apply {

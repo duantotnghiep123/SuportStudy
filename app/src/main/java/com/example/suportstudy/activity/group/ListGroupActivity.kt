@@ -7,19 +7,17 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.TextView
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.course.CourseDetailActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.adapter.GroupAdapter
-import com.example.suportstudy.model.Course
-import com.example.suportstudy.model.Group
-import com.example.suportstudy.model.Participant
-import com.example.suportstudy.service.CourseAPI
-import com.example.suportstudy.service.GroupAPI
-import com.example.suportstudy.service.ParticipantAPI
+import com.example.suportstudy.extensions.gone
+import com.example.suportstudy.extensions.visible
+
+import com.example.suportstudy.model.GroupCourse
+
+import com.example.suportstudy.service.GroupCourseAPI
 import com.example.suportstudy.until.Constrain
 import kotlinx.coroutines.*
 import retrofit2.Call
@@ -27,187 +25,225 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ListGroupActivity : AppCompatActivity() {
-     var context = this@ListGroupActivity
-     var groupAPI: GroupAPI? = null
-     var participantAPI: ParticipantAPI? = null
-     var rcvListGroup:RecyclerView?=null;
-     var noGroupLayout:LinearLayout?=null;
-     var groupAdapter:GroupAdapter?=null;
-     var myLoader:LazyLoader?=null
-    var txtTitle:TextView?=null
+    var context = this@ListGroupActivity
+    var groupCourseAPI: GroupCourseAPI? = null
+    var rcvListGroup: RecyclerView? = null;
+    var noGroupLayout: LinearLayout? = null;
+    var groupAdapter: GroupAdapter? = null;
+    var myLoader: LazyLoader? = null
+    var txtTitle: TextView? = null
 
-    var listGroup: ArrayList<Group>? = ArrayList<Group>()
-    var typedisplayGroup:String?=null
-    var listG:ArrayList<Group>?=ArrayList<Group>() //
+    var typedisplayGroup: String? = null
+    var listMyGroup: ArrayList<GroupCourse>? = null
 
-    var querySearch=""
-    var listSearch:ArrayList<Group>?=ArrayList<Group>() //
-
-    var searchView:SearchView?=null
+    var searchView: SearchView? = null
+    var courseId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_group)
         initViewData()
 
-
-        if(typedisplayGroup.equals("allgroup")){
-            txtTitle!!.text="Nhóm trong khóa này"
+        if (typedisplayGroup.equals("allgroup")) {
+            courseId = intent.getStringExtra("courseId")
+            txtTitle!!.text = "Nhóm trong khóa này"
             displayAllGroup()
+            searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    if (query.equals("")) {
+                        displayAllGroup()
+                    } else {
+                        displayAllGroupSearch(query)
+                    }
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if (newText.equals("")) {
+                        displayAllGroup()
+
+                    } else {
+                        displayAllGroupSearch(newText)
+                    }
+                    return false
+                }
+
+            })
         }
+        if (typedisplayGroup.equals("groupMyJoin")) {
+            txtTitle!!.text = "Nhóm bạn đã tham gia"
+            getAllMyGroupParticipant()
+            searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    if (query.equals("")) {
+                        listMyGroup!!.clear()
+                        getAllMyGroupParticipant()
 
-        if(typedisplayGroup.equals("groupMyJoin")){
-            txtTitle!!.text="Nhóm bạn đã tham gia"
-            getAllParticipant()
-
-
-
-        }
-
-
-
-    }
-    fun initViewData(){
-
-
-        rcvListGroup = findViewById(R.id.rcvListGroup)
-        noGroupLayout = findViewById(R.id.noGroupLayou)
-        txtTitle = findViewById(R.id.txtTitle)
-        myLoader = findViewById(R.id.myLoader)
-        groupAPI = Constrain.createRetrofit(GroupAPI::class.java)
-        participantAPI = Constrain.createRetrofit(ParticipantAPI::class.java)
-
-        searchView=findViewById(R.id.searchView)
-
-        var intent=intent
-        typedisplayGroup=intent.getStringExtra("group")
-
-    }
-    fun displayAllGroup() {
-        myLoader!!.visibility=View.VISIBLE
-
-        val chatFetchJob = Job()
-        val errorHandler = CoroutineExceptionHandler() { coroutineContext, throwable ->
-            throwable.printStackTrace()
-            Constrain.showToast(context,"Error connection")
-        }
-        val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
-        scope.launch(errorHandler) {
-            rcvListGroup!!.visibility=View.INVISIBLE
-            listGroup!!.clear()
-            groupAPI!!.getAllGroup()
-                .enqueue(object : Callback<List<Group>> {
-                    override fun onResponse(
-                        call: Call<List<Group>>,
-                        response: Response<List<Group>>
-                    ) {
-                        if (response.code() == 200) {
-                            var list = response.body()
-                            for (i in list!!.indices) {
-                                if (list[i].courseId.equals(CourseDetailActivity.courseId)) {
-                                    listGroup!!.add(list[i])
-                                }
-                            }
-                            if(listGroup!!.size==0){
-                                noGroupLayout!!.visibility= View.VISIBLE
-                                myLoader!!.visibility=View.GONE
-
-                            }else{
-                                noGroupLayout!!.visibility= View.GONE
-                                groupAdapter =
-                                GroupAdapter(context, listGroup!!, participantAPI!!,groupAPI!!)
-                                rcvListGroup!!.adapter = groupAdapter
-                            }
-                            myLoader!!.visibility=View.GONE
-                            rcvListGroup!!.visibility=View.VISIBLE
-
-                        }
+                    } else {
+                        listMyGroup!!.clear()
+                        getAllMyGroupParticipantSearch(query)
 
                     }
-                    override fun onFailure(call: Call<List<Group>>, t: Throwable) {
-                        Log.v("Data", "Error:" + t.message.toString())
-                    }
-                })
-        }
+                    return false
+                }
 
-    }
-    fun getAllParticipant(){
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if (newText.equals("")) {
+                        listMyGroup!!.clear()
+                        getAllMyGroupParticipant()
 
-        var countid=0
-        myLoader!!.visibility=View.VISIBLE
-        participantAPI!!.getAllParticipant()
-            .enqueue(object : Callback<List<Participant>> {
-                override fun onResponse(
-                    call: Call<List<Participant>>,
-                    response: Response<List<Participant>>
-                ) {
-                    if (response.code() == 200) {
-                        var    listP = response.body()!!
-                        Log.d("sizep", listP!!.size.toString())
-                        for (i in listP!!.indices) {
-                            Log.d("groupid",listP!![i].groupId)
-                            if(listP!![i].uid.equals(CourseTypeActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
-                                var idG=listP[i].groupId
-                                countid++
-                                getALGroupById(idG)
-                            }
-                        }
-                        Log.e("count",countid.toString())
-                        if(countid==0){
-                            myLoader!!.visibility=View.GONE
-                            noGroupLayout!!.visibility=View.VISIBLE
-                        }
+                    } else {
+                        listMyGroup!!.clear()
+
+                        getAllMyGroupParticipantSearch(newText)
 
                     }
-
+                    return false
 
                 }
-                override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
-                    Log.v("Data", "Error:" + t.message.toString())
+
+            })
+
+        }
+    }
+
+    private fun getAllMyGroupParticipantSearch(query: String?) {
+        var listSearch = ArrayList<GroupCourse>()
+        groupCourseAPI!!.getAllGroup().enqueue(object : Callback<List<GroupCourse>> {
+            override fun onResponse(
+                call: Call<List<GroupCourse>>,
+                response: Response<List<GroupCourse>>
+            ) {
+                if (response.isSuccessful) {
+                    var listGroup = response.body()
+                    for (i in listGroup!!.indices) {
+                        var listJoin = listGroup[i].participant
+                        for (j in listJoin!!.indices) {
+                            if (listJoin[j].uid.equals(CourseTypeActivity.uid)) {
+                                listMyGroup!!.add(listGroup[i])
+                            }
+                        }
+                    }
+                    for (i in listMyGroup!!.indices) {
+                        if (listMyGroup!![i].groupName!!.toLowerCase().contains(query!!)) {
+                            listSearch.add(listMyGroup!![i])
+                            break
+                        }
+                    }
+                    setAdapter(listSearch)
+
+                }
+            }
+
+            override fun onFailure(call: Call<List<GroupCourse>>, t: Throwable) {
+                Log.e("Error", t.message.toString())
+
+            }
+
+        })
+    }
+
+    private fun displayAllGroupSearch(query: String?) {
+        var listSearch = ArrayList<GroupCourse>()
+        groupCourseAPI!!.getAllGroupByCourseID(courseId!!)
+            .enqueue(object : Callback<List<GroupCourse>> {
+                override fun onResponse(
+                    call: Call<List<GroupCourse>>,
+                    response: Response<List<GroupCourse>>
+                ) {
+                    if (response.isSuccessful) {
+                        var listGroup = response.body()
+                        for (i in listGroup!!.indices) {
+                            if (listGroup[i].groupName!!.toLowerCase()
+                                    .contains(query!!.toLowerCase())
+                            ) {
+                                listSearch.add(listGroup[i])
+                            }
+                        }
+                        setAdapter(listSearch)
+                    }
+                }
+
+                override fun onFailure(call: Call<List<GroupCourse>>, t: Throwable) {
+                    Log.e("Error", t.message.toString())
                 }
             })
 
     }
-    private fun getALGroupById(idG: String) {
 
-        val chatFetchJob = Job()
-        val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-            throwable.printStackTrace()
-            Constrain.showToast(context, "Data error")
-        }
-        val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
-        scope.launch(errorHandler) {
-            groupAPI!!.getGroupById(idG)
-                .enqueue(object : Callback<List<Group>> {
-                    override fun onResponse(call: Call<List<Group>>, response: Response<List<Group>>) {
-                        if(response.isSuccessful){
-                            listG!!.addAll(response.body()!!)
-                            Log.d("sizetest", listG!!.size.toString())
-
-                            if (listG!!.size==0){
-                                myLoader!!.visibility=View.GONE
-                                noGroupLayout!!.visibility=View.VISIBLE
-                            }else{
-                                myLoader!!.visibility=View.GONE
-                                noGroupLayout!!.visibility=View.GONE
-
-                                groupAdapter =   GroupAdapter(context, listG!!, participantAPI!!,groupAPI!!)
-                                rcvListGroup!!.adapter = groupAdapter
-                            }
-
-                        }
+    private fun displayAllGroup() {
+        groupCourseAPI!!.getAllGroupByCourseID(courseId!!)
+            .enqueue(object : Callback<List<GroupCourse>> {
+                override fun onResponse(
+                    call: Call<List<GroupCourse>>,
+                    response: Response<List<GroupCourse>>
+                ) {
+                    if (response.isSuccessful) {
+                        var listGroup = response.body()
+                        setAdapter(listGroup!!)
                     }
+                }
 
-                    override fun onFailure(call: Call<List<Group>>, t: Throwable) {
-                    }
-                })
-
-        }
-
-
-
+                override fun onFailure(call: Call<List<GroupCourse>>, t: Throwable) {
+                    Log.e("Error", t.message.toString())
+                }
+            })
     }
 
+    private fun getAllMyGroupParticipant() {
+        groupCourseAPI!!.getAllGroup().enqueue(object : Callback<List<GroupCourse>> {
+            override fun onResponse(
+                call: Call<List<GroupCourse>>,
+                response: Response<List<GroupCourse>>
+            ) {
+                if (response.isSuccessful) {
+                    var listGroup = response.body()
+                    for (i in listGroup!!.indices) {
+                        var listJoin = listGroup[i].participant
+                        for (j in listJoin!!.indices) {
+                            if (listJoin[j].uid.equals(CourseTypeActivity.uid)) {
+                                listMyGroup!!.add(listGroup[i])
+                            }
+                        }
+                    }
+                    setAdapter(listMyGroup!!)
+                }
+            }
+
+            override fun onFailure(call: Call<List<GroupCourse>>, t: Throwable) {
+                Log.e("Error", t.message.toString())
+
+            }
+
+        })
+    }
+
+    fun initViewData() {
+        Constrain.context = context
+        rcvListGroup = findViewById(R.id.rcvListGroup)
+        noGroupLayout = findViewById(R.id.noDataLayout)
+        txtTitle = findViewById(R.id.txtTitle)
+        myLoader = findViewById(R.id.myLoader)
+        groupCourseAPI = Constrain.createRetrofit(GroupCourseAPI::class.java)
+        searchView = findViewById(R.id.searchView)
+        listMyGroup = ArrayList()
+        var intent = intent
+        typedisplayGroup = intent.getStringExtra("group")
+    }
+
+    fun setAdapter(list: List<GroupCourse>) {
+        groupAdapter = GroupAdapter(context, list!!, groupCourseAPI!!)
+        rcvListGroup!!.adapter = groupAdapter
+        groupAdapter!!.notifyDataSetChanged()
+        if (list!!.size == 0) {
+            noGroupLayout!!.visible()
+            myLoader!!.gone()
+        } else {
+            noGroupLayout!!.gone()
+            myLoader!!.gone()
+
+        }
+    }
 
 
 }

@@ -10,6 +10,8 @@ import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.adapter.CourseAdapter
 import com.example.suportstudy.controller.CourseController
+import com.example.suportstudy.extensions.gone
+import com.example.suportstudy.extensions.visible
 import com.example.suportstudy.model.Course
 import com.example.suportstudy.service.CourseAPI
 import com.example.suportstudy.until.Constrain
@@ -57,7 +59,7 @@ class ListCourseActivity : AppCompatActivity() {
         courseAPI = Constrain.createRetrofit(CourseAPI::class.java)
         noDataLayout=findViewById(R.id.noDataLayout)
         lazyLoader=findViewById(R.id.myLoader)
-        lazyLoader!!.visibility=View.VISIBLE
+        lazyLoader!!.visible()
 
         Constrain.checkShowImage(context,R.drawable.ic_gallery_grey,imageCourseType,thumbIv!!)
         txtName!!.text=nameCourseType
@@ -70,14 +72,14 @@ class ListCourseActivity : AppCompatActivity() {
                     list.add(listCourse[i])
                 }
                 if(list.size==0){
-                    noDataLayout!!.visibility=View.VISIBLE
+                    noDataLayout!!.visible()
                 }else{
-                    noDataLayout!!.visibility=View.GONE
+                    noDataLayout!!.gone()
                     var courseAdapter = CourseAdapter(context, list)
                     rcvCourse!!.adapter = courseAdapter
                     courseAdapter!!.notifyDataSetChanged()
                 }
-                lazyLoader!!.visibility=View.GONE
+                lazyLoader!!.gone()
             }
         })
 

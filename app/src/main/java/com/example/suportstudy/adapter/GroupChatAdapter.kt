@@ -8,17 +8,24 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
-import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.model.GroupChat
+import com.example.suportstudy.until.Constrain
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.Query
+import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
 import java.util.*
 
 class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :RecyclerView.Adapter<GroupChatAdapter.MyViewHolder>() {
     private val MSG_TYPE_LEFT = 0
     private val MSG_TYPE_RIGHT = 1
+
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
         var profileIv: ImageView? = null
         var messageIv: ImageView? = null
@@ -48,6 +55,7 @@ class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :Rec
         }
     }
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        Constrain.context=context
         val message: String = chatList.get(position).message!!
         val timeStamp: String = chatList.get(position).timeSend!!
         val type: String = chatList.get(position).typeMessage!!
@@ -70,7 +78,56 @@ class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :Rec
         holder.messageTv!!.text = message
         holder.timeTv!!.text = dateTime
 
+        holder.itemView.setOnClickListener {
+            var dialog= Constrain.createDialog(context, R.layout.dialog_confirm)
+            var confirmTv=dialog.findViewById<TextView>(R.id.messagCfTv)
+            var huyBtn=dialog.findViewById<LinearLayout>(R.id.cancelBtn)
+            var dongYBtn=dialog.findViewById<LinearLayout>(R.id.dongyBtn)
+            confirmTv.setText("Bạn có muốn xóa tin nhắn ?")
+            dongYBtn.setOnClickListener {
+                deleteMessage(chatList[position].groupId!!,chatList[position]._id)
+                dialog.dismiss()
+            }
+            huyBtn.setOnClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
+        }
+
     }
+
+    private fun deleteMessage(groupId:String,_id: String?) {
+        var  userSharedPreferences = context.getSharedPreferences(Constrain.SHARED_REF_USER,
+            AppCompatActivity.MODE_PRIVATE
+        )
+        var uid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")
+        var chatRef= Constrain.initFirebase("GroupChats")
+        val query: Query =chatRef.child(groupId).child("Message").orderByChild("_id")
+            .equalTo(_id)
+        query.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (ds in dataSnapshot.children) {
+                    if (ds.child("senderUid").value == uid) {
+                        ds.ref.removeValue().addOnSuccessListener {
+                            Constrain.showToast("Xóa thành công")
+                            ChatGroupActivity.groupChatAdapter!!.notifyDataSetChanged()
+                            ChatGroupActivity.chatGroup_Recyclerview!!.scrollToPosition(chatList.size - 1)
+                        }
+                    } else {
+                        Constrain.showToast("Bạn chỉ xóa tin nhắn của bạn")
+                    }
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Constrain.showToast("Xóa thất bạn")
+            }
+        })
+
+
+
+    }
+
     override fun getItemViewType(position: Int): Int {
 
         return if (chatList[position].senderUid.equals(CourseTypeActivity.uid)) {

@@ -5,7 +5,7 @@
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
+    android:background="@color/grey10"
     android:padding="10dp"
     android:gravity="center_horizontal"
     android:orientation="vertical"
@@ -28,7 +28,7 @@
         app:lazyloader_thirdDotColor="#FFD600" />
 
     <LinearLayout
-        android:id="@+id/noGroupLayou"
+        android:id="@+id/noDataLayout"
         android:visibility="gone"
         android:gravity="center_horizontal"
         android:layout_centerInParent="true"

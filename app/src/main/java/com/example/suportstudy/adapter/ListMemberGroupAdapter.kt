@@ -26,6 +26,7 @@ class ListMemberGroupAdapter(
         var statusTv: TextView? = null
 
         init {
+            Constrain.context=context
             avatarIv = itemView.findViewById(R.id.avatarIv)
             nameTv = itemView.findViewById(R.id.nameTv)
             statusTv = itemView.findViewById(R.id.statusTv)
@@ -41,12 +42,10 @@ class ListMemberGroupAdapter(
         var users = listUsers[position]
         var name = users.name
         var imageUrl = users.image
-        if (!imageUrl.equals("")) {
-            Picasso.with(context).load(imageUrl).placeholder(R.drawable.ic_gallery_grey)
-                .into(holder.avatarIv)
-        } else {
-            holder.avatarIv!!.setImageResource(R.drawable.ic_gallery_grey)
-        }
+
+        var pathImageUser = Constrain.baseUrl + "/profile/" + imageUrl.substring(imageUrl.lastIndexOf("/")+1)
+        Constrain.checkShowImage(context,R.drawable.avatar_default,pathImageUser,holder.avatarIv!!)
+
         holder.nameTv!!.text = name
         if (users.isTurtor == true && users._id.equals(InfoGroupActivity.groupCreateBy)) {
             if (users._id.equals(CourseTypeActivity.uid)) {
@@ -65,13 +64,12 @@ class ListMemberGroupAdapter(
 
         holder.itemView.setOnClickListener {
             if (holder.statusTv!!.text.equals("Tôi")) {
-                Constrain.showToast(context, "Bạn không thể gửi tin nhắn cho bạn")
+                Constrain.showToast("Bạn không thể gửi tin nhắn cho bạn")
             } else {
                 var intent = Intent(context, ChatOneActivity::class.java)
                 intent.putExtra("hisUid", users._id)
                 intent.putExtra("hisName", users.name)
                 intent.putExtra("hisImage", users.image)
-
                 context.startActivity(intent)
             }
 

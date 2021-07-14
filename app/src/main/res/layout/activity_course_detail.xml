@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="65dp">
             <ImageView
-                android:id="@+id/menu"
+                android:id="@+id/backIv"
                 android:src="@drawable/ic_back"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"

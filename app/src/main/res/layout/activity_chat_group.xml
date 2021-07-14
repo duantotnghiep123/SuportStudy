@@ -2,14 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+    android:background="@color/grey10"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.chat.ChatGroupActivity">
     <RelativeLayout
         android:id="@+id/toolbar"
+        android:padding="5dp"
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
+        android:layout_height="65dp"
         android:background="@color/white">
 
         <LinearLayout
@@ -56,9 +57,9 @@
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="15dp"/>
         <View
-            android:background="@color/greynhat3"
+            android:background="@color/grey80"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="0.2dp"/>

@@ -65,7 +65,7 @@
                 android:layout_centerHorizontal="true"
                 app:civ_border_width="3dp"
                 app:civ_border_color="@color/greynhat3"
-                android:src="@drawable/loginimage" />
+                android:src="@drawable/avatar_default" />
 
             <TextView
                 android:id="@+id/groupNameTv"
@@ -78,7 +78,7 @@
                 android:layout_below="@id/groupImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Group name" />
+                android:text="" />
             <TextView
                 android:id="@+id/groupDescriptionTv"
                 android:textSize="15sp"
@@ -89,7 +89,7 @@
                 android:layout_below="@id/groupNameTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Group description" />
+                android:text="" />
             <RelativeLayout
                 android:layout_marginTop="10dp"
                 android:layout_below="@id/groupDescriptionTv"

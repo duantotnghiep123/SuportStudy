@@ -45,6 +45,7 @@ class RegisterFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         var view = inflater.inflate(R.layout.fragment_register, container, false)
+        Constrain.context=activity!!
         val btnRegister = view.findViewById<Button>(R.id.btnRegister)
         val txtHome = view.findViewById<TextView>(R.id.txtHome)
 
@@ -55,10 +56,9 @@ class RegisterFragment : Fragment() {
         }
         val userAPI = Constrain.createRetrofit(UserAPI::class.java)
         sharedPreferences = context!!.getSharedPreferences(
-            Constrain.SHARED_REF_NAME,
+            Constrain.SHARED_REF_USER,
             Context.MODE_PRIVATE
         )
-        Constrain.showToast(activity!!, isTutor.toString())
         sd = SweetAlertDialog(activity, SweetAlertDialog.PROGRESS_TYPE)
         sd!!.titleText = "Đang tạo tài khoản..."
         sd!!.setCancelable(false)
@@ -98,10 +98,12 @@ class RegisterFragment : Fragment() {
                 edtPassword.setFocusable(true)
             }  else {
                 sd!!.show()
+
+                var pass=Constrain.encryption(password)
                 var call = userAPI.register(
                     name,
                     email,
-                    password,
+                    pass!!,
                     "noImage",
                     isTutor
                 )

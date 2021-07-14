@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/refreshLayout"
     android:background="@color/grey05"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.course.CourseTypeActivity">
 
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <LinearLayout
+        android:id="@+id/dataLayout"
+        android:visibility="gone"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -66,7 +71,7 @@
             app:riv_corner_radius="10dp"
             android:scaleType="centerCrop"
             android:layout_width="match_parent"
-            android:layout_height="210dp"/>
+            android:layout_height="200dp"/>
         <TextView
             android:text="Categories"
             android:textSize="18dp"
@@ -83,6 +88,21 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
+                <!--                <com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader-->
+                <!--                    android:id="@+id/myLoader"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    app:loader_animDur="100"-->
+                <!--                    app:loader_bigCircleRadius="24dp"-->
+                <!--                    android:layout_gravity="center"-->
+                <!--                    android:layout_marginTop="100dp"-->
+                <!--                    app:loader_circleRadius="6dp"-->
+                <!--                    app:loader_defaultColor="@color/grey"-->
+                <!--                    app:loader_firstShadowColor="@color/yellow"-->
+                <!--                    app:loader_secondShadowColor="@color/red"-->
+                <!--                    app:loader_selectedColor="@color/green"-->
+                <!--                    app:loader_showRunningShadow="true" />-->
                 <com.agrawalsuneet.dotsloader.loaders.LazyLoader
                     android:id="@+id/myLoader"
                     android:visibility="gone"
@@ -135,6 +155,48 @@
 
 
     </LinearLayout>
-
-
+    <LinearLayout
+        android:id="@+id/noInternetLayout"
+        android:gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/no_internet_ui"
+            android:adjustViewBounds="true"
+            android:layout_width="400dp"
+            android:layout_height="320dp"/>
+        <TextView
+            android:text="Error..."
+            android:textSize="35dp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="No internet connection"
+            android:textSize="17dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="Check internet your device .."
+            android:textSize="17dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:background="@drawable/button01"
+            android:textColor="@color/white"
+            android:layout_marginTop="15dp"
+            android:paddingLeft="60dp"
+            android:paddingRight="60dp"
+            android:id="@+id/btnSetting"
+            android:textAllCaps="false"
+            android:text="Setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 </RelativeLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
