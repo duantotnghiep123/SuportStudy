@@ -80,7 +80,6 @@ class CourseTypeActivity : AppCompatActivity(),android.view.View.OnClickListener
         var name:String?=null
         var image:String?=null
         var istutor:Boolean?=null
-
         var client: StringeeClient? = null
 
     }

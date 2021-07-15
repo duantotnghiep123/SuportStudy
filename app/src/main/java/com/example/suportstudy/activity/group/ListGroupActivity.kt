@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseTypeActivity
@@ -32,6 +33,7 @@ class ListGroupActivity : AppCompatActivity() {
     var groupAdapter: GroupAdapter? = null;
     var myLoader: LazyLoader? = null
     var txtTitle: TextView? = null
+    lateinit var refreshLayout: SwipeRefreshLayout
 
     var typedisplayGroup: String? = null
     var listMyGroup: ArrayList<GroupCourse>? = null
@@ -94,7 +96,6 @@ class ListGroupActivity : AppCompatActivity() {
 
                     } else {
                         listMyGroup!!.clear()
-
                         getAllMyGroupParticipantSearch(newText)
 
                     }
@@ -196,6 +197,7 @@ class ListGroupActivity : AppCompatActivity() {
                 call: Call<List<GroupCourse>>,
                 response: Response<List<GroupCourse>>
             ) {
+                listMyGroup!!.clear()
                 if (response.isSuccessful) {
                     var listGroup = response.body()
                     for (i in listGroup!!.indices) {
@@ -226,9 +228,12 @@ class ListGroupActivity : AppCompatActivity() {
         myLoader = findViewById(R.id.myLoader)
         groupCourseAPI = Constrain.createRetrofit(GroupCourseAPI::class.java)
         searchView = findViewById(R.id.searchView)
+        refreshLayout = findViewById(R.id.refreshLayout)
         listMyGroup = ArrayList()
         var intent = intent
         typedisplayGroup = intent.getStringExtra("group")
+
+        refreshData()
     }
 
     fun setAdapter(list: List<GroupCourse>) {
@@ -244,6 +249,20 @@ class ListGroupActivity : AppCompatActivity() {
 
         }
     }
+    fun refreshData(){
+        refreshLayout.setOnRefreshListener(object : SwipeRefreshLayout.OnRefreshListener {
+            override fun onRefresh() {
+                refreshData() // your code
+                refreshLayout.setRefreshing(false)
+            }
 
+            private fun refreshData() {
+                finish()
+                overridePendingTransition(0, 0)
+                startActivity(getIntent())
+                overridePendingTransition(0, 0)
+            }
+        })
+    }
 
 }

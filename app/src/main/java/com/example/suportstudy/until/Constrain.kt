@@ -61,7 +61,6 @@ object Constrain {
         Pattern.CASE_INSENSITIVE
     )
 
-
     var CHANNEL_ID = "1000"
     var NOTIFICATION_ID = 100
 

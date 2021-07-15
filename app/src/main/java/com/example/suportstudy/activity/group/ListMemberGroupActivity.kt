@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.adapter.ListMemberGroupAdapter
@@ -22,15 +23,16 @@ import retrofit2.Response
 
 class ListMemberGroupActivity : AppCompatActivity() {
     var context=this@ListMemberGroupActivity
-    var recyclerViewUser:RecyclerView?=null
+    lateinit var recyclerViewUser:RecyclerView
     var listUsers:ArrayList<Users> = ArrayList<Users>()
 
-    var groupCourseAPI:GroupCourseAPI?=null
-    var userAPI:UserAPI?=null
+    lateinit var groupCourseAPI:GroupCourseAPI
+    lateinit var userAPI:UserAPI
 
-    var groupId:String?=null
-    var listMemberGroupAdapter:ListMemberGroupAdapter?=null
-    var lazyLoader:LazyLoader?=null
+     var groupId:String?=null
+    lateinit var listMemberGroupAdapter:ListMemberGroupAdapter
+    lateinit  var lazyLoader:LazyLoader
+    lateinit var refreshLayout:SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +46,10 @@ class ListMemberGroupActivity : AppCompatActivity() {
         groupCourseAPI=Constrain.createRetrofit(GroupCourseAPI::class.java)
         userAPI=Constrain.createRetrofit(UserAPI::class.java)
         recyclerViewUser=findViewById(R.id.recyclerViewUser);
+        refreshLayout=findViewById(R.id.refreshLayout);
         var intentGroupChat=intent
         groupId=intentGroupChat.getStringExtra("groupId")
+        refreshData()
     }
     fun getAllParticipantByGroupId(){
         var count=0
@@ -95,5 +99,20 @@ class ListMemberGroupActivity : AppCompatActivity() {
                 }
 
             })
+    }
+    fun refreshData(){
+        refreshLayout.setOnRefreshListener(object : SwipeRefreshLayout.OnRefreshListener {
+            override fun onRefresh() {
+                refreshData() // your code
+                refreshLayout.setRefreshing(false)
+            }
+
+            private fun refreshData() {
+                finish()
+                overridePendingTransition(0, 0)
+                startActivity(getIntent())
+                overridePendingTransition(0, 0)
+            }
+        })
     }
 }

@@ -1,12 +1,10 @@
 package com.example.suportstudy.activity.chat
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.AuthFailureError
 import com.android.volley.DefaultRetryPolicy
@@ -18,10 +16,13 @@ import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.group.InfoGroupActivity
 import com.example.suportstudy.adapter.GroupChatAdapter
+import com.example.suportstudy.extensions.gone
+import com.example.suportstudy.extensions.visible
 import com.example.suportstudy.model.GroupChat
 import com.example.suportstudy.model.GroupCourse
 import com.example.suportstudy.service.GroupCourseAPI
 import com.example.suportstudy.until.Constrain
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.database.*
 import de.hdodenhof.circleimageview.CircleImageView
 import org.json.JSONException
@@ -45,7 +46,8 @@ class ChatGroupActivity : AppCompatActivity() {
     var btnInfoGroup:ImageView?=null
     var edtMessage:EditText?=null
     var btnSend:ImageView?=null
-
+    lateinit var shimmerLayout: ShimmerFrameLayout
+    lateinit var dataLayout: RelativeLayout
     var groupChatList=ArrayList<GroupChat>()
     var groupCourseAPI:GroupCourseAPI?=null
     var chatGroupRef: DatabaseReference? = null
@@ -71,12 +73,12 @@ class ChatGroupActivity : AppCompatActivity() {
             edtMessage!!.setText("")
         }
         btnInfoGroup!!.setOnClickListener {
-            var intent= Intent(context,InfoGroupActivity::class.java)
-            intent.putExtra("groupId",groupId)
-            intent.putExtra("groupCreateBy",groupCreateBy)
-            intent.putExtra("groupImage",groupImage)
-            intent.putExtra("groupName",groupName)
-            intent.putExtra("groupDescription",groupDescription)
+            var intent= Intent(context, InfoGroupActivity::class.java)
+            intent.putExtra("groupId", groupId)
+            intent.putExtra("groupCreateBy", groupCreateBy)
+            intent.putExtra("groupImage", groupImage)
+            intent.putExtra("groupName", groupName)
+            intent.putExtra("groupDescription", groupDescription)
             context.startActivity(intent)
         }
     }
@@ -95,14 +97,17 @@ class ChatGroupActivity : AppCompatActivity() {
         btnInfoGroup=findViewById(R.id.btnInfoGroup)
         edtMessage=findViewById(R.id.edtMessage)
         btnSend=findViewById(R.id.btnSend)
+        shimmerLayout=findViewById(R.id.shimmer_container)
+        dataLayout=findViewById(R.id.dataLayout)
         chatGroup_Recyclerview=findViewById(R.id.chatGroup_Recyclerview)
         chatGroupRef = Constrain.initFirebase("GroupChats")
         groupCourseAPI=Constrain.createRetrofit(GroupCourseAPI::class.java)
 
 
-        var path = Constrain.baseUrl + "/group/" + groupImage!!.substring(groupImage!!.lastIndexOf("/")+1)
-        Constrain.checkShowImage(context, R.drawable.avatar_default, path!!, groupChatImage!!)
-        txtGroupName!!.text=groupName
+        getGroupInfo()
+
+
+
     }
     private fun sendMessage(message: String) {
         var  time=System.currentTimeMillis().toString()
@@ -115,42 +120,48 @@ class ChatGroupActivity : AppCompatActivity() {
         hashMap.put("message", message)
         hashMap.put("groupId", groupId!!)
 
-        chatGroupRef!!.child(groupId!!).child("Message").push().setValue(hashMap).addOnCompleteListener( {
-            if (it.isSuccessful) {
-                Constrain.showToast("Gửi thành công")
-                getAllUserId(message)
-            }
-        })
+        chatGroupRef!!.child(groupId!!).child("Message").push().setValue(hashMap).addOnCompleteListener(
+            {
+                if (it.isSuccessful) {
+                    Constrain.showToast("Gửi thành công")
+                    getAllUserId(message)
+                }
+            })
 
     }
     private fun displayMessage() {
         chatGroupRef!!.child(groupId!!).child("Message")
             .addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                groupChatList.clear()
-                for (ds in dataSnapshot.children) {
-                    val chat: GroupChat? = ds.getValue(GroupChat::class.java)
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    groupChatList.clear()
+                    for (ds in dataSnapshot.children) {
+                        val chat: GroupChat? = ds.getValue(GroupChat::class.java)
                         groupChatList.add(chat!!)
+                    }
+                    groupChatAdapter = GroupChatAdapter(context, groupChatList)
+                    chatGroup_Recyclerview!!.adapter = groupChatAdapter
+                    chatGroup_Recyclerview!!.scrollToPosition(groupChatList.size - 1)
                 }
-                groupChatAdapter= GroupChatAdapter(context, groupChatList)
-                chatGroup_Recyclerview!!.adapter=groupChatAdapter
-                chatGroup_Recyclerview!!.scrollToPosition(groupChatList.size - 1)
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
+                override fun onCancelled(databaseError: DatabaseError) {}
+            })
     }
     fun getAllUserId(message: String){
-        groupCourseAPI!!.getAllGroupByID(groupId!!).enqueue(object :Callback<List<GroupCourse>>{
+        groupCourseAPI!!.getAllGroupByID(groupId!!).enqueue(object : Callback<List<GroupCourse>> {
             override fun onResponse(
                 call: Call<List<GroupCourse>>,
                 response: retrofit2.Response<List<GroupCourse>>
             ) {
-                var listJoin=response.body()!![0].participant
+                var listJoin = response.body()!![0].participant
 
-                for (i in listJoin!!.indices){
-                    var uid=listJoin[i].uid
-                    getToken(message, CourseTypeActivity.name!!!!, uid!!, CourseTypeActivity.image!!)
+                for (i in listJoin!!.indices) {
+                    var uid = listJoin[i].uid
+                    getToken(
+                        message,
+                        CourseTypeActivity.name!!!!,
+                        uid!!,
+                        CourseTypeActivity.image!!
+                    )
 
                 }
             }
@@ -160,9 +171,7 @@ class ChatGroupActivity : AppCompatActivity() {
             }
 
         })
-
     }
-
     private fun getToken(message: String, senderName: String, hisID: String, myImage: String) {
         val database = FirebaseDatabase.getInstance().getReference("Tokens").child(hisID)
         database.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -229,5 +238,52 @@ class ChatGroupActivity : AppCompatActivity() {
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
         requestQueue.add(request)
+    }
+    fun getGroupInfo(){
+        shimmerLayout.visible()
+        groupCourseAPI!!.getAllGroupByID(groupId!!).enqueue(object : Callback<List<GroupCourse>> {
+            override fun onResponse(
+                call: Call<List<GroupCourse>>,
+                response: retrofit2.Response<List<GroupCourse>>
+            ) {
+                if (response.isSuccessful) {
+                    groupName = response.body()!![0].groupName
+                    groupCreateBy = response.body()!![0].createBy
+                    groupDescription = response.body()!![0].groupDescription
+                    groupImage = response.body()!![0].groupImage
+                }
+                var path = Constrain.subPathImage("group", groupImage!!)
+                Constrain.checkShowImage(
+                    context,
+                    R.drawable.avatar_default,
+                    path!!,
+                    groupChatImage!!
+                )
+                txtGroupName!!.text = groupName
+                shimmerLayout.gone()
+                dataLayout.visible()
+            }
+
+            override fun onFailure(call: Call<List<GroupCourse>>, t: Throwable) {
+                Log.e("Error", t.message.toString())
+            }
+
+        })
+
+    }
+    override fun onResume() {
+        super.onResume()
+        shimmerLayout.startShimmerAnimation()
+
+    }
+
+    override fun onPause() {
+        shimmerLayout.stopShimmerAnimation()
+        super.onPause()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        getGroupInfo()
     }
 }
