@@ -12,6 +12,7 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.document.ListDocumentActivity
 import com.example.suportstudy.activity.group.ListGroupActivity
 import com.example.suportstudy.activity.home.HomeActivity
 import com.example.suportstudy.model.GroupCourse
@@ -35,7 +36,7 @@ class CourseDetailActivity : AppCompatActivity() {
     var txtDescription: TextView? = null
     var courseIv: ImageView? = null
     var backIv: ImageView? = null
-    var btnJoin: Button? = null
+    var btnDocument: Button? = null
     var btnCreateGroup: Button? = null
     var ivGroup: CircleImageView? = null
     var context = this@CourseDetailActivity
@@ -69,14 +70,12 @@ class CourseDetailActivity : AppCompatActivity() {
                 var intent=Intent(context,ListGroupActivity::class.java)
                 intent.putExtra("group","allgroup")
                 intent.putExtra("courseId", courseId)
-
-                intent.putExtra("courseId", courseId)
                 startActivity(intent)
             }
         }
 
-        btnJoin!!.setOnClickListener {
-            var intent = Intent(context, HomeActivity::class.java)
+        btnDocument!!.setOnClickListener {
+            var intent = Intent(context, ListDocumentActivity::class.java)
             startActivity(intent)
         }
     }
@@ -103,7 +102,7 @@ class CourseDetailActivity : AppCompatActivity() {
         txtDescription = findViewById(R.id.txtDescription)
         courseIv = findViewById(R.id.courseIv)
         backIv = findViewById(R.id.backIv)
-        btnJoin = findViewById(R.id.btnJoin)
+        btnDocument = findViewById(R.id.btnJoin)
         btnCreateGroup = findViewById(R.id.btnCrearteClass)
         if (isTurtor == true) {
             btnCreateGroup!!.text = "Tạo Nhóm"

@@ -1,12 +1,14 @@
 package com.example.suportstudy.fragment
 
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.SearchView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
@@ -35,7 +37,7 @@ class ChatOneFragment : Fragment() {
     var noMessageLayout: LinearLayout? = null
     var loader: LazyLoader? = null
 
-    var myUid= CourseTypeActivity.uid
+    var myUid:String?=null
 
     var adapterOneChatlist:AdapterOneChatlist?=null
 
@@ -44,6 +46,8 @@ class ChatOneFragment : Fragment() {
 
     var listSearch:ArrayList<Users>?=null
 
+    var userSharedPreferences: SharedPreferences? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -51,11 +55,16 @@ class ChatOneFragment : Fragment() {
         }
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         var view=inflater.inflate(R.layout.fragment_chat_one, container, false)
+        userSharedPreferences = activity!!.getSharedPreferences(Constrain.SHARED_REF_USER,
+            AppCompatActivity.MODE_PRIVATE
+        )
+        myUid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")
         initViewData(view)
         searchView!!.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -96,7 +105,16 @@ class ChatOneFragment : Fragment() {
                     val chatlist: Chatlist? = ds.getValue(Chatlist::class.java)
                     chatlistList!!.add(chatlist!!)
                 }
-                loadChats()
+                if (chatlistList!!.size==0){
+                    noMessageLayout!!.visibility=View.VISIBLE
+                    loader!!.visibility=View.GONE
+                }else{
+                    noMessageLayout!!.visibility=View.GONE
+                    loadChats()
+                    loader!!.visibility=View.GONE
+                }
+
+
             }
             override fun onCancelled(databaseError: DatabaseError) {
             }
@@ -122,16 +140,10 @@ class ChatOneFragment : Fragment() {
                         adapterOneChatlist =  AdapterOneChatlist( context!!, userList!!   )
                         rcvChatOne!!.adapter = adapterOneChatlist
                         adapterOneChatlist!!.notifyDataSetChanged()
-
                         for (i in userList!!.indices) {
                             lastMessage(userList!![i]._id) // id  dzAZNw7EBJchnky8eJnrFepjBU73
                         }
-                        if (userList!!.size==0){
-                            noMessageLayout!!.visibility=View.VISIBLE
-                        }else{
-                            noMessageLayout!!.visibility=View.GONE
-                        }
-                        loader!!.visibility=View.GONE
+
 
                     }
                 }

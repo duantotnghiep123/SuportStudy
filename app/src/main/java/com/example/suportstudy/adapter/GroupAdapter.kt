@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 
@@ -75,7 +76,7 @@ class GroupAdapter(
         holder.txtJoin!!.setOnClickListener {
             if(holder.txtJoin!!.text.equals("Tham gia")){
                 var time=System.currentTimeMillis().toString()
-                groupAPI.joinGroup(group._id,CourseTypeActivity.uid!!,time)
+                groupAPI.joinGroup(group._id,ActionActivity.uid!!,time)
                     .enqueue(object : Callback<Participant> {
                         override fun onResponse(
                             call:Call<Participant>,
@@ -98,7 +99,7 @@ class GroupAdapter(
          var joinList=group.participant
          txtJoin!!.text="Tham gia"
         for (i in joinList!!.indices){
-            if(joinList[i].uid.equals(CourseTypeActivity.uid))
+            if(joinList[i].uid.equals(ActionActivity.uid))
             {
                 txtJoin!!.text="Đã tham gia"
             }

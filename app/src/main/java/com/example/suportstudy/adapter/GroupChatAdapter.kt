@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.model.GroupChat
@@ -130,7 +131,7 @@ class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :Rec
 
     override fun getItemViewType(position: Int): Int {
 
-        return if (chatList[position].senderUid.equals(CourseTypeActivity.uid)) {
+        return if (chatList[position].senderUid.equals(ActionActivity.uid)) {
             return MSG_TYPE_RIGHT
         } else {
             return MSG_TYPE_LEFT

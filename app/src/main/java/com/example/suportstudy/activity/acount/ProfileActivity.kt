@@ -10,11 +10,16 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.MainActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.group.ListGroupActivity
 import com.example.suportstudy.controller.UserController
+import com.example.suportstudy.extensions.gone
+import com.example.suportstudy.extensions.visible
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
@@ -38,6 +43,9 @@ class ProfileActivity : AppCompatActivity() {
     var avatarIv: CircleImageView? = null
     var nameTv: TextView? = null
     var finishTv: TextView? = null
+    lateinit var myLoader: LazyLoader
+    lateinit var dataLayout: RelativeLayout
+    lateinit var refreshLayout: SwipeRefreshLayout
 
     var sharedPreferences: SharedPreferences? = null
     var userAPI: UserAPI? = null
@@ -55,9 +63,9 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         initViewData()
-        getDataProfile(uid)
+
         finishTv!!.setOnClickListener {
-            Constrain.nextActivity(context,CourseTypeActivity::class.java)
+            Constrain.nextActivity(context,ActionActivity::class.java)
             finish()
         }
         avatarIv!!.setOnClickListener {
@@ -117,13 +125,20 @@ class ProfileActivity : AppCompatActivity() {
         avatarIv = findViewById(R.id.avatarIv)
         nameTv = findViewById(R.id.nameTv)
         finishTv = findViewById(R.id.finishTv)
+        refreshLayout = findViewById(R.id.refreshLayout)
+        myLoader=findViewById(R.id.myLoader)
+        dataLayout=findViewById(R.id.dataLayout)
         userAPI = Constrain.createRetrofit(UserAPI::class.java)
+
+        refreshData()
+        dataLayout.gone()
+        getDataProfile(uid)
     }
 
     fun editImage() {
         var file = File(path_imageStorage)
         var requestId =
-            RequestBody.create(MediaType.parse("multipart/form_data"), CourseTypeActivity.uid)
+            RequestBody.create(MediaType.parse("multipart/form_data"), uid)
         var requestOldImage = RequestBody.create(MediaType.parse("multipart/form_data"), image)
         val reqFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
         val body = MultipartBody.Part.createFormData("user", file.getName(), reqFile)
@@ -132,7 +147,7 @@ class ProfileActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<Users>, response: Response<Users>) {
                     if (response.isSuccessful) {
                         Constrain.showToast("Đổi thành công")
-                        getDataProfile(CourseTypeActivity.uid)
+                        getDataProfile(uid)
                     }
                 }
                 override fun onFailure(call: Call<Users>, t: Throwable) {
@@ -160,10 +175,11 @@ class ProfileActivity : AppCompatActivity() {
             if (imgUrl.equals("noImage") || imgUrl.equals("")) {
                 avatarIv!!.setImageResource(R.drawable.loginimage)
             } else {
-                Log.e("path",imgUrl.substring(imgUrl.lastIndexOf("/")+1))
-                var path = Constrain.baseUrl + "/profile/" + imgUrl.substring(imgUrl.lastIndexOf("/")+1)
+                var path = Constrain.subPathImage("profile",imgUrl)
                 Constrain.checkShowImage(context,R.drawable.avatar_default,path,avatarIv!!)
             }
+            myLoader.gone()
+            dataLayout.visible()
         })
 //        userAPI!!.getAllUsersByID(uid).enqueue(object : Callback<List<Users>> {
 //            override fun onResponse(
@@ -221,7 +237,10 @@ class ProfileActivity : AppCompatActivity() {
                         override fun onResponse(call: Call<Users>, response: Response<Users>) {
                             if (response.isSuccessful) {
                                 Constrain.showToast( "Đổi thành công")
-                                getDataProfile(CourseTypeActivity.uid)
+                                val editor = sharedPreferences!!.edit()
+                                editor.putString(Constrain.KEY_NAME, name)
+                                editor.commit()
+                                getDataProfile(uid)
                                 dialog.dismiss()
                             }
                         }
@@ -270,7 +289,7 @@ class ProfileActivity : AppCompatActivity() {
                         override fun onResponse(call: Call<Users>, response: Response<Users>) {
                             if (response.isSuccessful) {
                                 Constrain.showToast( "Đổi thành công")
-                                getDataProfile(CourseTypeActivity.uid)
+                                getDataProfile(uid)
                                 dialog.dismiss()
                             }
                         }
@@ -336,5 +355,19 @@ class ProfileActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    fun refreshData(){
+        refreshLayout.setOnRefreshListener(object : SwipeRefreshLayout.OnRefreshListener {
+            override fun onRefresh() {
+                refreshData() // your code
+                refreshLayout.setRefreshing(false)
+            }
 
+            private fun refreshData() {
+                finish()
+                overridePendingTransition(0, 0)
+                startActivity(getIntent())
+                overridePendingTransition(0, 0)
+            }
+        })
+    }
 }

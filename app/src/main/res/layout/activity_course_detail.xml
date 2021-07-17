@@ -146,11 +146,11 @@
                         <TextView
                             android:textColor="@color/black"
                             android:textStyle="bold"
-                            android:text="100% online"
+                            android:text="Tham gia các nhóm"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                         <TextView
-                            android:text="Start instanlyand learn at your our own schedule"
+                            android:text="Có thể tham gia các nhóm có trong khóa này để thảo luận"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                     </LinearLayout>
@@ -176,11 +176,11 @@
                         <TextView
                             android:textColor="@color/black"
                             android:textStyle="bold"
-                            android:text="100% online"
+                            android:text="Tài liệu"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                         <TextView
-                            android:text="Start instanlyand learn at your our own schedule"
+                            android:text="Có thể xem tài liệu hướng dẫn trong khóa này"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                     </LinearLayout>
@@ -189,7 +189,7 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnJoin"
-                    android:text="Tham Gia"
+                    android:text="Tài liệu"
                     android:layout_margin="20dp"
                     android:background="@drawable/button03"
                     android:textColor="@color/white"

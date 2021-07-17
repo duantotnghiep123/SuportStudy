@@ -19,7 +19,7 @@
       android:layout_width="match_parent"
       android:layout_height="60dp">
       <LinearLayout
-          android:id="@+id/btnDocument"
+          android:id="@+id/btnHome"
           android:layout_weight="1"
           android:orientation="vertical"
           android:gravity="center_horizontal"
@@ -27,11 +27,12 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content">
           <ImageView
+              android:src="@drawable/ic_home"
               android:layout_width="30dp"
-              android:layout_height="30dp"
-              android:src="@drawable/ic_book" />
+              android:layout_height="30dp"/>
           <TextView
-              android:text="Tài liệu"
+              android:text="Bài viết"
+              android:textSize="14dp"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"/>
       </LinearLayout>
@@ -45,15 +46,16 @@
           android:layout_height="wrap_content">
           <ImageView
               android:src="@drawable/ic_chat"
-              android:layout_width="30dp"
-              android:layout_height="30dp"/>
+              android:layout_width="28dp"
+              android:layout_height="28dp"/>
           <TextView
               android:text="Tin nhắn"
+              android:textSize="14dp"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"/>
       </LinearLayout>
       <LinearLayout
-          android:id="@+id/btnHome"
+          android:id="@+id/btnDocument"
           android:layout_weight="1"
           android:orientation="vertical"
           android:gravity="center_horizontal"
@@ -61,11 +63,12 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content">
           <ImageView
-              android:src="@drawable/ic_home"
-              android:layout_width="33dp"
-              android:layout_height="33dp"/>
+              android:layout_width="28dp"
+              android:layout_height="28dp"
+              android:src="@drawable/ic_book" />
           <TextView
-              android:text="Bài viết"
+              android:text="Tài liệu"
+              android:textSize="14dp"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"/>
       </LinearLayout>

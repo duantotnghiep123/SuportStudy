@@ -1,11 +1,13 @@
 package com.example.suportstudy.activity.chat
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.android.volley.AuthFailureError
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
@@ -39,18 +41,22 @@ class ChatGroupActivity : AppCompatActivity() {
     var groupDescription:String?=null
     var groupImage:String?=null
 
-    var senderUid= CourseTypeActivity.uid
+    var senderUid:String?=null
 
     var groupChatImage:CircleImageView?=null
     var txtGroupName:TextView?=null
     var btnInfoGroup:ImageView?=null
     var edtMessage:EditText?=null
     var btnSend:ImageView?=null
-    lateinit var shimmerLayout: ShimmerFrameLayout
+    lateinit var myLoader: LazyLoader
     lateinit var dataLayout: RelativeLayout
     var groupChatList=ArrayList<GroupChat>()
     var groupCourseAPI:GroupCourseAPI?=null
     var chatGroupRef: DatabaseReference? = null
+    var userSharedPreferences: SharedPreferences? = null
+
+    var name:String?=null
+    var image:String?=null
     companion object{
         var groupChatAdapter:GroupChatAdapter?=null
         var chatGroup_Recyclerview:RecyclerView?=null
@@ -59,6 +65,10 @@ class ChatGroupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_group)
+        userSharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
+        senderUid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")
+        name = userSharedPreferences!!.getString(Constrain.KEY_NAME, "")
+        image = userSharedPreferences!!.getString(Constrain.KEY_IMAGE, "")
         initDataView()
         displayMessage()
 
@@ -97,7 +107,7 @@ class ChatGroupActivity : AppCompatActivity() {
         btnInfoGroup=findViewById(R.id.btnInfoGroup)
         edtMessage=findViewById(R.id.edtMessage)
         btnSend=findViewById(R.id.btnSend)
-        shimmerLayout=findViewById(R.id.shimmer_container)
+        myLoader=findViewById(R.id.myLoader)
         dataLayout=findViewById(R.id.dataLayout)
         chatGroup_Recyclerview=findViewById(R.id.chatGroup_Recyclerview)
         chatGroupRef = Constrain.initFirebase("GroupChats")
@@ -114,7 +124,7 @@ class ChatGroupActivity : AppCompatActivity() {
         var  hashMap=HashMap<String, String>()
         hashMap.put("_id", time)
         hashMap.put("senderUid", senderUid!!)
-        hashMap.put("senderName", CourseTypeActivity.name!!)
+        hashMap.put("senderName", name!!)
         hashMap.put("timeSend", time)
         hashMap.put("typeMessage", "text")
         hashMap.put("message", message)
@@ -158,9 +168,9 @@ class ChatGroupActivity : AppCompatActivity() {
                     var uid = listJoin[i].uid
                     getToken(
                         message,
-                        CourseTypeActivity.name!!!!,
+                        name!!!!,
                         uid!!,
-                        CourseTypeActivity.image!!
+                        image!!
                     )
 
                 }
@@ -240,7 +250,8 @@ class ChatGroupActivity : AppCompatActivity() {
         requestQueue.add(request)
     }
     fun getGroupInfo(){
-        shimmerLayout.visible()
+        myLoader.visible()
+        dataLayout.gone()
         groupCourseAPI!!.getAllGroupByID(groupId!!).enqueue(object : Callback<List<GroupCourse>> {
             override fun onResponse(
                 call: Call<List<GroupCourse>>,
@@ -260,7 +271,7 @@ class ChatGroupActivity : AppCompatActivity() {
                     groupChatImage!!
                 )
                 txtGroupName!!.text = groupName
-                shimmerLayout.gone()
+                myLoader.gone()
                 dataLayout.visible()
             }
 
@@ -270,16 +281,6 @@ class ChatGroupActivity : AppCompatActivity() {
 
         })
 
-    }
-    override fun onResume() {
-        super.onResume()
-        shimmerLayout.startShimmerAnimation()
-
-    }
-
-    override fun onPause() {
-        shimmerLayout.stopShimmerAnimation()
-        super.onPause()
     }
 
     override fun onStart() {

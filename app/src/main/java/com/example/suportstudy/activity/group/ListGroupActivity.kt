@@ -1,9 +1,11 @@
 package com.example.suportstudy.activity.group
 
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.TextView
@@ -11,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.acount.ProfileActivity
+import com.example.suportstudy.activity.course.CourseDetailActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.adapter.GroupAdapter
 import com.example.suportstudy.extensions.gone
@@ -33,6 +37,7 @@ class ListGroupActivity : AppCompatActivity() {
     var groupAdapter: GroupAdapter? = null;
     var myLoader: LazyLoader? = null
     var txtTitle: TextView? = null
+    var backIv: ImageView? = null
     lateinit var refreshLayout: SwipeRefreshLayout
 
     var typedisplayGroup: String? = null
@@ -40,9 +45,13 @@ class ListGroupActivity : AppCompatActivity() {
 
     var searchView: SearchView? = null
     var courseId: String? = null
+    var uid:String?=null
+    var userSharedPreferences: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        userSharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
+        uid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")
         setContentView(R.layout.activity_list_group)
         initViewData()
 
@@ -75,6 +84,8 @@ class ListGroupActivity : AppCompatActivity() {
         if (typedisplayGroup.equals("groupMyJoin")) {
             txtTitle!!.text = "Nhóm bạn đã tham gia"
             getAllMyGroupParticipant()
+
+
             searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     if (query.equals("")) {
@@ -102,9 +113,17 @@ class ListGroupActivity : AppCompatActivity() {
                     return false
 
                 }
-
             })
-
+        }
+        backIv!!.setOnClickListener {
+            if (typedisplayGroup.equals("groupMyJoin")) {
+               Constrain.nextActivity(context,ProfileActivity::class.java)
+               finish()
+            }
+            if (typedisplayGroup.equals("allgroup")) {
+                Constrain.nextActivity(context,CourseDetailActivity::class.java)
+                finish()
+            }
         }
     }
 
@@ -120,7 +139,7 @@ class ListGroupActivity : AppCompatActivity() {
                     for (i in listGroup!!.indices) {
                         var listJoin = listGroup[i].participant
                         for (j in listJoin!!.indices) {
-                            if (listJoin[j].uid.equals(CourseTypeActivity.uid)) {
+                            if (listJoin[j].uid.equals(uid)) {
                                 listMyGroup!!.add(listGroup[i])
                             }
                         }
@@ -203,7 +222,7 @@ class ListGroupActivity : AppCompatActivity() {
                     for (i in listGroup!!.indices) {
                         var listJoin = listGroup[i].participant
                         for (j in listJoin!!.indices) {
-                            if (listJoin[j].uid.equals(CourseTypeActivity.uid)) {
+                            if (listJoin[j].uid.equals(uid)) {
                                 listMyGroup!!.add(listGroup[i])
                             }
                         }
@@ -225,6 +244,7 @@ class ListGroupActivity : AppCompatActivity() {
         rcvListGroup = findViewById(R.id.rcvListGroup)
         noGroupLayout = findViewById(R.id.noDataLayout)
         txtTitle = findViewById(R.id.txtTitle)
+        backIv = findViewById(R.id.backIv)
         myLoader = findViewById(R.id.myLoader)
         groupCourseAPI = Constrain.createRetrofit(GroupCourseAPI::class.java)
         searchView = findViewById(R.id.searchView)

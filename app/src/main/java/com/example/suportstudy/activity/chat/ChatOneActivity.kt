@@ -13,6 +13,7 @@ import com.android.volley.*
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.call.CallingActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.adapter.ChatOneAdapter
@@ -41,6 +42,7 @@ class ChatOneActivity : AppCompatActivity() {
     var hisName :String?=null
     var senderUid :String?=null
     var senderName :String?=null
+    var senderImage:String?=null
     var receiverUid:String?=null
     var hisImage :String?=null
 
@@ -54,11 +56,8 @@ class ChatOneActivity : AppCompatActivity() {
 
     companion object{
         var recyclerView: RecyclerView? = null
-
         var chatAdapter:ChatOneAdapter?=null
-
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +81,7 @@ class ChatOneActivity : AppCompatActivity() {
             messageEt!!.setText("")
         }
         btnCall!!.setOnClickListener {
-            val client: StringeeClient = CourseTypeActivity.client!!
+            val client: StringeeClient = ActionActivity.client!!
             if (client.isConnected) {
                 val intent = Intent(context, CallingActivity::class.java)
                 intent.putExtra("from", client.userId)
@@ -109,6 +108,7 @@ fun initDataView(){
      var  userSharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
     senderUid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")
     senderName = userSharedPreferences!!.getString(Constrain.KEY_NAME, "")
+    senderImage = userSharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")
 
     var intentChat=intent
     receiverUid=intentChat.getStringExtra("hisUid")
@@ -127,7 +127,7 @@ fun initDataView(){
     recyclerView!!.setHasFixedSize(true)
 
     txtName!!.text=hisName
-    var pathImageUsers = Constrain.baseUrl + "/profile/" + hisImage!!.substring(hisImage!!.lastIndexOf("/")+1)
+    var pathImageUsers = Constrain.subPathImage("profile",hisImage!!)
     Constrain.checkShowImage(context,R.drawable.avatar_default,pathImageUsers!!,avatarIv!!)
 }
     private fun displayMessage() {
@@ -146,9 +146,7 @@ fun initDataView(){
                 chatAdapter = ChatOneAdapter(context, chatList)
                 recyclerView!!.adapter = chatAdapter
                 recyclerView!!.scrollToPosition(chatList.size - 1)
-
             }
-
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
@@ -165,8 +163,7 @@ fun initDataView(){
         chatRef!!.push().setValue(hashMap).addOnCompleteListener({
             if (it.isSuccessful) {
                 Constrain.showToast("Gửi thành công")
-                getToken(message, senderName!!, receiverUid!!, CourseTypeActivity.image!!)
-
+                getToken(message, senderName!!, receiverUid!!, senderImage!!)
             }
         })
         var chatListRef = Constrain.initFirebase("ChatList")

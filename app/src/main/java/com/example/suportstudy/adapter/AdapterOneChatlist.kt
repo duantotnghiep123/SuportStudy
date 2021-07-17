@@ -55,7 +55,8 @@ class AdapterOneChatlist(
             holder.lastMessageTv!!.visibility = View.VISIBLE
             holder.lastMessageTv!!.text = lastMessage
         }
-        Constrain.checkShowImage(context,R.drawable.avatar_default,userImage, holder.chatIv!!)
+        var pathImageUser=Constrain.subPathImage("profile",userImage)
+        Constrain.checkShowImage(context,R.drawable.avatar_default,pathImageUser, holder.chatIv!!)
 
         holder.itemView.setOnClickListener {
             var intent = Intent(context, ChatOneActivity::class.java)

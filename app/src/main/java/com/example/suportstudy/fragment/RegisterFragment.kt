@@ -119,7 +119,6 @@ class RegisterFragment : Fragment() {
                             var name = users.name
                             var email = users.name
                             var image = users.image
-                            var password = users.password
 
                             isLogin = true
                             val editor = sharedPreferences!!.edit()

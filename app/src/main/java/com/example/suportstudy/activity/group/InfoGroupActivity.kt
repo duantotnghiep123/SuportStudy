@@ -11,10 +11,14 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.MutableLiveData
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
+import com.example.suportstudy.extensions.gone
+import com.example.suportstudy.extensions.visible
 import com.example.suportstudy.model.GroupCourse
 
 import com.example.suportstudy.service.GroupCourseAPI
@@ -33,7 +37,6 @@ import java.io.File
 
 class InfoGroupActivity : AppCompatActivity() {
     var context = this@InfoGroupActivity
-    var myUid = CourseTypeActivity.uid
     var groupCourseAPI: GroupCourseAPI? = null
 
     companion object {
@@ -53,6 +56,9 @@ class InfoGroupActivity : AppCompatActivity() {
     var viewMemberLayout: RelativeLayout? = null
     var leaveGroupLayout: RelativeLayout? = null
     var finishLayout: RelativeLayout? = null
+    lateinit var refreshLayout: SwipeRefreshLayout
+    lateinit var dataLayout: RelativeLayout
+    lateinit var lazyLoader: LazyLoader
     val groupCoursedata = MutableLiveData<List<GroupCourse>>()
 
     var image_uri: Uri? = null
@@ -61,6 +67,7 @@ class InfoGroupActivity : AppCompatActivity() {
     var sd:SweetAlertDialog?=null
 
     var isTurtor:Boolean = false
+    var uid:String ?=null
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -154,7 +161,7 @@ class InfoGroupActivity : AppCompatActivity() {
         groupCoursedata.observe(context,{
             var listJoin= it!![0].participant
             for (i in listJoin!!.indices){
-                if(listJoin[i].uid!!.equals(CourseTypeActivity.uid)){
+                if(listJoin[i].uid!!.equals(uid)){
                     var idjoin=listJoin[i]._id
                     groupCourseAPI!!.deleteUserGroup(idjoin).enqueue(object :Callback<GroupCourse>{
                         override fun onResponse(
@@ -215,6 +222,7 @@ class InfoGroupActivity : AppCompatActivity() {
     fun initViewData() {
         var  userSharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
         isTurtor = userSharedPreferences!!.getBoolean(Constrain.KEY_ISTUTOR, false)!!
+        uid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")!!
 
         Constrain.context = context
         var intentGroupChat = intent
@@ -228,13 +236,18 @@ class InfoGroupActivity : AppCompatActivity() {
         viewMemberLayout = findViewById(R.id.viewMemberLayout)
         leaveGroupLayout = findViewById(R.id.leaveGroupLayout)
         finishLayout = findViewById(R.id.finishLayout)
+        refreshLayout = findViewById(R.id.refreshLayout)
+        dataLayout = findViewById(R.id.dataLayout)
+        lazyLoader = findViewById(R.id.myLoader)
         sd=Constrain.sweetdialog(context,"Đang xử lí...")
 
         groupCourseAPI = Constrain.createRetrofit(GroupCourseAPI::class.java)
 
+        dataLayout.gone()
+        refreshData()
         getGroupById()
         showUiProfile()
-        if (!groupCreateBy.equals(CourseTypeActivity.uid)) {
+        if (!groupCreateBy.equals(uid)) {
             leaveGroupTv!!.text = "Rời nhóm"
         } else {
             leaveGroupTv!!.text = "Xóa nhóm"
@@ -275,8 +288,10 @@ class InfoGroupActivity : AppCompatActivity() {
             groupImage = listGroupId[0].groupImage
             groupNameTv!!.text = groupName
             groupDescriptionTv!!.text = groupDescription
-            var path = Constrain.baseUrl + "/group/" + groupImage!!.substring(groupImage!!.lastIndexOf("/")+1)
+            var path = Constrain.subPathImage("group",groupImage!!)
             Constrain.checkShowImage(context, R.drawable.avatar_default, path!!, groupIv!!)
+            lazyLoader.gone()
+            dataLayout.visible()
         })
     }
     override fun onRequestPermissionsResult(
@@ -332,13 +347,14 @@ class InfoGroupActivity : AppCompatActivity() {
                                     Constrain.showToast("Đổi thành công")
                                     getGroupById()
                                     showUiProfile()
-                                    sd!!.dismiss()
-                                }                }
+                                }
+                                sd!!.dismiss()
+
+                            }
 
                             override fun onFailure(call: Call<GroupCourse>, t: Throwable) {
                                 Constrain.showToast( "Thất bại")
-                                t.printStackTrace()
-                                Log.e("ERROR", t.toString())
+                                Log.e("ERROR", t.message.toString())
                                 sd!!.dismiss()}
 
                         })                    }
@@ -351,6 +367,19 @@ class InfoGroupActivity : AppCompatActivity() {
             })
 
     }
-
+    fun refreshData(){
+        refreshLayout.setOnRefreshListener(object : SwipeRefreshLayout.OnRefreshListener {
+            override fun onRefresh() {
+                refreshData() // your code
+                refreshLayout.setRefreshing(false)
+            }
+            private fun refreshData() {
+                finish()
+                overridePendingTransition(0, 0)
+                startActivity(getIntent())
+                overridePendingTransition(0, 0)
+            }
+        })
+    }
 
 }

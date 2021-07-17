@@ -54,6 +54,7 @@ class LoginFragment : Fragment() {
         sd=Constrain.sweetdialog(activity!!,"Đang đăng nhập")
 
         btnLogin.setOnClickListener {
+            sd!!.show()
             var email = edtEmail.text.toString()
             var password = edtPassword.text.toString()
             val matcher: Matcher = Constrain.VALID_EMAIL_ADDRESS_REGEX.matcher(email)
@@ -76,7 +77,7 @@ class LoginFragment : Fragment() {
     }
 
     fun loginFuntion(email:String,password:String){
-        sd!!.show()
+
         val userAPI = Constrain.createRetrofit(UserAPI::class.java)
         var call = userAPI.getAllUsers()
         call.enqueue(object : retrofit2.Callback<List<Users>> {
@@ -110,12 +111,15 @@ class LoginFragment : Fragment() {
                         }
                     }
                     if(checkLogin==true){
+                        sd!!.dismiss()
                         Constrain.nextActivity(activity!!,CourseTypeActivity::class.java)
                         activity!!.finish()
+
                     }else{
                         Constrain.showToast("Email hoặc mật khẩu không đúng")
+                        sd!!.dismiss()
                     }
-                    sd!!.dismiss()
+
                 }
             }
 

@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.ChatGroupFragment">
@@ -24,7 +25,6 @@
         app:lazyloader_thirdDotColor="#FFD600" />
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -32,6 +32,7 @@
         android:layout_marginRight="10dp"
         android:focusable="false"
         app:queryBackground="@null"
+        android:background="@drawable/background_search_grey"
         app:queryHint="Nhập tên nhóm cần tìm" />
     <LinearLayout
         android:id="@+id/noDataLayout"
@@ -55,6 +56,8 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_marginTop="15dp"
         android:layout_below="@+id/searchView"
         android:id="@+id/recyclerViewChatGroup"

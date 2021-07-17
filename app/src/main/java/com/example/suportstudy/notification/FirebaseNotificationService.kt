@@ -17,15 +17,14 @@ import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.res.ResourcesCompat
+import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.activity.chat.ChatOneActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
-import com.example.suportstudy.activity.course.CourseTypeActivity.Companion.uid
+import com.example.suportstudy.activity.ActionActivity.Companion.uid
 import com.example.suportstudy.until.Constrain
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.stringee.listener.StatusListener
 import kotlin.random.Random
 
 
@@ -77,7 +76,7 @@ class FirebaseNotificationService : FirebaseMessagingService() {
                     "DataMap: \n title: $title" + "\nmessage: $message" + "\n notificationType: $notificationType" + "\nhisUid: $hisID" + "\nhisName: $hisName" +
                             "hisImage: $hisImage" + "\ngroupImage: $groupImage"
                 )
-                if (!hisID.equals(CourseTypeActivity.uid)) {
+                if (!hisID.equals(uid)) {
                     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
                         createGroupOreoNotification(
                             title,
@@ -357,14 +356,14 @@ class FirebaseNotificationService : FirebaseMessagingService() {
 
     override fun onNewToken(s: String) {
         updateToken(s)
-        if (CourseTypeActivity.client != null && CourseTypeActivity.client!!.isConnected()) {
-            CourseTypeActivity.client!!.registerPushToken(s, object : StatusListener() {
-                override fun onSuccess() {
-                    FirebaseDatabase.getInstance().getReference("users")
-                        .child(uid!!).child("token").setValue(s)
-                }
-            })
-        }
+//        if (ActionActivity.client != null && ActionActivity.client!!.isConnected()) {
+//            ActionActivity.client!!.registerPushToken(s, object : StatusListener() {
+//                override fun onSuccess() {
+//                    FirebaseDatabase.getInstance().getReference("users")
+//                        .child(uid!!).child("token").setValue(s)
+//                }
+//            })
+//        }
         super.onNewToken(s)
     }
 

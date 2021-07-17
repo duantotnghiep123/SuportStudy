@@ -25,7 +25,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SuportStudy"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.ActionActivity"></activity>
+        <activity android:name=".activity.document.ListDocumentActivity"></activity>
+        <activity android:name=".activity.ActionActivity" />
         <activity android:name=".activity.call.CallingActivity" />
         <activity android:name=".activity.call.IncomingCallActivity" />
 

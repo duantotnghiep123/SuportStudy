@@ -43,7 +43,8 @@ class GroupChatListAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         var  group: GroupCourse =list[position]
-        Constrain.checkShowImage(context,R.drawable.avatar_default,group.groupImage!!,holder.groupChatIv!!)
+        var pathImageGroup=Constrain.subPathImage("group",group.groupImage!!)
+        Constrain.checkShowImage(context,R.drawable.avatar_default,pathImageGroup,holder.groupChatIv!!)
         holder.groupNameTv!!.text=group.groupName
         loadLastMessage(group,holder)
 
