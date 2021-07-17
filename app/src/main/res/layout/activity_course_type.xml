@@ -20,7 +20,6 @@
         android:layout_height="wrap_content">
         <RelativeLayout
             android:id="@+id/toolbar2"
-            android:background="@drawable/toolbar"
             android:layout_width="match_parent"
             android:layout_height="65dp">
             <ImageView
@@ -30,14 +29,15 @@
                 android:layout_centerVertical="true"
                 app:tint="@color/black"
                 android:layout_marginLeft="20dp"
-                android:layout_width="25dp"
-                android:layout_height="25dp"/>
+                android:layout_width="18dp"
+                android:layout_height="18dp"/>
             <TextView
                 android:text="Categories"
                 android:textSize="18dp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:layout_centerInParent="true"
+                android:layout_toRightOf="@id/backIv"
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <LinearLayout

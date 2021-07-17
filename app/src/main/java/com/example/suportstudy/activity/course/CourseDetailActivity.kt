@@ -111,7 +111,6 @@ class CourseDetailActivity : AppCompatActivity() {
         }
 
         backIv!!.setOnClickListener {
-            Constrain.nextActivity(context,ListCourseActivity::class.java)
             finish()
         }
     }
@@ -151,13 +150,21 @@ class CourseDetailActivity : AppCompatActivity() {
             var groupName = edtName.text.toString()
             var groupDescription = edtDecription.text.toString()
             var time=System.currentTimeMillis().toString()
-           if (image_uri==null){
-               createGroupNoImage(myUid,groupName,groupDescription,"noImage", courseId,time)
-               dialog.dismiss()
-           }else{
-               createGroupWithImage(myUid!!,groupName,groupDescription,time)
-               dialog.dismiss()
-           }
+            if(groupName.equals("")){
+                Constrain.showToast("Nhập tên group")
+            }else if(groupDescription.equals("")){
+                Constrain.showToast("Nhập tên mô tả")
+
+            }else{
+                if (image_uri==null){
+                    createGroupNoImage(myUid,groupName,groupDescription,"noImage", courseId,time)
+                    dialog.dismiss()
+                }else{
+                    createGroupWithImage(myUid!!,groupName,groupDescription,time)
+                    dialog.dismiss()
+                }
+            }
+
         }
         btnHuy.setOnClickListener {
             dialog.dismiss()

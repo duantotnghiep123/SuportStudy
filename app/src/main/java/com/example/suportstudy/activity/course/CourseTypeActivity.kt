@@ -10,10 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.SearchView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityCompat
@@ -26,6 +23,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.MainActivity
 import com.example.suportstudy.activity.acount.ProfileActivity
 import com.example.suportstudy.activity.call.IncomingCallActivity
@@ -65,6 +63,7 @@ class CourseTypeActivity : AppCompatActivity(), android.view.View.OnClickListene
     lateinit var thumbIv: RoundedImageView
     lateinit var rcvCourse: RecyclerView
     lateinit var searchView: SearchView
+    lateinit var backIv: ImageView
     lateinit var courseTypeAPI: CourseTypeAPI
 
     lateinit var loader: LazyLoader
@@ -88,6 +87,11 @@ class CourseTypeActivity : AppCompatActivity(), android.view.View.OnClickListene
         getReference()
         setContentView(R.layout.activity_course_type)
         initviewData()
+
+        backIv.setOnClickListener {
+            Constrain.nextActivity(context,ActionActivity::class.java)
+            finish()
+        }
 
         searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -123,6 +127,7 @@ class CourseTypeActivity : AppCompatActivity(), android.view.View.OnClickListene
         rcvCourse = findViewById(R.id.rcvCourse)
 
         searchView = findViewById(R.id.searchView)
+        backIv = findViewById(R.id.backIv)
         thumbIv = findViewById(R.id.thumbIv)
 
         loader = findViewById(R.id.myLoader)
