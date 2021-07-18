@@ -13,6 +13,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -53,12 +55,19 @@ object Constrain {
 
     var context:Context?=null
 
+<<<<<<< HEAD
+=======
 
     val VALID_EMAIL_ADDRESS_REGEX =Pattern.compile(
         "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
         Pattern.CASE_INSENSITIVE
     )
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
+    val VALID_EMAIL_ADDRESS_REGEX =Pattern.compile(
+        "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
+        Pattern.CASE_INSENSITIVE
+    )
 
     var CHANNEL_ID = "1000"
     var NOTIFICATION_ID = 100
@@ -67,6 +76,14 @@ object Constrain {
     var SERVER_KEY ="AAAAT1UYtF0:APA91bELQ_x37OR3dXL_ZlUk3a3AE6qj6Xe7_JwaDfzpNP6S5TOk2CahSW_NPCRkZu2LC-TQReQl5gw0Ji_tlpB7-xmOKXQ8ZKmMhJTuToL3CQO13ihh-ilUypMVL4OwnaynaW6A9u6A"
 
 
+<<<<<<< HEAD
+    fun postDelay(runnable: Runnable?, delayMillis: Long) {
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed(runnable!!, delayMillis)
+    }
+
+=======
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
     fun <T> nextActivity(context: Context, clazz: Class<T>) {
         var intent = Intent(context, clazz);
         context.startActivity(intent)
@@ -183,4 +200,28 @@ object Constrain {
         var path = baseUrl + "/${typePath}/" + imageUrl!!.substring(imageUrl.lastIndexOf("/")+1)
          return path
     }
+<<<<<<< HEAD
+    val HASHKEY="com.example.suportstudy"
+
+    fun encryption(strNormalText: String?): String? {
+        var normalTextEnc = ""
+        try {
+            normalTextEnc = AESHelper.encrypt(HASHKEY, strNormalText!!)!!
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return normalTextEnc
+    }
+
+    fun decryption(strEncryptedText: String?): String? {
+        var strDecryptedText = ""
+        try {
+            strDecryptedText = AESHelper.decrypt(HASHKEY, strEncryptedText!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return strDecryptedText
+    }
+=======
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 }

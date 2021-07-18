@@ -31,9 +31,7 @@ class QuizzActivity : AppCompatActivity(){
     val data = MutableLiveData<List<Question>>()
     var score = 0;
     var listIndexQuestion = ArrayList<Int?>()
-
     val context = this@QuizzActivity
-    var isconected=false
     var lazyLoader: LazyLoader? = null
     var questionView: NestedScrollView? = null
 
@@ -43,8 +41,6 @@ class QuizzActivity : AppCompatActivity(){
 
         lazyLoader = findViewById(R.id.myLoader)
         questionView = findViewById(R.id.questionView)
-
-
 
         val quizzApi = Constrain.createRetrofit(QuestionAPI::class.java)
         questionView!!.visibility = View.GONE

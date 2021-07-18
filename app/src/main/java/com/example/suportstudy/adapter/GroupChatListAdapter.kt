@@ -10,8 +10,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.chat.ChatGroupActivity
-import com.example.suportstudy.fragment.ChatGroupFragment
-import com.example.suportstudy.model.Group
+
+import com.example.suportstudy.model.GroupCourse
 import com.example.suportstudy.until.Constrain
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
@@ -19,7 +19,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class GroupChatListAdapter(
     var context: Context,
-    var list: List<Group>,
+    var list: List<GroupCourse>,
     val ref:DatabaseReference
 
     ) :RecyclerView.Adapter<GroupChatListAdapter.MyViewHolder>(){
@@ -42,8 +42,9 @@ class GroupChatListAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        var  group: Group =list[position]
-        Constrain.checkShowImage(context,R.drawable.avatar_default,group.groupImage!!,holder.groupChatIv!!)
+        var  group: GroupCourse =list[position]
+        var pathImageGroup=Constrain.subPathImage("group",group.groupImage!!)
+        Constrain.checkShowImage(context,R.drawable.avatar_default,pathImageGroup,holder.groupChatIv!!)
         holder.groupNameTv!!.text=group.groupName
         loadLastMessage(group,holder)
 
@@ -63,7 +64,7 @@ class GroupChatListAdapter(
     }
 
     private fun loadLastMessage(
-        group: Group,
+        group: GroupCourse,
         holder: GroupChatListAdapter.MyViewHolder,
     ) {
         // get last mess from Groups
