@@ -9,6 +9,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
 
     <uses-permission android:name="android.permission.CAMERA" />
@@ -19,6 +24,7 @@
 
 
     <application
+        android:name="androidx.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -27,7 +33,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SuportStudy"
         android:usesCleartextTraffic="true">
+<<<<<<< HEAD
+        <activity android:name=".activity.document.ListDocumentActivity"></activity>
+        <activity android:name=".activity.ActionActivity" />
+        <activity android:name=".activity.call.CallingActivity" />
+=======
         <activity android:name=".activity.call.CallingActivity"></activity>
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         <activity android:name=".activity.call.IncomingCallActivity" />
 
         <receiver
@@ -44,7 +56,10 @@
         </receiver>
 
         <activity android:name=".activity.course.CourseTypeActivity" />
+<<<<<<< HEAD
+=======
         <activity android:name=".activity.TestImageActivity" />
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         <activity android:name=".activity.chat.ChatOneActivity" />
         <activity android:name=".activity.group.ListMemberGroupActivity" />
         <activity android:name=".activity.group.InfoGroupActivity" />

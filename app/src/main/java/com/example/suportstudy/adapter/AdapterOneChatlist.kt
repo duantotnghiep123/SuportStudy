@@ -11,8 +11,6 @@ import com.example.suportstudy.R
 import com.example.suportstudy.activity.chat.ChatOneActivity
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.until.Constrain
-import com.google.firebase.database.DatabaseReference
-import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
 class AdapterOneChatlist(
@@ -43,11 +41,12 @@ class AdapterOneChatlist(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         var user=list[position]
 
-        val userImage: String = user.image
         val userName: String = user.name
-        val hisUid: String = user._id
+        val userId: String = user._id
+        val userImage: String = user.image
+
         holder.senderName!!.visibility=View.GONE
-        val lastMessage = lastMessageMap!![hisUid]
+        val lastMessage = lastMessageMap!![userId]
 
         holder.nameTv!!.text = userName
         if (lastMessage == null || lastMessage == "default") {
@@ -56,13 +55,14 @@ class AdapterOneChatlist(
             holder.lastMessageTv!!.visibility = View.VISIBLE
             holder.lastMessageTv!!.text = lastMessage
         }
-        Constrain.checkShowImage(context,R.drawable.avatar_default,userImage, holder.chatIv!!)
+        var pathImageUser=Constrain.subPathImage("profile",userImage)
+        Constrain.checkShowImage(context,R.drawable.avatar_default,pathImageUser, holder.chatIv!!)
 
         holder.itemView.setOnClickListener {
             var intent = Intent(context, ChatOneActivity::class.java)
-            intent.putExtra("hisUid", user._id)
-            intent.putExtra("hisName", user.name)
-            intent.putExtra("hisImage", user.image)
+            intent.putExtra("hisUid", userId)
+            intent.putExtra("hisName", userName)
+            intent.putExtra("hisImage", userImage)
             context.startActivity(intent)
         }
     }

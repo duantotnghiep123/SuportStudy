@@ -50,4 +50,8 @@
     <color name="redLight">#D53232</color>
     <color name="redDark">#952323</color>
     <color name="greyLight">#ADA9A9</color>
+<<<<<<< HEAD
+    <color name="yellow">#FFD600</color>
+=======
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 </resources>

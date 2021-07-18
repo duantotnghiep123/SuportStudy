@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
         val isLogin = sharedPreferences!!.getBoolean(Constrain.KEY_LOGIN, false)
         if (isLogin == true) {
-            val intent = Intent(context, CourseTypeActivity::class.java)
+            val intent = Intent(context, ActionActivity::class.java)
             startActivity(intent)
             finish()
         }

@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.chat.ChatOneActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.group.InfoGroupActivity
@@ -48,13 +49,13 @@ class ListMemberGroupAdapter(
 
         holder.nameTv!!.text = name
         if (users.isTurtor == true && users._id.equals(InfoGroupActivity.groupCreateBy)) {
-            if (users._id.equals(CourseTypeActivity.uid)) {
+            if (users._id.equals(ActionActivity.uid)) {
                 holder.statusTv!!.text = "Tôi"
             } else {
                 holder.statusTv!!.text = "Quản trị viên"
             }
         } else {
-            if (users._id.equals(CourseTypeActivity.uid)) {
+            if (users._id.equals(ActionActivity.uid)) {
                 holder.statusTv!!.text = "Tôi"
             } else {
                 holder.statusTv!!.text = "Thành viên thường"
@@ -70,7 +71,6 @@ class ListMemberGroupAdapter(
                 intent.putExtra("hisUid", users._id)
                 intent.putExtra("hisName", users.name)
                 intent.putExtra("hisImage", users.image)
-
                 context.startActivity(intent)
             }
 

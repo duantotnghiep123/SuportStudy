@@ -31,7 +31,7 @@
         android:layout_alignParentRight="true"
         android:src="@drawable/ic_row"
         android:layout_centerVertical="true"
-        app:tint="@color/green"
+        app:tint="@color/blue"
         android:layout_width="27dp"
         android:layout_height="27dp"/>
 </RelativeLayout>

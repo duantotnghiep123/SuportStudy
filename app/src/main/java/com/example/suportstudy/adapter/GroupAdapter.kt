@@ -9,14 +9,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
-import com.example.suportstudy.model.Group
+
+import com.example.suportstudy.model.GroupCourse
 import com.example.suportstudy.model.Participant
-import com.example.suportstudy.service.GroupAPI
-import com.example.suportstudy.service.ParticipantAPI
+
+import com.example.suportstudy.service.GroupCourseAPI
 import com.example.suportstudy.until.Constrain
-import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.*
 import retrofit2.Call
@@ -25,7 +26,7 @@ import retrofit2.Response
 
 class GroupAdapter(
     var context: Context,
-    var list: List<Group>, var participantAPI:ParticipantAPI,var groupAPI: GroupAPI) : RecyclerView.Adapter<GroupAdapter.MyViewHolder>() {
+    var list: List<GroupCourse>, var groupAPI: GroupCourseAPI) : RecyclerView.Adapter<GroupAdapter.MyViewHolder>() {
 
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
@@ -45,8 +46,8 @@ class GroupAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        var  group:Group=list[position]
-        getAllParticipant(group, holder.txtJoin!!)
+        var  group:GroupCourse=list[position]
+        showJoinUi(group,holder.txtJoin)
         var groupImage= group.groupImage!!
         holder.txtGroupName!!.text=group.groupName
         var pathImageUrl=""
@@ -57,8 +58,6 @@ class GroupAdapter(
         }
 
         Constrain.checkShowImage(context,R.drawable.ic_gallery_grey,pathImageUrl, holder.IVGroup!!)
-
-
 
          holder.itemView.setOnClickListener {
              if(holder.txtJoin!!.text.equals("Đã tham gia")){
@@ -78,6 +77,22 @@ class GroupAdapter(
         holder.txtJoin!!.setOnClickListener {
             if(holder.txtJoin!!.text.equals("Tham gia")){
                 var time=System.currentTimeMillis().toString()
+<<<<<<< HEAD
+                groupAPI.joinGroup(group._id,ActionActivity.uid!!,time)
+                    .enqueue(object : Callback<Participant> {
+                        override fun onResponse(
+                            call:Call<Participant>,
+                            response: Response<Participant>
+                        ) {
+                            if (response.isSuccessful) {
+                                holder.txtJoin!!.text="Đã tham gia"
+                            }
+                        }
+                        override fun onFailure(call: Call<Participant>, t: Throwable) {
+                            Log.v("Data", "Error: " + t.message.toString())
+                        }
+                    })
+=======
             participantAPI.insertParticipant(time,CourseTypeActivity.uid, group._id!!,group.courseId!!)
                    .enqueue(object : Callback<Participant> {
                        override fun onResponse(
@@ -92,14 +107,31 @@ class GroupAdapter(
                            Log.v("Data", "Error: " + t.message.toString())
                        }
                    })
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             }
-
         }
 
+<<<<<<< HEAD
     }
+
+    private fun showJoinUi(group: GroupCourse, txtJoin: TextView?) {
+         var joinList=group.participant
+         txtJoin!!.text="Tham gia"
+        for (i in joinList!!.indices){
+            if(joinList[i].uid.equals(ActionActivity.uid))
+            {
+                txtJoin!!.text="Đã tham gia"
+            }
+=======
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
+        }
+    }
+
     override fun getItemCount(): Int {
         return list.size
     }
+<<<<<<< HEAD
+=======
     fun getAllParticipant(group: Group,txtJoin: TextView){
         val chatFetchJob = Job()
         val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
@@ -134,7 +166,6 @@ class GroupAdapter(
                 })
 
         }
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
-
-    }
 }

@@ -2,10 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginLeft="5dp"
-    android:layout_marginRight="5dp"
-    android:layout_marginBottom="3dp"
-    android:background="@drawable/background_item_user"
+    android:background="@color/white"
     android:layout_height="wrap_content">
     <FrameLayout
         android:id="@+id/fr"
@@ -22,7 +19,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             app:civ_border_width="1dp"
-            app:civ_border_color="@color/blue"/>
+            app:civ_border_color="@color/white"/>
 <!--        <ImageView-->
 <!--            android:id="@+id/onlineStatusIv"-->
 <!--            android:layout_gravity="bottom|right"-->
@@ -43,6 +40,7 @@
         <TextView
             android:id="@+id/groupNameTv"
             android:text="name"
+            android:textStyle="bold"
             android:fontFamily="@font/mo_me"
             android:textColor="@color/black"
             android:layout_width="wrap_content"
@@ -54,6 +52,7 @@
             <TextView
                 android:id="@+id/senderName"
                 android:textStyle="bold"
+                android:textSize="12dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
@@ -61,6 +60,7 @@
                 android:id="@+id/lastMessageTv"
                 android:textColor="@color/greynhat"
                 android:maxLines="1"
+                android:textSize="12dp"
                 android:fontFamily="@font/worksans_regular"
                 android:maxWidth="100dp"
                 android:layout_width="wrap_content"
@@ -69,11 +69,6 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_below="@id/fr"
-        android:layout_toRightOf="@id/fr"
-        android:background="#DCDCDC"
-        android:layout_width="match_parent"
-        android:layout_height="0.4dp"/>
+
 
 </RelativeLayout>
