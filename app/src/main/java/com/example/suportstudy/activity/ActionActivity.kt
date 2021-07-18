@@ -166,7 +166,7 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
                 isReconnecting: Boolean
             ) {
                 runOnUiThread {
-                    //                        Utils.reportMessage(MainActivity.this, "Bị mất kết nối");
+                    Constrain.showToast(context,"Bị mất kết nối")
                 }
             }
 
