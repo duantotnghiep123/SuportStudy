@@ -40,19 +40,17 @@ class IncomingCallActivity : AppCompatActivity(), View.OnClickListener {
     private var btnSwitch: ImageButton? = null
     private var avatarIv: ImageView? = null
     private var vControl: View? = null
-    var sendID: String? =
-        null
-    var receiveID:kotlin.String? = null
-    var name:kotlin.String? = null
-    var image:kotlin.String? = null
+    var sendID: String? =null
+    var receiveID:String? = null
+    var name:String? = null
+    var image:String? = null
 
+     var mStringeeCall: StringeeCall? = null
+     var isMute = false
+     var isSpeaker = false
+     var isVideo = false
 
-    private var mStringeeCall: StringeeCall? = null
-    private var isMute = false
-    private var isSpeaker = false
-    private var isVideo = false
-
-    private var mMediaState: StringeeCall.MediaState? = null
+     var mMediaState: StringeeCall.MediaState? = null
     private var mSignalingState: StringeeCall.SignalingState? = null
 
     val REQUEST_PERMISSION_CALL = 1
@@ -98,7 +96,7 @@ class IncomingCallActivity : AppCompatActivity(), View.OnClickListener {
             image=it[0].image
             receiveID=it[0]._id
             tvFrom!!.setText(name)
-            var path = Constrain.baseUrl + "/profile/" + image!!.substring(image!!.lastIndexOf("/")+1)
+            var path = Constrain.subPathImage("profile", image!!)
             Constrain.checkShowImage(context,R.drawable.avatar_default,path,avatarIv!!)
         })
         avatarIv!!.visibility=View.VISIBLE

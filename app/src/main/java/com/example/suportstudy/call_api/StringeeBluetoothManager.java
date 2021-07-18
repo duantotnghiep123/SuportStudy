@@ -68,9 +68,7 @@ public class StringeeBluetoothManager {
     private BluetoothDevice bluetoothDevice;
     private final BroadcastReceiver bluetoothHeadsetReceiver;
 
-    // Runs when the Bluetooth timeout expires. We use that timeout after calling
-    // startScoAudio() or stopScoAudio() because we're not guaranteed to get a
-    // callback after those calls.
+
     private final Runnable bluetoothTimeoutRunnable = new Runnable() {
         @Override
         public void run() {
@@ -78,10 +76,6 @@ public class StringeeBluetoothManager {
         }
     };
 
-    /**
-     * Implementation of an interface that notifies BluetoothProfile IPC clients when they have been
-     * connected to or disconnected from the service.
-     */
     private class BluetoothServiceListener implements BluetoothProfile.ServiceListener {
         @Override
         // Called to notify the client when the proxy object has been connected to the service.

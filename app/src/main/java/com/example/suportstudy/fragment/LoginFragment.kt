@@ -28,6 +28,7 @@ class LoginFragment : Fragment() {
     var  checkLogin=false
 
     var isLogin = false
+    var userAPI:UserAPI?=null
     var sharedPreferences: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,12 +50,13 @@ class LoginFragment : Fragment() {
             Context.MODE_PRIVATE
         )
         val btnLogin = view.findViewById<Button>(R.id.btnLogin)
+         userAPI = Constrain.createRetrofit(UserAPI::class.java)
 
 
         sd=Constrain.sweetdialog(activity!!,"Đang đăng nhập")
 
         btnLogin.setOnClickListener {
-            sd!!.show()
+
             var email = edtEmail.text.toString()
             var password = edtPassword.text.toString()
             val matcher: Matcher = Constrain.VALID_EMAIL_ADDRESS_REGEX.matcher(email)
@@ -77,9 +79,8 @@ class LoginFragment : Fragment() {
     }
 
     fun loginFuntion(email:String,password:String){
-
-        val userAPI = Constrain.createRetrofit(UserAPI::class.java)
-        var call = userAPI.getAllUsers()
+        sd!!.show()
+        var call = userAPI!!.getAllUsers()
         call.enqueue(object : retrofit2.Callback<List<Users>> {
             override fun onResponse(
                 call: retrofit2.Call<List<Users>>,
@@ -128,8 +129,6 @@ class LoginFragment : Fragment() {
                 Log.v("Data", "Error:" + t.message.toString())
             }
         })
-        sd!!.dismiss()
-
     }
 
     companion object {

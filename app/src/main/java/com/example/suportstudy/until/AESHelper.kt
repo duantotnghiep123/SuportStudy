@@ -14,14 +14,11 @@ import kotlin.experimental.and
 object AESHelper {
      var TAG = "AESCrypt"
 
-    //AESCrypt-ObjC uses CBC and PKCS7Padding
      var AES_MODE = "AES/CBC/PKCS7Padding"
      var CHARSET:String   = "UTF-8"
 
-    //AESCrypt-ObjC uses SHA-256 (and so a 256-bit key)
     private val HASH_ALGORITHM = "SHA-256"
 
-    //AESCrypt-ObjC uses blank IV (not the best security, but the aim here is compatibility)
     private val ivBytes = byteArrayOf(
         0x00,
         0x00,
@@ -41,16 +38,9 @@ object AESHelper {
         0x00
     )
 
-    //togglable log option (please turn off in live!)
     var DEBUG_LOG_ENABLED = false
 
 
-    /**
-     * Generates SHA256 hash of the password which is used as key
-     *
-     * @param password used to generated key
-     * @return SHA256 of the password
-     */
     @Throws(NoSuchAlgorithmException::class, UnsupportedEncodingException::class)
     private fun generateKey(password: String): SecretKeySpec {
         val digest = MessageDigest.getInstance(HASH_ALGORITHM)
