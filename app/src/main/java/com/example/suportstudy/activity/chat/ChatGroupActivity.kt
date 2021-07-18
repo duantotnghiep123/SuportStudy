@@ -4,10 +4,17 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+<<<<<<< HEAD
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
+=======
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 import com.android.volley.AuthFailureError
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
@@ -21,8 +28,13 @@ import com.example.suportstudy.adapter.GroupChatAdapter
 import com.example.suportstudy.extensions.gone
 import com.example.suportstudy.extensions.visible
 import com.example.suportstudy.model.GroupChat
+<<<<<<< HEAD
 import com.example.suportstudy.model.GroupCourse
 import com.example.suportstudy.service.GroupCourseAPI
+=======
+import com.example.suportstudy.model.Participant
+import com.example.suportstudy.service.ParticipantAPI
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 import com.example.suportstudy.until.Constrain
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.database.*
@@ -48,6 +60,7 @@ class ChatGroupActivity : AppCompatActivity() {
     var btnInfoGroup:ImageView?=null
     var edtMessage:EditText?=null
     var btnSend:ImageView?=null
+<<<<<<< HEAD
     lateinit var myLoader: LazyLoader
     lateinit var dataLayout: RelativeLayout
     var groupChatList=ArrayList<GroupChat>()
@@ -57,6 +70,14 @@ class ChatGroupActivity : AppCompatActivity() {
 
     var name:String?=null
     var image:String?=null
+=======
+
+    var groupChatList=ArrayList<GroupChat>()
+
+    var participantAPI:ParticipantAPI?=null
+    var chatGroupRef: DatabaseReference? = null
+
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
     companion object{
         var groupChatAdapter:GroupChatAdapter?=null
         var chatGroup_Recyclerview:RecyclerView?=null
@@ -78,6 +99,7 @@ class ChatGroupActivity : AppCompatActivity() {
                 Constrain.showToast("Hãy nhập tin nhắn...")
             }else{
                 sendMessage(message)
+                getAllUserId(message)
                 Constrain.hideKeyBoard(context)
             }
             edtMessage!!.setText("")
@@ -111,11 +133,15 @@ class ChatGroupActivity : AppCompatActivity() {
         dataLayout=findViewById(R.id.dataLayout)
         chatGroup_Recyclerview=findViewById(R.id.chatGroup_Recyclerview)
         chatGroupRef = Constrain.initFirebase("GroupChats")
+<<<<<<< HEAD
         groupCourseAPI=Constrain.createRetrofit(GroupCourseAPI::class.java)
 
 
         getGroupInfo()
 
+=======
+        participantAPI=Constrain.createRetrofit(ParticipantAPI::class.java)
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
 
     }
@@ -130,6 +156,7 @@ class ChatGroupActivity : AppCompatActivity() {
         hashMap.put("message", message)
         hashMap.put("groupId", groupId!!)
 
+<<<<<<< HEAD
         chatGroupRef!!.child(groupId!!).child("Message").push().setValue(hashMap).addOnCompleteListener(
             {
                 if (it.isSuccessful) {
@@ -137,6 +164,13 @@ class ChatGroupActivity : AppCompatActivity() {
                     getAllUserId(message)
                 }
             })
+=======
+        chatGroupRef!!.child(groupId!!).child("Message").push().setValue(hashMap).addOnCompleteListener( {
+            if (it.isSuccessful) {
+                Constrain.showToast("Gửi thành công")
+            }
+        })
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
     }
     private fun displayMessage() {
@@ -182,6 +216,31 @@ class ChatGroupActivity : AppCompatActivity() {
 
         })
     }
+<<<<<<< HEAD
+=======
+    fun getAllUserId(message: String){
+        participantAPI!!.getAllParticipant()
+            .enqueue(object : Callback<List<Participant>> {
+                override fun onResponse(
+                    call: Call<List<Participant>>,
+                    response: retrofit2.Response<List<Participant>>
+                ) {
+                    var listP=response.body()
+                    for (i in listP!!.indices){
+                        if(listP[i].groupId.equals(groupId)){
+                            var uid=listP[i].uid
+                            getToken(message, CourseTypeActivity.name!!!!, uid, CourseTypeActivity.image!!)
+                        }
+                    }
+                }
+                override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
+
+                }
+
+            })
+    }
+
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
     private fun getToken(message: String, senderName: String, hisID: String, myImage: String) {
         val database = FirebaseDatabase.getInstance().getReference("Tokens").child(hisID)
         database.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -191,6 +250,7 @@ class ChatGroupActivity : AppCompatActivity() {
                 val data = JSONObject()
                 try {
 
+<<<<<<< HEAD
 
                     data.put("title", senderName)
                     data.put("message", message)
@@ -237,6 +297,54 @@ class ChatGroupActivity : AppCompatActivity() {
                 return map
             }
 
+=======
+
+                    data.put("title", senderName)
+                    data.put("message", message)
+                    data.put("groupId", groupId)
+                    data.put("groupCreateBy", groupCreateBy)
+                    data.put("groupName", groupName)
+                    data.put("groupDescription", groupDescription)
+                    data.put("groupImage", groupImage)
+                    data.put("notificationType", "chatGroup")
+                    data.put("hisUid", senderUid)
+                    data.put("hisName", senderName)
+                    data.put("hisImage", myImage)
+                    to.put("to", token)
+                    to.put("data", data)
+                    sendNotification(to)
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+    private fun sendNotification(to: JSONObject) {
+        val request: JsonObjectRequest = object : JsonObjectRequest(
+            Method.POST, Constrain.NOTIFICATION_URL, to,
+            Response.Listener { response: JSONObject ->
+                Log.d(
+                    "notification",
+                    "sendNotification: $response"
+                )
+            },
+            Response.ErrorListener { error: VolleyError ->
+                Log.d(
+                    "notification",
+                    "sendNotification: $error"
+                )
+            }) {
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String> {
+                val map: MutableMap<String, String> = java.util.HashMap()
+                map["Authorization"] = "key=" + Constrain.SERVER_KEY
+                map["Content-Type"] = "application/json"
+                return map
+            }
+
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             override fun getBodyContentType(): String {
                 return "application/json"
             }
@@ -249,6 +357,7 @@ class ChatGroupActivity : AppCompatActivity() {
         )
         requestQueue.add(request)
     }
+<<<<<<< HEAD
     fun getGroupInfo(){
         myLoader.visible()
         dataLayout.gone()
@@ -287,4 +396,6 @@ class ChatGroupActivity : AppCompatActivity() {
         super.onStart()
         getGroupInfo()
     }
+=======
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 }

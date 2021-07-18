@@ -16,15 +16,23 @@ import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+<<<<<<< HEAD
 import androidx.core.content.res.ResourcesCompat
 import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.activity.chat.ChatOneActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.ActionActivity.Companion.uid
+=======
+import com.example.suportstudy.activity.chat.ChatGroupActivity
+import com.example.suportstudy.activity.chat.ChatOneActivity
+import com.example.suportstudy.activity.course.CourseTypeActivity
+import com.example.suportstudy.activity.course.CourseTypeActivity.Companion.uid
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 import com.example.suportstudy.until.Constrain
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.stringee.listener.StatusListener
 import kotlin.random.Random
 
 
@@ -73,10 +81,16 @@ class FirebaseNotificationService : FirebaseMessagingService() {
                 //            String chatID = map.get("chatID");
                 Log.d(
                     "TAG",
+<<<<<<< HEAD
                     "DataMap: \n title: $title" + "\nmessage: $message" + "\n notificationType: $notificationType" + "\nhisUid: $hisID" + "\nhisName: $hisName" +
                             "hisImage: $hisImage" + "\ngroupImage: $groupImage"
                 )
                 if (!hisID.equals(uid)) {
+=======
+                    "DataMap: \n title: $title" + "\nmessage: $message" + "\n notificationType: $notificationType" + "\nhisUid: $hisID" + "\nhisName: $hisName" + "\nhisImage: $hisImage"
+                )
+                if (!hisID.equals(CourseTypeActivity.uid)) {
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
                     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
                         createGroupOreoNotification(
                             title,
@@ -86,8 +100,14 @@ class FirebaseNotificationService : FirebaseMessagingService() {
                             groupName,
                             groupDescription,
                             groupImage,
+<<<<<<< HEAD
                             hisImage,
 
+=======
+                            hisID,
+                            hisName,
+                            hisImage
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
                         )
                     } else {
                         createGroupNormalNotification(
@@ -98,8 +118,14 @@ class FirebaseNotificationService : FirebaseMessagingService() {
                             groupName,
                             groupDescription,
                             groupImage,
+<<<<<<< HEAD
                             hisImage,
 
+=======
+                            hisID,
+                            hisName,
+                            hisImage
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
                         )
                     }
                 }
@@ -133,6 +159,11 @@ class FirebaseNotificationService : FirebaseMessagingService() {
             .setUsage(AudioAttributes.USAGE_NOTIFICATION)
             .build()
 
+        val uri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val attributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+            .build()
+
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         manager.createNotificationChannel(channel)
 
@@ -145,6 +176,10 @@ class FirebaseNotificationService : FirebaseMessagingService() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
 
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+<<<<<<< HEAD
+=======
+//        var bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_btn_speak_now)
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
         var pathImage =Constrain.baseUrl + "/profile/" + hisImage!!.substring(hisImage.lastIndexOf("/") + 1)
 
@@ -152,6 +187,21 @@ class FirebaseNotificationService : FirebaseMessagingService() {
 
 
 
+<<<<<<< HEAD
+=======
+        remoteViews.setTextViewText(com.example.suportstudy.R.id.txtName, title)
+        remoteViews.setTextViewText(com.example.suportstudy.R.id.txtMessage, message)
+        var path =
+            Constrain.baseUrl + "/profile/" + hisImage!!.substring(hisImage.lastIndexOf("/") + 1)
+
+        var bitmap2 = Constrain.getBitmapFromURL(path)
+
+        remoteViews.setImageViewBitmap(
+            com.example.suportstudy.R.id.avatarIv,
+            bitmap2
+        )
+
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         val notification: Notification = Notification.Builder(this, Constrain.CHANNEL_ID)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentTitle(title)
@@ -184,13 +234,30 @@ class FirebaseNotificationService : FirebaseMessagingService() {
             Constrain.CHANNEL_ID
         )
 
+<<<<<<< HEAD
+=======
+        var remoteViews = RemoteViews(
+            packageName,
+            com.example.suportstudy.R.layout.notification_layout
+        )
+        remoteViews.setTextViewText(com.example.suportstudy.R.id.txtName, title)
+        remoteViews.setTextViewText(com.example.suportstudy.R.id.txtMessage, message)
+
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
         var path =
             Constrain.baseUrl + "/profile/" + hisImage!!.substring(hisImage.lastIndexOf("/") + 1)
 
         var bitmap = Constrain.getBitmapFromURL(path)
 
+<<<<<<< HEAD
 
+=======
+        remoteViews.setImageViewBitmap(
+            com.example.suportstudy.R.id.avatarIv,
+            bitmap
+        )
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setSmallIcon(R.mipmap.sym_def_app_icon)
@@ -230,7 +297,12 @@ class FirebaseNotificationService : FirebaseMessagingService() {
         groupName: String?,
         groupDescription: String?,
         groupImage: String?,
+<<<<<<< HEAD
 
+=======
+        hisID: String?,
+        hisName: String?,
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         hisImage: String?
     ) {
         val channel = NotificationChannel(
@@ -241,6 +313,10 @@ class FirebaseNotificationService : FirebaseMessagingService() {
         channel.setShowBadge(true)
         channel.enableLights(true)
         channel.enableVibration(true)
+<<<<<<< HEAD
+=======
+        channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
         val uri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val attributes = AudioAttributes.Builder()
@@ -251,9 +327,19 @@ class FirebaseNotificationService : FirebaseMessagingService() {
         manager.createNotificationChannel(channel)
 
         val intent = Intent(this, ChatGroupActivity::class.java)
+<<<<<<< HEAD
         intent.putExtra("groupId",groupId)
         intent.putExtra("groupCreateBy",groupCreateBy)
         intent.putExtra("groupImage",groupImage)
+=======
+//        intent.putExtra("hisUid", hisID)
+//        intent.putExtra("hisImage", hisImage)
+//        intent.putExtra("hisName", hisName)
+//        intent.putExtra("hisImage", hisImage)
+        intent.putExtra("groupId",groupId)
+        intent.putExtra("groupCreateBy",groupCreateBy)
+        intent.putExtra("groupImage",groupDescription)
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         intent.putExtra("groupName",groupName)
         intent.putExtra("groupDescription",groupDescription)
 
@@ -261,6 +347,10 @@ class FirebaseNotificationService : FirebaseMessagingService() {
 
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
 //        var bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_btn_speak_now)
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         var remoteViews =
             RemoteViews(packageName, com.example.suportstudy.R.layout.notification_layout)
 
@@ -278,6 +368,7 @@ class FirebaseNotificationService : FirebaseMessagingService() {
 
         val notification: Notification = Notification.Builder(this, Constrain.CHANNEL_ID)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+<<<<<<< HEAD
             .setColor(ResourcesCompat.getColor(resources, R.color.holo_green_dark, null))
             .setSmallIcon(R.mipmap.sym_def_app_icon)
             .setContentTitle(title)
@@ -288,6 +379,16 @@ class FirebaseNotificationService : FirebaseMessagingService() {
 
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+=======
+            .setSmallIcon(R.mipmap.sym_def_app_icon)
+//            .setContentTitle(title)
+//            .setContentText(message)
+//            .setColor(ResourcesCompat.getColor(resources, R.color.holo_blue_bright, null))
+//            .setSmallIcon(R.drawable.sym_def_app_icon)
+//            .setLargeIcon(bitmap)
+            .setCustomBigContentView(remoteViews)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
 
@@ -304,6 +405,11 @@ class FirebaseNotificationService : FirebaseMessagingService() {
         groupName: String?,
         groupDescription: String?,
         groupImage: String?,
+<<<<<<< HEAD
+=======
+        hisID: String?,
+        hisName: String?,
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         hisImage: String?
     )
 
@@ -314,7 +420,18 @@ class FirebaseNotificationService : FirebaseMessagingService() {
             this,
             Constrain.CHANNEL_ID
         )
+<<<<<<< HEAD
 
+=======
+//        var bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_btn_speak_now)
+
+        var remoteViews = RemoteViews(
+            packageName,
+            com.example.suportstudy.R.layout.notification_layout
+        )
+        remoteViews.setTextViewText(com.example.suportstudy.R.id.txtName, title)
+        remoteViews.setTextViewText(com.example.suportstudy.R.id.txtMessage, message)
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
 
         var path =
@@ -322,6 +439,7 @@ class FirebaseNotificationService : FirebaseMessagingService() {
 
         var bitmap = Constrain.getBitmapFromURL(path)
 
+<<<<<<< HEAD
 
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -336,11 +454,33 @@ class FirebaseNotificationService : FirebaseMessagingService() {
             .setSound(uri)
 
         val intent = Intent(this,ChatGroupActivity::class.java)
+=======
+        remoteViews.setImageViewBitmap(
+            com.example.suportstudy.R.id.avatarIv,
+            bitmap
+        )
+
+        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setSmallIcon(R.mipmap.sym_def_app_icon)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCustomBigContentView(remoteViews)
+            .setSound(uri)
+
+        val intent = Intent(this,ChatGroupActivity::class.java)
+//        intent.putExtra("hisUid", hisID)
+//        intent.putExtra("hisImage", hisImage)
+//        intent.putExtra("hisName", hisName)
+//        intent.putExtra("hisImage", hisImage)
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
 
         intent.putExtra("groupId",groupId)
         intent.putExtra("groupCreateBy",groupCreateBy)
+<<<<<<< HEAD
         intent.putExtra("groupImage",groupImage)
+=======
+        intent.putExtra("groupImage",groupDescription)
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         intent.putExtra("groupName",groupName)
         intent.putExtra("groupDescription",groupDescription)
 
@@ -356,6 +496,7 @@ class FirebaseNotificationService : FirebaseMessagingService() {
 
     override fun onNewToken(s: String) {
         updateToken(s)
+<<<<<<< HEAD
 //        if (ActionActivity.client != null && ActionActivity.client!!.isConnected()) {
 //            ActionActivity.client!!.registerPushToken(s, object : StatusListener() {
 //                override fun onSuccess() {
@@ -364,6 +505,16 @@ class FirebaseNotificationService : FirebaseMessagingService() {
 //                }
 //            })
 //        }
+=======
+        if (CourseTypeActivity.client != null && CourseTypeActivity.client!!.isConnected()) {
+            CourseTypeActivity.client!!.registerPushToken(s, object : StatusListener() {
+                override fun onSuccess() {
+                    FirebaseDatabase.getInstance().getReference("users")
+                        .child(uid!!).child("token").setValue(s)
+                }
+            })
+        }
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         super.onNewToken(s)
     }
 

@@ -25,6 +25,7 @@
         app:lazyloader_thirdDotColor="#FFD600" />
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -56,8 +57,11 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
+<<<<<<< HEAD
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+=======
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         android:layout_marginTop="15dp"
         android:layout_below="@+id/searchView"
         android:id="@+id/recyclerViewChatGroup"

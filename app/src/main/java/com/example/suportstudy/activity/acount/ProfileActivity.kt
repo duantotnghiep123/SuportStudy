@@ -58,12 +58,18 @@ class ProfileActivity : AppCompatActivity() {
     var name = ""
 
 
+
+
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         initViewData()
+<<<<<<< HEAD
 
+=======
+        getDataProfile(uid)
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         finishTv!!.setOnClickListener {
             Constrain.nextActivity(context,ActionActivity::class.java)
             finish()
@@ -90,8 +96,13 @@ class ProfileActivity : AppCompatActivity() {
             deleteUser()
         }
         logoutLayout!!.setOnClickListener {
+<<<<<<< HEAD
             val dialog = Constrain.createDialog(context,R.layout.dialog_confirm)
             var txtXacNhan = dialog.findViewById<TextView>(R.id.messagCfTv)
+=======
+            val dialog = Constrain.createDialog(context,R.layout.dialog_confirm2)
+            var txtXacNhan = dialog.findViewById<TextView>(R.id.confirmTv)
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             var btnHuy = dialog.findViewById<LinearLayout>(R.id.cancelBtn)
             var btnXacNhan = dialog.findViewById<LinearLayout>(R.id.dongyBtn)
             txtXacNhan.setText("Bạn có muốn đăng xuất !")
@@ -147,7 +158,11 @@ class ProfileActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<Users>, response: Response<Users>) {
                     if (response.isSuccessful) {
                         Constrain.showToast("Đổi thành công")
+<<<<<<< HEAD
                         getDataProfile(uid)
+=======
+                        getDataProfile(CourseTypeActivity.uid)
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
                     }
                 }
                 override fun onFailure(call: Call<Users>, t: Throwable) {
@@ -165,7 +180,11 @@ class ProfileActivity : AppCompatActivity() {
             for (i in listUser!!.indices) {
                 imgUrl = listUser!![i].image
                 name = listUser!![i].name
+<<<<<<< HEAD
                 password = Constrain.decryption(listUser!![i].password)!!
+=======
+                password = listUser!![i].password
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             }
             val editor = sharedPreferences!!.edit()
             editor.putString(Constrain.KEY_IMAGE, imgUrl)
@@ -173,10 +192,20 @@ class ProfileActivity : AppCompatActivity() {
             editor.apply()
             image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")!!
             nameTv!!.text = name
+<<<<<<< HEAD
             var path = Constrain.subPathImage("profile",imgUrl)
             Constrain.checkShowImage(context,R.drawable.avatar_default,path,avatarIv!!)
             myLoader.gone()
             dataLayout.visible()
+=======
+            if (imgUrl.equals("noImage") || imgUrl.equals("")) {
+                avatarIv!!.setImageResource(R.drawable.loginimage)
+            } else {
+                Log.e("path",imgUrl.substring(imgUrl.lastIndexOf("/")+1))
+                var path = Constrain.baseUrl + "/profile/" + imgUrl.substring(imgUrl.lastIndexOf("/")+1)
+                Constrain.checkShowImage(context,R.drawable.avatar_default,path,avatarIv!!)
+            }
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         })
 
     }
@@ -197,10 +226,14 @@ class ProfileActivity : AppCompatActivity() {
                         override fun onResponse(call: Call<Users>, response: Response<Users>) {
                             if (response.isSuccessful) {
                                 Constrain.showToast( "Đổi thành công")
+<<<<<<< HEAD
                                 val editor = sharedPreferences!!.edit()
                                 editor.putString(Constrain.KEY_NAME, name)
                                 editor.commit()
                                 getDataProfile(uid)
+=======
+                                getDataProfile(CourseTypeActivity.uid)
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
                                 dialog.dismiss()
                             }
                         }
@@ -249,7 +282,11 @@ class ProfileActivity : AppCompatActivity() {
                         override fun onResponse(call: Call<Users>, response: Response<Users>) {
                             if (response.isSuccessful) {
                                 Constrain.showToast( "Đổi thành công")
+<<<<<<< HEAD
                                 getDataProfile(uid)
+=======
+                                getDataProfile(CourseTypeActivity.uid)
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
                                 dialog.dismiss()
                             }
                         }
@@ -270,7 +307,11 @@ class ProfileActivity : AppCompatActivity() {
 
     }
     private fun deleteUser() {
+<<<<<<< HEAD
         val dialog = Constrain.createDialog(context,R.layout.dialog_confirm)
+=======
+        val dialog = Constrain.createDialog(context,R.layout.dialog_confirm2)
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         var txtXacNhan = dialog.findViewById<TextView>(R.id.confirmTv)
         var btnHuy = dialog.findViewById<LinearLayout>(R.id.cancelBtn)
         var btnXacNhan = dialog.findViewById<LinearLayout>(R.id.dongyBtn)
@@ -295,7 +336,11 @@ class ProfileActivity : AppCompatActivity() {
                     if (writeStorageAccpted) {
                         Persmission.pickFromGallery(context)
                     } else {
+<<<<<<< HEAD
                         Constrain.showToast( "Bật quyền thư viện")
+=======
+                        Constrain.showToast( "Bật quyen thư viện")
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
                     }
                 }
             }

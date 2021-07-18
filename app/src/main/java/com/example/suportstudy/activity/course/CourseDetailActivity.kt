@@ -202,6 +202,23 @@ class CourseDetailActivity : AppCompatActivity() {
 
                  })
     }
+<<<<<<< HEAD
+=======
+    fun participant(time:String,myUid:String,groupId:String,courseId:String){
+        participantAPI!!.insertParticipant(
+            time,
+            myUid,
+            groupId!!,
+            courseId
+        ).enqueue(object :Callback<Participant>{
+            override fun onResponse(
+                call: Call<Participant>,
+                response: Response<Participant>
+            ) {
+                if(response.isSuccessful){
+                    Constrain.showToast("Tạo nhóm thành công")
+                    sd!!.dismiss()
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
     private fun joinGroup(groupId: String?,timeJoin: String?) {
           groupCourseAPI!!.joinGroup(groupId,myUid!!,timeJoin!!).enqueue(object :Callback<Participant>{
@@ -245,6 +262,10 @@ class CourseDetailActivity : AppCompatActivity() {
                 image_uri = data!!.data!!
                 ivGroup!!.setImageURI(image_uri)
                 part_image = Constrain.getRealPathFromURI(context,image_uri)
+<<<<<<< HEAD
+=======
+                Log.e("imageUri", image_uri.toString())
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

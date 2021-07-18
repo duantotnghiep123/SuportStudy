@@ -19,6 +19,7 @@ import com.example.suportstudy.model.Participant
 import com.example.suportstudy.service.GroupCourseAPI
 import com.example.suportstudy.until.Constrain
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -76,6 +77,7 @@ class GroupAdapter(
         holder.txtJoin!!.setOnClickListener {
             if(holder.txtJoin!!.text.equals("Tham gia")){
                 var time=System.currentTimeMillis().toString()
+<<<<<<< HEAD
                 groupAPI.joinGroup(group._id,ActionActivity.uid!!,time)
                     .enqueue(object : Callback<Participant> {
                         override fun onResponse(
@@ -90,9 +92,26 @@ class GroupAdapter(
                             Log.v("Data", "Error: " + t.message.toString())
                         }
                     })
+=======
+            participantAPI.insertParticipant(time,CourseTypeActivity.uid, group._id!!,group.courseId!!)
+                   .enqueue(object : Callback<Participant> {
+                       override fun onResponse(
+                           call:Call<Participant>,
+                           response: Response<Participant>
+                       ) {
+                           if (response.isSuccessful) {
+                               holder.txtJoin!!.text="Đã tham gia"
+                           }
+                       }
+                       override fun onFailure(call: Call<Participant>, t: Throwable) {
+                           Log.v("Data", "Error: " + t.message.toString())
+                       }
+                   })
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             }
         }
 
+<<<<<<< HEAD
     }
 
     private fun showJoinUi(group: GroupCourse, txtJoin: TextView?) {
@@ -103,11 +122,50 @@ class GroupAdapter(
             {
                 txtJoin!!.text="Đã tham gia"
             }
+=======
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         }
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
+<<<<<<< HEAD
+=======
+    fun getAllParticipant(group: Group,txtJoin: TextView){
+        val chatFetchJob = Job()
+        val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            throwable.printStackTrace()
+            Constrain.showToast("Data error")
+        }
+        val scope = CoroutineScope(chatFetchJob + Dispatchers.IO)
+        scope.launch(errorHandler) {
+            participantAPI!!.getAllParticipant()
+                .enqueue(object : Callback<List<Participant>> {
+                    override fun onResponse(
+                        call: Call<List<Participant>>,
+                        response: Response<List<Participant>>
+                    ) {
+                        if (response.isSuccessful) {
+                            var    listP = response.body()!!
+                            txtJoin.text="Tham gia"
+                            for (i in listP!!.indices) {
+                                if(listP!![i].uid.equals(CourseTypeActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
+                                    if(group._id.equals(listP!![i].groupId)){
+                                        txtJoin.text="Đã tham gia"
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+                    override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
+                        Log.v("Data", "Error:" + t.message.toString())
+                    }
+                })
+
+        }
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
 }

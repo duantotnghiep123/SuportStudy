@@ -10,7 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+<<<<<<< HEAD
 import android.widget.LinearLayout
+=======
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
@@ -20,10 +23,15 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.example.suportstudy.R
+<<<<<<< HEAD
 import com.example.suportstudy.activity.acount.ProfileActivity
 import com.example.suportstudy.activity.call.IncomingCallActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.home.HomeActivity
+=======
+import com.example.suportstudy.activity.call.IncomingCallActivity
+import com.example.suportstudy.activity.course.CourseTypeActivity
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 import com.example.suportstudy.call_api.Common
 import com.example.suportstudy.call_api.GenAccessToken
 import com.example.suportstudy.extensions.onClick
@@ -40,6 +48,7 @@ import com.stringee.listener.StringeeConnectionListener
 import de.hdodenhof.circleimageview.CircleImageView
 import org.json.JSONObject
 
+<<<<<<< HEAD
 class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, LifecycleObserver {
     var context = this@ActionActivity
     lateinit var btnDisscus: CardView
@@ -49,6 +58,17 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
 
     var userSharedPreferences: SharedPreferences? = null
     var database: DatabaseReference? = null
+=======
+class ActionActivity : AppCompatActivity(),android.view.View.OnClickListener, LifecycleObserver {
+    var context=this@ActionActivity
+    lateinit var btnDisscus:CardView
+    lateinit var btnTopic:CardView
+    lateinit var txtName:TextView
+    lateinit var avatarIv:CircleImageView
+
+    var userSharedPreferences: SharedPreferences? = null
+    var database: DatabaseReference?=null
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
     var tokenBase = ""
     private var sharedPreferences: SharedPreferences? = null
@@ -58,12 +78,21 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
     private val IS_TOKEN_REGISTERED = "is_token_registered"
     private val TOKEN = "token"
 
+<<<<<<< HEAD
     companion object {
         var uid: String? = null
         var name: String? = null
         var image: String? = null
         var istutor: Boolean = false
         var client: StringeeClient? = null
+=======
+    companion object{
+        lateinit   var uid:String
+        lateinit   var name:String
+        lateinit  var image:String
+        var istutor:Boolean = false
+        lateinit    var client: StringeeClient
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
     }
 
@@ -78,12 +107,16 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
         Log.d("AppLifecycle", "App in foreground")
         Common.isAppInBackground = false
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_action)
         getReference()
         initViewData()
+<<<<<<< HEAD
         btnDisscus.setOnClickListener {
             Constrain.nextActivity(context, HomeActivity::class.java)
         }
@@ -94,10 +127,19 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
         }
         avatarIv!!.setOnClickListener {
             Constrain.nextActivity(context, ProfileActivity::class.java)
+=======
+        btnDisscus.onClick {
+
+        }
+
+        btnTopic.onClick {
+            Constrain.nextActivity(context,CourseTypeActivity::class.java)
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         }
     }
 
     private fun initViewData() {
+<<<<<<< HEAD
         Constrain.context = context
         btnTopic = findViewById(R.id.btnTopic)
         btnDisscus = findViewById(R.id.btnDisscus)
@@ -111,12 +153,26 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
     }
 
     fun getReference() {
+=======
+        btnTopic=findViewById(R.id.btnTopic)
+        btnDisscus=findViewById(R.id.btnDisscus)
+        txtName=findViewById(R.id.txtName)
+        avatarIv=findViewById(R.id.avatarIv)
+
+        database=Constrain.initFirebase("Users")
+        token = GenAccessToken.genAccessToken(CourseTypeActivity.uid)
+        updateToken(FirebaseInstanceId.getInstance().getToken())
+        setupNotification()
+    }
+    fun getReference(){
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         userSharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
         uid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")!!
         name = userSharedPreferences!!.getString(Constrain.KEY_NAME, "")!!
         image = userSharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")!!
         istutor = userSharedPreferences!!.getBoolean(Constrain.KEY_ISTUTOR, false)!!
     }
+<<<<<<< HEAD
 
     fun updateToken(token: String?) {
         val ref = FirebaseDatabase.getInstance(Constrain.firebaseUrl).getReference("Tokens")
@@ -126,6 +182,15 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
     fun initAndConnectStringee() {
         client = StringeeClient(this)
         client!!.setConnectionListener(object : StringeeConnectionListener {
+=======
+    fun updateToken(token: String?) {
+        val ref = FirebaseDatabase.getInstance(Constrain.firebaseUrl).getReference("Tokens")
+        ref.child(CourseTypeActivity.uid!!).child("token").setValue(token)
+    }
+    fun initAndConnectStringee() {
+        CourseTypeActivity.client = StringeeClient(this)
+        CourseTypeActivity.client!!.setConnectionListener(object : StringeeConnectionListener {
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             override fun onConnectionConnected(
                 stringeeClient: StringeeClient,
                 isReconnecting: Boolean
@@ -199,9 +264,14 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
             override fun onCustomMessage(s: String, jsonObject: JSONObject) {}
             override fun onTopicMessage(s: String, jsonObject: JSONObject) {}
         })
+<<<<<<< HEAD
         client!!.connect(token)
     }
 
+=======
+        CourseTypeActivity.client!!.connect(token)
+    }
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
     private fun setupNotification() {
         requiredPermissions()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
@@ -213,6 +283,10 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
     }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
     private fun requiredPermissions() {
         ActivityCompat.requestPermissions(
             context, arrayOf(
@@ -221,7 +295,10 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
             ), 1
         )
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
     @SuppressLint("MissingSuperCall")
     override fun onRequestPermissionsResult(
         requestCode: Int,
