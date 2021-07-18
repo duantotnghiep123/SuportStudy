@@ -40,16 +40,12 @@ class CourseDetailActivity : AppCompatActivity() {
     var btnCreateGroup: Button? = null
     var ivGroup: CircleImageView? = null
     var context = this@CourseDetailActivity
-
     var groupCourseAPI: GroupCourseAPI? = null
-
     lateinit var myUid:String
-
     var sd:SweetAlertDialog?=null
     var image_uri: Uri? = null
     var part_image: String? = null
     var isTurtor:Boolean = false
-
     companion object {
         var imageUrl = ""
         var courseId: String? = null
@@ -80,15 +76,7 @@ class CourseDetailActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (isTurtor == true) {
-            btnCreateGroup!!.text = "Tạo Nhóm"
-        } else {
-            btnCreateGroup!!.text = "Nhóm thảo luận"
 
-        }
-    }
     fun initViewData(){
         Constrain.context=context
         sd=Constrain.sweetdialog(context,"Đang tạo nhóm...")
@@ -221,6 +209,7 @@ class CourseDetailActivity : AppCompatActivity() {
                   if(response.isSuccessful){
                       Constrain.showToast("Thành công")
                       sd!!.dismiss()
+
                   }
               }
 
@@ -256,9 +245,17 @@ class CourseDetailActivity : AppCompatActivity() {
                 image_uri = data!!.data!!
                 ivGroup!!.setImageURI(image_uri)
                 part_image = Constrain.getRealPathFromURI(context,image_uri)
-                Log.e("imageUri", image_uri.toString())
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+    override fun onStart() {
+        super.onStart()
+        if (isTurtor == true) {
+            btnCreateGroup!!.text = "Tạo Nhóm"
+        } else {
+            btnCreateGroup!!.text = "Nhóm thảo luận"
+
+        }
     }
 }
