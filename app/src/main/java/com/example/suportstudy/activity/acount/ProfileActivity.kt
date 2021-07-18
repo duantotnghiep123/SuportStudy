@@ -169,56 +169,16 @@ class ProfileActivity : AppCompatActivity() {
             }
             val editor = sharedPreferences!!.edit()
             editor.putString(Constrain.KEY_IMAGE, imgUrl)
+            editor.putString(Constrain.KEY_NAME, name)
             editor.apply()
             image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")!!
             nameTv!!.text = name
-            if (imgUrl.equals("noImage") || imgUrl.equals("")) {
-                avatarIv!!.setImageResource(R.drawable.loginimage)
-            } else {
-                var path = Constrain.subPathImage("profile",imgUrl)
-                Constrain.checkShowImage(context,R.drawable.avatar_default,path,avatarIv!!)
-            }
+            var path = Constrain.subPathImage("profile",imgUrl)
+            Constrain.checkShowImage(context,R.drawable.avatar_default,path,avatarIv!!)
             myLoader.gone()
             dataLayout.visible()
         })
-//        userAPI!!.getAllUsersByID(uid).enqueue(object : Callback<List<Users>> {
-//            override fun onResponse(
-//                call: Call<List<Users>>,
-//                response: Response<List<Users>>
-//            ) {
-//                if (response.isSuccessful) {
-//                    var imgUrl = ""
-//                    for (i in response.body()!!.indices) {
-//                        imgUrl = response.body()!![i].image
-//                        name = response.body()!![i].name
-//                        password = response.body()!![i].password
-//
-//                    }
-//                    Constrain.showToast(context, image)
-//                    val editor = sharedPreferences!!.edit()
-//                    editor.putString(Constrain.KEY_IMAGE, imgUrl)
-//                    editor.apply()
-//
-//                    image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")!!
-//                    nameTv!!.text = name
-//                    if (imgUrl.equals("noImage") || imgUrl.equals("")) {
-//                        avatarIv!!.setImageResource(R.drawable.loginimage)
-//                    } else {
-//                        Log.e("path",imgUrl.substring(imgUrl.lastIndexOf("/")+1))
-//                        var path = Constrain.baseUrl + "/profile/" + imgUrl.substring(imgUrl.lastIndexOf("/")+1)
-//
-//                        Picasso.with(context).load(path).into(avatarIv)
-//                    }
-//
-//                }
-//
-//            }
-//
-//            override fun onFailure(call: Call<List<Users>>, t: Throwable) {
-//                Log.e("err", t.message.toString())
-//            }
-//
-//        })
+
     }
 
     fun editName() {

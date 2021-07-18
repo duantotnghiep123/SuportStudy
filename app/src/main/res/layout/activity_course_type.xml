@@ -33,7 +33,7 @@
                 android:layout_height="18dp"/>
             <TextView
                 android:text="Categories"
-                android:textSize="18dp"
+                android:textSize="20dp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:layout_toRightOf="@id/backIv"
