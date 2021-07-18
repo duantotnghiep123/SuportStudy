@@ -18,4 +18,6 @@
     <string name="connected">Đã kết nối</string>
     <string name="busy">Người dùng đang bận</string>
     <string name="end_call">Kết thúc cuộc gọi</string>
+
+    <string name="btn_ok">OK</string>
 </resources>

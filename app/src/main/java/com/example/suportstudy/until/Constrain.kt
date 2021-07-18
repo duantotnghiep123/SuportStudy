@@ -3,6 +3,7 @@ package com.example.suportstudy.until
 import a.b.a.K
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -16,6 +17,7 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.provider.Settings.Global.getString
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
@@ -41,7 +43,7 @@ import java.util.regex.Pattern
 object Constrain {
 
     //    var baseUrl="http://192.168.3.107:10000"
-    var baseUrl = "http://192.168.1.10:3000"
+    var baseUrl = "http://192.168.1.7:3000"
     var firebaseUrl="https://suportstudy-72e5e-default-rtdb.firebaseio.com/"
 //    var baseUrl="http://172.20.10.3:10000"
 
@@ -209,5 +211,14 @@ object Constrain {
             e.printStackTrace()
         }
         return strDecryptedText
+    }
+
+    fun showErrorMessage(error:String,context: Context){
+        val alertDialog = AlertDialog.Builder(context)
+        alertDialog.setMessage(error)
+        alertDialog.setNegativeButton("OK") { dialog, which ->
+            dialog.dismiss()
+        }
+        alertDialog.show().setCanceledOnTouchOutside(false)
     }
 }
