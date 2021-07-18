@@ -1,10 +1,7 @@
 package com.example.suportstudy.fragment
 
 import android.annotation.SuppressLint
-<<<<<<< HEAD
 import android.content.SharedPreferences
-=======
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -108,7 +105,6 @@ class ChatOneFragment : Fragment() {
                     val chatlist: Chatlist? = ds.getValue(Chatlist::class.java)
                     chatlistList!!.add(chatlist!!)
                 }
-<<<<<<< HEAD
                 if (chatlistList!!.size==0){
                     noMessageLayout!!.visibility=View.VISIBLE
                     loader!!.visibility=View.GONE
@@ -118,11 +114,6 @@ class ChatOneFragment : Fragment() {
                     loader!!.visibility=View.GONE
                 }
 
-=======
-                loadChats()
-
-            }
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
             }
             override fun onCancelled(databaseError: DatabaseError) {
@@ -136,11 +127,7 @@ class ChatOneFragment : Fragment() {
                 override fun onResponse(call: Call<List<Users>>, response: Response<List<Users>>) {
                     if(response.isSuccessful){
                     var    listUser= response.body()!!
-<<<<<<< HEAD
                         userList!!.clear()
-=======
-
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
                         for (i in listUser.indices){
                             var id=listUser[i]._id
                             for (j in chatlistList!!.indices){
@@ -148,7 +135,6 @@ class ChatOneFragment : Fragment() {
                                     userList!!.add(listUser[i])
                                     break
                                 }
-
                             }
                         }
                         adapterOneChatlist =  AdapterOneChatlist( context!!, userList!!   )

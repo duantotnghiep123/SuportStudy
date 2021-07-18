@@ -4,13 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-<<<<<<< HEAD
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-=======
-import android.widget.LinearLayout
-import androidx.recyclerview.widget.RecyclerView
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.adapter.ListMemberGroupAdapter
@@ -21,10 +16,6 @@ import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.GroupCourseAPI
 import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
-<<<<<<< HEAD
-=======
-import com.google.gson.annotations.Until
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,13 +34,6 @@ class ListMemberGroupActivity : AppCompatActivity() {
     lateinit  var lazyLoader:LazyLoader
     lateinit var refreshLayout:SwipeRefreshLayout
 
-<<<<<<< HEAD
-=======
-    var groupId:String?=null
-    var listMemberGroupAdapter:ListMemberGroupAdapter?=null
-    var lazyLoader:LazyLoader?=null
-
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_member_group)
@@ -59,12 +43,7 @@ class ListMemberGroupActivity : AppCompatActivity() {
 
     fun initDataView(){
         lazyLoader=findViewById(R.id.myLoader)
-<<<<<<< HEAD
         groupCourseAPI=Constrain.createRetrofit(GroupCourseAPI::class.java)
-=======
-
-        participantAPI=Constrain.createRetrofit(ParticipantAPI::class.java)
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         userAPI=Constrain.createRetrofit(UserAPI::class.java)
         recyclerViewUser=findViewById(R.id.recyclerViewUser);
         refreshLayout=findViewById(R.id.refreshLayout);
@@ -73,13 +52,8 @@ class ListMemberGroupActivity : AppCompatActivity() {
         refreshData()
     }
     fun getAllParticipantByGroupId(){
-<<<<<<< HEAD
         var count=0
         lazyLoader!!.visible()
-=======
-        lazyLoader!!.visibility=View.VISIBLE
-
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         val chatFetchJob = Job()
         val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
             throwable.printStackTrace()
@@ -87,7 +61,6 @@ class ListMemberGroupActivity : AppCompatActivity() {
         }
         val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
         scope.launch(errorHandler) {
-<<<<<<< HEAD
             groupCourseAPI!!.getAllGroupByID(groupId!!).enqueue(object :Callback<List<GroupCourse>>{
                 override fun onResponse(
                     call: Call<List<GroupCourse>>,
@@ -108,33 +81,6 @@ class ListMemberGroupActivity : AppCompatActivity() {
             })
 
         }
-=======
-            participantAPI!!.getAllParticipant()
-                .enqueue(object :Callback<List<Participant>>{
-                    override fun onResponse(
-                        call: Call<List<Participant>>,
-                        response: Response<List<Participant>>
-                    ) {
-                        var listP=response.body()
-                        for (i in listP!!.indices){
-                            if(listP[i].groupId.equals(groupId)){
-                                var uid=listP[i].uid
-
-                                getUserById(uid)
-                                lazyLoader!!.visibility=View.GONE
-                            }
-                        }
-
-                    }
-                    override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
-
-                    }
-
-                })
-        }
-
-
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
     }
     fun getUserById(uid:String){
         userAPI!!.getAllUsersByID(uid)
@@ -145,11 +91,8 @@ class ListMemberGroupActivity : AppCompatActivity() {
                    }
                     listMemberGroupAdapter= ListMemberGroupAdapter(context,listUsers)
                     recyclerViewUser!!.adapter=listMemberGroupAdapter
-<<<<<<< HEAD
                     lazyLoader!!.gone()
 
-=======
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
                 }
                 override fun onFailure(call: Call<List<Users>>, t: Throwable) {
                     Log.e("error",t.message.toString())

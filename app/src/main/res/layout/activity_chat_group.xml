@@ -3,10 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:shimmer="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-<<<<<<< HEAD
-=======
-    android:background="@color/grey10"
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey10"
@@ -81,58 +77,6 @@
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-<<<<<<< HEAD
-=======
-        </LinearLayout>
-        <ImageView
-            android:id="@+id/btnInfoGroup"
-            android:src="@drawable/ic_info"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="15dp"/>
-        <View
-            android:background="@color/greynhat3"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="0.2dp"/>
-    </RelativeLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chatGroup_Recyclerview"
-        android:background="@color/white"
-        android:layout_marginBottom="5dp"
-        tools:listitem="@layout/row_chat_left"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:stackFromEnd="true"
-        app:reverseLayout="false"
-        android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_above="@id/realativeLayout"
-        android:layout_below="@id/toolbar" />
-    <TextView
-        android:layout_below="@id/toolbar"
-        android:padding="2dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="3dp"
-        android:visibility="gone"
-        android:textColor="@color/white"
-        android:background="@color/blackNhat2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/No_internet_connection"
-        android:textAlignment="center"
-        android:id="@+id/ChatConnectionTV"
-        android:gravity="center_horizontal" />
-    <LinearLayout
-        android:id="@+id/realativeLayout"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
             <ImageView
                 android:id="@+id/btnInfoGroup"

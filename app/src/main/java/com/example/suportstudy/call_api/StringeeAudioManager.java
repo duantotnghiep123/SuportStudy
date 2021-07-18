@@ -164,11 +164,6 @@ public class StringeeAudioManager {
         } else {
             defaultAudioDevice = AudioDevice.SPEAKER_PHONE;
         }
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         Log.d(TAG, "defaultAudioDevice: " + defaultAudioDevice);
     }
 
@@ -291,14 +286,7 @@ public class StringeeAudioManager {
         audioFocusChangeListener = null;
         Log.d(TAG, "Abandoned audio focus for VOICE_CALL streams");
 
-<<<<<<< HEAD
 
-=======
-//        if (proximitySensor != null) {
-//            proximitySensor.stop();
-//            proximitySensor = null;
-//        }
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
         audioManagerEvents = null;
         Log.d(TAG, "AudioManager stopped");

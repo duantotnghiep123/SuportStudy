@@ -6,10 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey10"
-<<<<<<< HEAD
-=======
-    android:padding="10dp"
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context=".activity.group.ListGroupActivity">

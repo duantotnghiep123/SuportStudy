@@ -101,11 +101,7 @@ dependencies {
 
     implementation 'commons-codec:commons-codec:1.9'
     implementation 'com.auth0:java-jwt:3.15.0'
-<<<<<<< HEAD
     implementation "androidx.multidex:multidex:2.0.1"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
-=======
-    implementation 'com.android.support:multidex:1.0.3'
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
 }
