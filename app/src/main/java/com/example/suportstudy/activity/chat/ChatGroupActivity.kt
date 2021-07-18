@@ -4,10 +4,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.android.volley.AuthFailureError
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
@@ -19,8 +19,8 @@ import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.group.InfoGroupActivity
 import com.example.suportstudy.adapter.GroupChatAdapter
 import com.example.suportstudy.model.GroupChat
-import com.example.suportstudy.model.Participant
-import com.example.suportstudy.service.ParticipantAPI
+import com.example.suportstudy.model.GroupCourse
+import com.example.suportstudy.service.GroupCourseAPI
 import com.example.suportstudy.until.Constrain
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
@@ -46,12 +46,15 @@ class ChatGroupActivity : AppCompatActivity() {
     var btnInfoGroup:ImageView?=null
     var edtMessage:EditText?=null
     var btnSend:ImageView?=null
-
+    lateinit var myLoader: LazyLoader
+    lateinit var dataLayout: RelativeLayout
     var groupChatList=ArrayList<GroupChat>()
-
-    var participantAPI:ParticipantAPI?=null
+    var groupCourseAPI:GroupCourseAPI?=null
     var chatGroupRef: DatabaseReference? = null
+    var userSharedPreferences: SharedPreferences? = null
 
+    var name:String?=null
+    var image:String?=null
     companion object{
         var groupChatAdapter:GroupChatAdapter?=null
         var chatGroup_Recyclerview:RecyclerView?=null
@@ -69,7 +72,6 @@ class ChatGroupActivity : AppCompatActivity() {
                 Constrain.showToast("Hãy nhập tin nhắn...")
             }else{
                 sendMessage(message)
-                getAllUserId(message)
                 Constrain.hideKeyBoard(context)
             }
             edtMessage!!.setText("")
@@ -101,7 +103,11 @@ class ChatGroupActivity : AppCompatActivity() {
         btnSend=findViewById(R.id.btnSend)
         chatGroup_Recyclerview=findViewById(R.id.chatGroup_Recyclerview)
         chatGroupRef = Constrain.initFirebase("GroupChats")
-        participantAPI=Constrain.createRetrofit(ParticipantAPI::class.java)
+        groupCourseAPI=Constrain.createRetrofit(GroupCourseAPI::class.java)
+
+
+        getGroupInfo()
+
 
 
         Constrain.checkShowImage(context,R.drawable.avatar_default,groupImage!!,groupChatImage!!)
@@ -118,11 +124,13 @@ class ChatGroupActivity : AppCompatActivity() {
         hashMap.put("message", message)
         hashMap.put("groupId", groupId!!)
 
-        chatGroupRef!!.child(groupId!!).child("Message").push().setValue(hashMap).addOnCompleteListener( {
-            if (it.isSuccessful) {
-                Constrain.showToast("Gửi thành công")
-            }
-        })
+        chatGroupRef!!.child(groupId!!).child("Message").push().setValue(hashMap).addOnCompleteListener(
+            {
+                if (it.isSuccessful) {
+                    Constrain.showToast("Gửi thành công")
+                    getAllUserId(message)
+                }
+            })
 
     }
     private fun displayMessage() {
@@ -142,28 +150,6 @@ class ChatGroupActivity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
-    fun getAllUserId(message: String){
-        participantAPI!!.getAllParticipant()
-            .enqueue(object : Callback<List<Participant>> {
-                override fun onResponse(
-                    call: Call<List<Participant>>,
-                    response: retrofit2.Response<List<Participant>>
-                ) {
-                    var listP=response.body()
-                    for (i in listP!!.indices){
-                        if(listP[i].groupId.equals(groupId)){
-                            var uid=listP[i].uid
-                            getToken(message, CourseTypeActivity.name!!!!, uid, CourseTypeActivity.image!!)
-                        }
-                    }
-                }
-                override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
-
-                }
-
-            })
-    }
-
     private fun getToken(message: String, senderName: String, hisID: String, myImage: String) {
         val database = FirebaseDatabase.getInstance().getReference("Tokens").child(hisID)
         database.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -230,5 +216,43 @@ class ChatGroupActivity : AppCompatActivity() {
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
         requestQueue.add(request)
+    }
+    fun getGroupInfo(){
+        myLoader.visible()
+        dataLayout.gone()
+        groupCourseAPI!!.getAllGroupByID(groupId!!).enqueue(object : Callback<List<GroupCourse>> {
+            override fun onResponse(
+                call: Call<List<GroupCourse>>,
+                response: retrofit2.Response<List<GroupCourse>>
+            ) {
+                if (response.isSuccessful) {
+                    groupName = response.body()!![0].groupName
+                    groupCreateBy = response.body()!![0].createBy
+                    groupDescription = response.body()!![0].groupDescription
+                    groupImage = response.body()!![0].groupImage
+                }
+                var path = Constrain.subPathImage("group", groupImage!!)
+                Constrain.checkShowImage(
+                    context,
+                    R.drawable.avatar_default,
+                    path!!,
+                    groupChatImage!!
+                )
+                txtGroupName!!.text = groupName
+                myLoader.gone()
+                dataLayout.visible()
+            }
+
+            override fun onFailure(call: Call<List<GroupCourse>>, t: Throwable) {
+                Log.e("Error", t.message.toString())
+            }
+
+        })
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        getGroupInfo()
     }
 }

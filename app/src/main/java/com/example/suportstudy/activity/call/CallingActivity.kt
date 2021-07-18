@@ -2,10 +2,10 @@ package com.example.suportstudy.activity.call
 
 import android.Manifest
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -13,11 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.chat.ChatOneActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.call_api.Common
 import com.example.suportstudy.call_api.StringeeAudioManager
-import com.example.suportstudy.call_api.Utils
 import com.example.suportstudy.until.Constrain
 import com.stringee.call.StringeeCall
 import com.stringee.common.StringeeConstant
@@ -52,10 +52,15 @@ class CallingActivity : AppCompatActivity(), View.OnClickListener {
     private var mSignalingState: StringeeCall.SignalingState? = null
 
     val REQUEST_PERMISSION_CALL = 1
+    var uid:String?=null
+
+    var userSharedPreferences: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calling)
+        userSharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
+        uid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")
         Common.isInCall = true
 
         from = intent.getStringExtra("from")
@@ -63,7 +68,7 @@ class CallingActivity : AppCompatActivity(), View.OnClickListener {
         isVideoCall = intent.getBooleanExtra("is_video_call", false)
         name = intent.getStringExtra("hisName")
         receiveID = intent.getStringExtra("hisUid")
-        sendID = CourseTypeActivity.uid
+        sendID = uid
         image = intent.getStringExtra("hisImage")
 
         mLocalViewContainer = findViewById<View>(R.id.v_local) as FrameLayout
@@ -193,7 +198,7 @@ class CallingActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun makeCall() {
         //make new call
-        mStringeeCall = StringeeCall(CourseTypeActivity!!.client, from, to)
+        mStringeeCall = StringeeCall(ActionActivity!!.client, from, to)
         mStringeeCall!!.setVideoCall(isVideoCall)
         mStringeeCall!!.setCallListener(object : StringeeCall.StringeeCallListener {
             override fun onSignalingStateChange(
@@ -329,7 +334,7 @@ class CallingActivity : AppCompatActivity(), View.OnClickListener {
             Common.audioManager = null
         }
         mStringeeCall!!.hangup()
-        Utils.postDelay(Runnable {
+        Constrain.postDelay(Runnable {
             Common.isInCall = false
             finish()
         }, 1000)

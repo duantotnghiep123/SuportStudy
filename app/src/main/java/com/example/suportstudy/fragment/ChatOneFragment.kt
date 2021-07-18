@@ -1,6 +1,7 @@
 package com.example.suportstudy.fragment
 
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -69,10 +70,17 @@ var  rcvChatOne:RecyclerView?=null
                     val chatlist: Chatlist? = ds.getValue(Chatlist::class.java)
                     chatlistList!!.add(chatlist!!)
                 }
-                loadChats()
+                if (chatlistList!!.size==0){
+                    noMessageLayout!!.visibility=View.VISIBLE
+                    loader!!.visibility=View.GONE
+                }else{
+                    noMessageLayout!!.visibility=View.GONE
+                    loadChats()
+                    loader!!.visibility=View.GONE
+                }
+
 
             }
-
             override fun onCancelled(databaseError: DatabaseError) {
 
             }
@@ -85,7 +93,7 @@ var  rcvChatOne:RecyclerView?=null
                 override fun onResponse(call: Call<List<Users>>, response: Response<List<Users>>) {
                     if(response.isSuccessful){
                     var    listUser= response.body()!!
-
+                        userList!!.clear()
                         for (i in listUser.indices){
                             var id=listUser[i]._id
                             for (j in chatlistList!!.indices){
@@ -93,7 +101,6 @@ var  rcvChatOne:RecyclerView?=null
                                     userList!!.add(listUser[i])
                                     break
                                 }
-
                             }
                         }
 

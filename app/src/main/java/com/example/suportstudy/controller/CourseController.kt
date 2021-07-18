@@ -16,7 +16,6 @@ object CourseController {
         val chatFetchJob = Job()
         val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
             throwable.printStackTrace()
-            Constrain.showToast( "Data error")
         }
         val scope = CoroutineScope(chatFetchJob + Dispatchers.IO)
         scope.launch(errorHandler) {
@@ -31,13 +30,12 @@ object CourseController {
 
 
 
-    fun getAllCourseType( context: Activity): MutableLiveData<List<CourseType>> {
+    fun getAllCourseType(context: Activity): MutableLiveData<List<CourseType>> {
         var  courseTypeAPI = Constrain.createRetrofit(CourseTypeAPI::class.java)
         val coursedata = MutableLiveData<List<CourseType>>()
         val chatFetchJob = Job()
         val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
             throwable.printStackTrace()
-            Constrain.showToast("Data error")
         }
         val scope = CoroutineScope(chatFetchJob + Dispatchers.IO)
         scope.launch(errorHandler) {

@@ -164,8 +164,6 @@ public class StringeeAudioManager {
         } else {
             defaultAudioDevice = AudioDevice.SPEAKER_PHONE;
         }
-
-
         Log.d(TAG, "defaultAudioDevice: " + defaultAudioDevice);
     }
 
@@ -288,10 +286,7 @@ public class StringeeAudioManager {
         audioFocusChangeListener = null;
         Log.d(TAG, "Abandoned audio focus for VOICE_CALL streams");
 
-//        if (proximitySensor != null) {
-//            proximitySensor.stop();
-//            proximitySensor = null;
-//        }
+
 
         audioManagerEvents = null;
         Log.d(TAG, "AudioManager stopped");

@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.model.GroupChat
@@ -79,7 +80,7 @@ class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :Rec
         holder.timeTv!!.text = dateTime
 
         holder.itemView.setOnClickListener {
-            var dialog= Constrain.createDialog(context, R.layout.dialog_confirm2)
+            var dialog= Constrain.createDialog(context, R.layout.dialog_confirm)
             var confirmTv=dialog.findViewById<TextView>(R.id.messagCfTv)
             var huyBtn=dialog.findViewById<LinearLayout>(R.id.cancelBtn)
             var dongYBtn=dialog.findViewById<LinearLayout>(R.id.dongyBtn)

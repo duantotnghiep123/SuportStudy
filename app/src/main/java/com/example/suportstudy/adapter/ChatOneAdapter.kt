@@ -76,8 +76,8 @@ class ChatOneAdapter(var context: Context, var chatList: List<Chat>) :RecyclerVi
         holder.timeTv!!.text = dateTime
 
         holder.itemView.setOnClickListener {
-            var dialog= Constrain.createDialog(context, R.layout.dialog_confirm2)
-            var confirmTv=dialog.findViewById<TextView>(R.id.confirmTv)
+            var dialog= Constrain.createDialog(context, R.layout.dialog_confirm)
+            var confirmTv=dialog.findViewById<TextView>(R.id.messagCfTv)
             var huyBtn=dialog.findViewById<LinearLayout>(R.id.cancelBtn)
             var dongYBtn=dialog.findViewById<LinearLayout>(R.id.dongyBtn)
             confirmTv.setText("Bạn có muốn xóa tin nhắn ?")
@@ -120,7 +120,7 @@ class ChatOneAdapter(var context: Context, var chatList: List<Chat>) :RecyclerVi
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (chatList[position].senderUid.equals(CourseTypeActivity.uid)) {
+        return if (chatList[position].senderUid.equals(ActionActivity.uid)) {
             return MSG_TYPE_RIGHT
         } else {
             return MSG_TYPE_LEFT

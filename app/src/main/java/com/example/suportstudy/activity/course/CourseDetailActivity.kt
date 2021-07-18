@@ -215,20 +215,6 @@ class CourseDetailActivity : AppCompatActivity() {
                 }
             })
     }
-    fun participant(time:String,myUid:String,groupId:String,courseId:String){
-        participantAPI!!.insertParticipant(
-            time,
-            myUid,
-            groupId!!,
-            courseId
-        ).enqueue(object :Callback<Participant>{
-            override fun onResponse(
-                call: Call<Participant>,
-                response: Response<Participant>
-            ) {
-                if(response.isSuccessful){
-                    Constrain.showToast("Tạo nhóm thành công")
-                    sd!!.dismiss()
 
                 }
             }
@@ -268,7 +254,6 @@ class CourseDetailActivity : AppCompatActivity() {
                 ivGroup!!.setImageURI(image_uri)
 
                 part_image = Constrain.getRealPathFromURI(context,image_uri)
-                Log.e("imageUri", image_uri.toString())
             }
 
 

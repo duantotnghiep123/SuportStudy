@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.MutableLiveData
 import com.example.suportstudy.R
@@ -56,19 +57,26 @@ class InfoGroupActivity : AppCompatActivity() {
             intent.putExtra("groupId", groupId)
             context.startActivity(intent)
         }
+        groupIv!!.setOnClickListener {
+            if (isTurtor==true){
+                if (!Persmission.checkStoragePermission(context)) {
+                    Persmission.requestStoragetPermission(context)
+                } else {
+                    Persmission.pickFromGallery(context)
+                }
+            }
+        }
         leaveGroupLayout!!.setOnClickListener {
-            val dialog = Constrain.createDialog(context,R.layout.dialog_confirm2)
-            var txtXacNhan = dialog.findViewById<TextView>(R.id.confirmTv)
+            val dialog = Constrain.createDialog(context, R.layout.dialog_confirm)
+            var txtXacNhan = dialog.findViewById<TextView>(R.id.messagCfTv)
             var btnHuy = dialog.findViewById<LinearLayout>(R.id.cancelBtn)
             var btnXacNhan = dialog.findViewById<LinearLayout>(R.id.dongyBtn)
             txtXacNhan.setText("Bạn có muốn đăng xuất !")
-            if(leaveGroupTv!!.text.equals("Rời nhóm")){
-                txtXacNhan.text="Bạn muốn rời nhóm ?"
+            if (leaveGroupTv!!.text.equals("Rời nhóm")) {
+                txtXacNhan.text = "Bạn muốn rời nhóm ?"
+            } else if (leaveGroupTv!!.text.equals("Xóa nhóm")) {
+                txtXacNhan.text = "Bạn muốn xóa nhóm ?"
             }
-            else if(leaveGroupTv!!.text.equals("Xóa nhóm")){
-                txtXacNhan.text="Bạn muốn xóa nhóm ?"
-            }
-
             btnHuy.setOnClickListener { dialog.dismiss() }
             btnXacNhan.setOnClickListener {
                 if (leaveGroupTv!!.text.equals("Rời nhóm")) {
@@ -178,15 +186,24 @@ class InfoGroupActivity : AppCompatActivity() {
         val btnDoi=dialog.findViewById<AppCompatButton>(R.id.btnDoi)
         edtName.setText(groupName)
         btnDoi.setOnClickListener {
-            var groupName=edtName.text.toString()
-            if(groupName.equals("")){
+            var groupName = edtName.text.toString()
+            if (groupName.equals("")) {
                 Constrain.showToast("Vui lòng nhập tên nhóm")
-            }else{
-                groupAPI!!.updateGroupName(groupId,groupName).enqueue(object :Callback<Group>{
-                    override fun onResponse(call: Call<Group>, response: Response<Group>) {
-                        if(response.isSuccessful){
-                           getGroupById()
-                            dialog.dismiss()
+            } else {
+                groupCourseAPI!!.updateGroupName(groupId!!, groupName)
+                    .enqueue(object : Callback<GroupCourse> {
+                        override fun onResponse(
+                            call: Call<GroupCourse>,
+                            response: Response<GroupCourse>
+                        ) {
+                            if (response.isSuccessful) {
+                                getGroupById()
+                                showUiProfile()
+                                dialog.dismiss()
+                            }
+                        }
+                        override fun onFailure(call: Call<GroupCourse>, t: Throwable) {
+                            Log.e("err", t.message.toString())
                         }
                     }
 
@@ -207,7 +224,14 @@ class InfoGroupActivity : AppCompatActivity() {
     }
 
     fun initViewData() {
-        Constrain.context=context
+        var  userSharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
+        isTurtor = userSharedPreferences!!.getBoolean(Constrain.KEY_ISTUTOR, false)!!
+        uid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")!!
+
+        Constrain.context = context
+        var intentGroupChat = intent
+        groupId = intentGroupChat.getStringExtra("groupId")
+        groupCreateBy = intentGroupChat.getStringExtra("groupCreateBy")
         groupIv = findViewById(R.id.groupImage)
         groupNameTv = findViewById(R.id.groupNameTv)
         groupDescriptionTv = findViewById(R.id.groupDescriptionTv)
@@ -270,13 +294,24 @@ class InfoGroupActivity : AppCompatActivity() {
 
     }
 
-    fun deleteParticipantByID(idpartincipant:String) {
-        participantAPI!!.leaveGroup(idpartincipant).enqueue(object : Callback<Participant> {
-            override fun onResponse(
-                call: Call<Participant>,
-                response: Response<Participant>
-            ) {
-                if (response.isSuccessful) {
+                        val reqFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
+                        val body = MultipartBody.Part.createFormData("group", file.getName(), reqFile)
+
+                        groupCourseAPI!!.updateGroupImage(requestId,body,requestOldImage).enqueue(object :Callback<GroupCourse>{
+                            override fun onResponse(call: Call<GroupCourse>, response: Response<GroupCourse>) {
+                                if (response.isSuccessful) {
+                                    Constrain.showToast("Đổi thành công")
+                                    getGroupById()
+                                    showUiProfile()
+                                }
+                                sd!!.dismiss()
+
+                            }
+
+                            override fun onFailure(call: Call<GroupCourse>, t: Throwable) {
+                                Constrain.showToast( "Thất bại")
+                                Log.e("ERROR", t.message.toString())
+                                sd!!.dismiss()}
 
                 }
             }

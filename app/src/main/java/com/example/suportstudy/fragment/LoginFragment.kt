@@ -1,6 +1,7 @@
 package com.example.suportstudy.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -43,6 +44,10 @@ class LoginFragment : Fragment() {
         Constrain.context=activity!!
         // Inflate the layout for this fragment
         var view = inflater.inflate(R.layout.fragment_login, container, false)
+        sharedPreferences = context!!.getSharedPreferences(
+            Constrain.SHARED_REF_USER,
+            Context.MODE_PRIVATE
+        )
         val btnLogin = view.findViewById<Button>(R.id.btnLogin)
 
 
@@ -109,6 +114,7 @@ class LoginFragment : Fragment() {
                         activity!!.finish()
                     }else{
                         Constrain.showToast("Email hoặc mật khẩu không đúng")
+                        sd!!.dismiss()
                     }
                     sd!!.dismiss()
                 }

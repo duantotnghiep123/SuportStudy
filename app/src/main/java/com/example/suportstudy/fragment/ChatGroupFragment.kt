@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
@@ -92,65 +93,34 @@ class ChatGroupFragment : Fragment() {
         return view
     }
 
-    fun getAllParticipant(){
-        var countData=0;
-        myLoader!!.visibility=View.VISIBLE
-        participantAPI!!.getAllParticipant()
-            .enqueue(object : Callback<List<Participant>> {
-                override fun onResponse(
-                    call: Call<List<Participant>>,
-                    response: Response<List<Participant>>
-                ) {
-                    if (response.isSuccessful) {
-                        var    listP = response.body()!!
-                        for (i in listP!!.indices) {
-                            if(listP!![i].uid.equals(CourseTypeActivity.uid)){ // lấy ra tất cả nhóm có userid là người đang đăng nhập
-                                if(listP[i].courseId.equals(CourseDetailActivity.courseId)){
-                                    var idG=listP[i].groupId
-                                    countData++
-                                    getALGroupById(idG)
 
-                                }
+    private fun getAllMyGroupParticipant() {
 
+        groupCourseAPI!!.getAllGroup().enqueue(object :Callback<List<GroupCourse>>{
+            override fun onResponse(
+                call: Call<List<GroupCourse>>,
+                response: Response<List<GroupCourse>>
+            ) {
+                listMyGroup!!.clear()
+                if (response.isSuccessful){
+                    var listGroup=response.body()
+                    for (i in listGroup!!.indices){
+                        var  listJoin=listGroup[i].participant
+                        for (j in listJoin!!.indices){
+                            if (listJoin[j].uid.equals(uid)){
+                                listMyGroup!!.add(listGroup[i])
                             }
 
                         }
-                        if(countData==0){
-                            myLoader!!.visibility=View.GONE
-                            noDataLayout!!.visibility=View.VISIBLE
-                        }else{
-                            noDataLayout!!.visibility=View.GONE
-
-                        }
-
                     }
                 }
-                override fun onFailure(call: Call<List<Participant>>, t: Throwable) {
-                    Log.v("Data", "Error:" + t.message.toString())
-                }
-            })
+            }
+            override fun onFailure(call: Call<List<GroupCourse>>, t: Throwable) {
+                Log.e("Error",t.message.toString())
 
+            }
 
-    }
-    @SuppressLint("UseRequireInsteadOfGet")
-    private fun getALGroupById(idG: String) {
-        groupAPI!!.getGroupById(idG)
-            .enqueue(object : Callback<List<Group>> {
-                override fun onResponse(call: Call<List<Group>>, response: Response<List<Group>>) {
-
-                    if(response.isSuccessful){
-                       listG!!.addAll(response.body()!!)
-                   }
-                    groupChatListAdapter =   GroupChatListAdapter(context!!, listG!!,ref!!)
-                    recyclerViewChatGroup!!.adapter = groupChatListAdapter
-                    groupChatListAdapter!!.notifyDataSetChanged()
-                    recyclerViewChatGroup!!.visibility=View.VISIBLE
-                    myLoader!!.visibility=View.GONE
-                }
-                override fun onFailure(call: Call<List<Group>>, t: Throwable) {
-                }
-            })
-
+        })
     }
 
 

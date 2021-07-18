@@ -59,13 +59,17 @@ object Constrain {
         Pattern.CASE_INSENSITIVE
     )
 
-
     var CHANNEL_ID = "1000"
     var NOTIFICATION_ID = 100
 
     var NOTIFICATION_URL = "https://fcm.googleapis.com/fcm/send"
     var SERVER_KEY ="AAAAT1UYtF0:APA91bELQ_x37OR3dXL_ZlUk3a3AE6qj6Xe7_JwaDfzpNP6S5TOk2CahSW_NPCRkZu2LC-TQReQl5gw0Ji_tlpB7-xmOKXQ8ZKmMhJTuToL3CQO13ihh-ilUypMVL4OwnaynaW6A9u6A"
 
+
+    fun postDelay(runnable: Runnable?, delayMillis: Long) {
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed(runnable!!, delayMillis)
+    }
 
     fun <T> nextActivity(context: Context, clazz: Class<T>) {
         var intent = Intent(context, clazz);
@@ -181,6 +185,27 @@ object Constrain {
     }
     fun subPathImage(typePath:String,imageUrl:String):String{
         var path = baseUrl + "/${typePath}/" + imageUrl!!.substring(imageUrl.lastIndexOf("/")+1)
-         return path
+        return path
+    }
+    val HASHKEY="com.example.suportstudy"
+
+    fun encryption(strNormalText: String?): String? {
+        var normalTextEnc = ""
+        try {
+            normalTextEnc = AESHelper.encrypt(HASHKEY, strNormalText!!)!!
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return normalTextEnc
+    }
+
+    fun decryption(strEncryptedText: String?): String? {
+        var strDecryptedText = ""
+        try {
+            strDecryptedText = AESHelper.decrypt(HASHKEY, strEncryptedText!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return strDecryptedText
     }
 }

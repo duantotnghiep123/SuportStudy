@@ -22,7 +22,7 @@ object UserController {
        val chatFetchJob = Job()
        val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
            throwable.printStackTrace()
-           Constrain.showToast( "Data error")
+           Constrain.showToast(context, "Data error")
        }
        val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
 

@@ -17,10 +17,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.chat.ChatOneActivity
-import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.call_api.Common
 import com.example.suportstudy.call_api.StringeeAudioManager
-import com.example.suportstudy.call_api.Utils
 import com.example.suportstudy.controller.UserController
 import com.example.suportstudy.until.Constrain
 import com.stringee.call.StringeeCall
@@ -63,6 +61,7 @@ class IncomingCallActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_incoming_call)
+        Constrain.context=context
 
         Common.isInCall = true
 
@@ -250,7 +249,7 @@ class IncomingCallActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             override fun onError(stringeeCall: StringeeCall, i: Int, s: String) {
-                runOnUiThread { Utils.reportMessage(this@IncomingCallActivity, s) }
+                runOnUiThread { Constrain.showToast(s)}
             }
 
             override fun onHandledOnAnotherDevice(
@@ -260,10 +259,7 @@ class IncomingCallActivity : AppCompatActivity(), View.OnClickListener {
             ) {
                 runOnUiThread {
                     if (signalingState == StringeeCall.SignalingState.ANSWERED || signalingState == StringeeCall.SignalingState.BUSY) {
-                        Utils.reportMessage(
-                            this@IncomingCallActivity,
-                            "This call is handled on another device."
-                        )
+                        Constrain.showToast("This call is handled on another device.")
                         endCall(false, false)
                     }
                 }
@@ -377,7 +373,7 @@ class IncomingCallActivity : AppCompatActivity(), View.OnClickListener {
                 mStringeeCall!!.reject()
             }
         }
-        Utils.postDelay(Runnable {
+        Constrain.postDelay(Runnable {
             Common.isInCall = false
             finish()
         }, 1000)
