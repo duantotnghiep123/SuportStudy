@@ -11,10 +11,12 @@ import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseDetailActivity
 import com.example.suportstudy.adapter.DocumentAdapter
 import com.example.suportstudy.model.Document
+import com.example.suportstudy.until.Constrain
+import java.util.*
 import kotlin.collections.ArrayList
 
 
-class NoteFragment : Fragment() {
+class DocumentFragment : Fragment() {
     var recyclerView: RecyclerView? = null
     var list: ArrayList<Document>? = null
     var documentAdapter: DocumentAdapter? = null
@@ -32,7 +34,7 @@ class NoteFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
 
-        var view=inflater.inflate(R.layout.fragment_note, container, false)
+        var view=inflater.inflate(R.layout.fragment_document, container, false)
 
 
         recyclerView = view.findViewById<RecyclerView>(R.id.rcvDocument)
@@ -49,7 +51,7 @@ class NoteFragment : Fragment() {
 
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            NoteFragment().apply {
+            DocumentFragment().apply {
                 arguments = Bundle().apply {
 
                 }

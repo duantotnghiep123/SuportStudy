@@ -43,7 +43,6 @@ class DocumentAdapter(var context: Context, var list: ArrayList<Document>) :
         holder.itemView.setOnClickListener { v: View? ->
             val intent = Intent(context, ViewDocumentDetailActivity::class.java)
             intent.putExtra("position", position + 1)
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         }
     }

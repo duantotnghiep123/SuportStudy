@@ -169,11 +169,7 @@ public class StringeeBluetoothManager {
         return new StringeeBluetoothManager(context, audioManager);
     }
 
-<<<<<<< HEAD
-    protected StringeeBluetoothManager (Context context, StringeeAudioManager audioManager) {
-=======
     protected StringeeBluetoothManager(Context context, StringeeAudioManager audioManager) {
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
         ThreadUtils.checkIsOnMainThread();
         this.context = context;
         stringeeAudioManager = audioManager;

@@ -43,19 +43,12 @@ class LoginFragment : Fragment() {
         Constrain.context=activity!!
         // Inflate the layout for this fragment
         var view = inflater.inflate(R.layout.fragment_login, container, false)
-
-        sharedPreferences = context!!.getSharedPreferences(
-            Constrain.SHARED_REF_USER,
-            Context.MODE_PRIVATE
-        )
-
         val btnLogin = view.findViewById<Button>(R.id.btnLogin)
 
 
         sd=Constrain.sweetdialog(activity!!,"Đang đăng nhập")
 
         btnLogin.setOnClickListener {
-            sd!!.show()
             var email = edtEmail.text.toString()
             var password = edtPassword.text.toString()
             val matcher: Matcher = Constrain.VALID_EMAIL_ADDRESS_REGEX.matcher(email)
@@ -78,7 +71,7 @@ class LoginFragment : Fragment() {
     }
 
     fun loginFuntion(email:String,password:String){
-
+        sd!!.show()
         val userAPI = Constrain.createRetrofit(UserAPI::class.java)
         var call = userAPI.getAllUsers()
         call.enqueue(object : retrofit2.Callback<List<Users>> {
@@ -86,14 +79,14 @@ class LoginFragment : Fragment() {
                 call: retrofit2.Call<List<Users>>,
                 response: Response<List<Users>>
             ) {
-                if (response.isSuccessful) {
+                if (response.code() == 200) {
                     listUser = response.body()
                     for (i in listUser!!.indices) {
                         var   _id=listUser!![i]._id
                         var   name=listUser!![i].name
                         var   image=listUser!![i].name
                         var   userEmail=listUser!![i].email
-                        var  userPassword=Constrain.decryption(listUser!![i].password)
+                        var  userPassword=listUser!![i].password
                         var  istutor=listUser!![i].isTurtor
                         if (userEmail.equals(email) && userPassword.equals(password)
                         ) {
@@ -112,18 +105,12 @@ class LoginFragment : Fragment() {
                         }
                     }
                     if(checkLogin==true){
-                        sd!!.dismiss()
                         Constrain.nextActivity(activity!!,CourseTypeActivity::class.java)
                         activity!!.finish()
-
                     }else{
                         Constrain.showToast("Email hoặc mật khẩu không đúng")
-<<<<<<< HEAD
-                        sd!!.dismiss()
-=======
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
                     }
-
+                    sd!!.dismiss()
                 }
             }
 

@@ -98,12 +98,10 @@ class RegisterFragment : Fragment() {
                 edtPassword.setFocusable(true)
             }  else {
                 sd!!.show()
-
-                var pass=Constrain.encryption(password)
                 var call = userAPI.register(
                     name,
                     email,
-                    pass!!,
+                    password,
                     "noImage",
                     isTutor
                 )
@@ -119,6 +117,7 @@ class RegisterFragment : Fragment() {
                             var name = users.name
                             var email = users.name
                             var image = users.image
+                            var password = users.password
 
                             isLogin = true
                             val editor = sharedPreferences!!.edit()

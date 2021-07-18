@@ -13,10 +13,6 @@ import com.android.volley.*
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.suportstudy.R
-<<<<<<< HEAD
-import com.example.suportstudy.activity.ActionActivity
-=======
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 import com.example.suportstudy.activity.call.CallingActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.adapter.ChatOneAdapter
@@ -46,10 +42,6 @@ class ChatOneActivity : AppCompatActivity() {
     var hisName :String?=null
     var senderUid :String?=null
     var senderName :String?=null
-<<<<<<< HEAD
-    var senderImage:String?=null
-=======
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
     var receiverUid:String?=null
     var hisImage :String?=null
 
@@ -63,16 +55,11 @@ class ChatOneActivity : AppCompatActivity() {
 
     companion object{
         var recyclerView: RecyclerView? = null
-<<<<<<< HEAD
-        var chatAdapter:ChatOneAdapter?=null
-    }
-=======
 
         var chatAdapter:ChatOneAdapter?=null
 
     }
 
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,11 +83,7 @@ class ChatOneActivity : AppCompatActivity() {
             messageEt!!.setText("")
         }
         btnCall!!.setOnClickListener {
-<<<<<<< HEAD
-            val client: StringeeClient = ActionActivity.client!!
-=======
             val client: StringeeClient = CourseTypeActivity.client!!
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             if (client.isConnected) {
                 val intent = Intent(context, CallingActivity::class.java)
                 intent.putExtra("from", client.userId)
@@ -114,15 +97,10 @@ class ChatOneActivity : AppCompatActivity() {
                 intent.putExtra("hisImage", hisImage)
                 startActivity(intent)
             } else {
-<<<<<<< HEAD
-                Constrain.showToast("Không thể kết nối video call. Vui lòng thử lại sau!")
-
-=======
                 Utils.reportMessage(
                     context,
                     "Không thể kết nối video call. Vui lòng thử lại sau!"
                 )
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             }
         }
 
@@ -134,10 +112,6 @@ fun initDataView(){
      var  userSharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
     senderUid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")
     senderName = userSharedPreferences!!.getString(Constrain.KEY_NAME, "")
-<<<<<<< HEAD
-    senderImage = userSharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")
-=======
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
     var intentChat=intent
     receiverUid=intentChat.getStringExtra("hisUid")
@@ -156,11 +130,7 @@ fun initDataView(){
     recyclerView!!.setHasFixedSize(true)
 
     txtName!!.text=hisName
-<<<<<<< HEAD
-    var pathImageUsers = Constrain.subPathImage("profile",hisImage!!)
-=======
     var pathImageUsers = Constrain.baseUrl + "/profile/" + hisImage!!.substring(hisImage!!.lastIndexOf("/")+1)
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
     Constrain.checkShowImage(context,R.drawable.avatar_default,pathImageUsers!!,avatarIv!!)
 }
     private fun displayMessage() {
@@ -179,7 +149,9 @@ fun initDataView(){
                 chatAdapter = ChatOneAdapter(context, chatList)
                 recyclerView!!.adapter = chatAdapter
                 recyclerView!!.scrollToPosition(chatList.size - 1)
+
             }
+
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
@@ -196,12 +168,8 @@ fun initDataView(){
         chatRef!!.push().setValue(hashMap).addOnCompleteListener({
             if (it.isSuccessful) {
                 Constrain.showToast("Gửi thành công")
-<<<<<<< HEAD
-                getToken(message, senderName!!, receiverUid!!, senderImage!!)
-=======
                 getToken(message, senderName!!, receiverUid!!, CourseTypeActivity.image!!)
 
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             }
         })
         var chatListRef = Constrain.initFirebase("ChatList")

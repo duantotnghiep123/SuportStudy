@@ -11,10 +11,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
-<<<<<<< HEAD
-import com.example.suportstudy.activity.ActionActivity
-=======
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.model.GroupChat
@@ -83,11 +79,7 @@ class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :Rec
         holder.timeTv!!.text = dateTime
 
         holder.itemView.setOnClickListener {
-<<<<<<< HEAD
-            var dialog= Constrain.createDialog(context, R.layout.dialog_confirm)
-=======
             var dialog= Constrain.createDialog(context, R.layout.dialog_confirm2)
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             var confirmTv=dialog.findViewById<TextView>(R.id.messagCfTv)
             var huyBtn=dialog.findViewById<LinearLayout>(R.id.cancelBtn)
             var dongYBtn=dialog.findViewById<LinearLayout>(R.id.dongyBtn)
@@ -138,7 +130,7 @@ class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :Rec
 
     override fun getItemViewType(position: Int): Int {
 
-        return if (chatList[position].senderUid.equals(ActionActivity.uid)) {
+        return if (chatList[position].senderUid.equals(CourseTypeActivity.uid)) {
             return MSG_TYPE_RIGHT
         } else {
             return MSG_TYPE_LEFT

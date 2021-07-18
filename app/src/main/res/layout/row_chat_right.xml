@@ -24,7 +24,7 @@
             android:id="@+id/timeTv"
             android:paddingLeft="40dp"
             android:paddingRight="10dp"
-            android:textSize="10dp"
+            android:textSize="11dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:text="02/03/2020 05:30PM"
@@ -37,7 +37,6 @@
             android:id="@+id/messageTv"
             android:padding="15dp"
             android:text="His message"
-            android:textSize="13dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
             android:textColor="@color/white"
@@ -64,9 +63,9 @@
     </RelativeLayout>
     <TextView
         android:id="@+id/isSeendTv"
-        android:textSize="10dp"
+        android:textSize="11dp"
         android:paddingRight="30dp"
-        android:text="Đã gửi"
+        android:text="delivered"
         android:gravity="end"
         android:textAlignment="textEnd"
         android:textColor="@color/black"

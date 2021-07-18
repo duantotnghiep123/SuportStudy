@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.chat.ChatOneActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.model.Chat
@@ -77,13 +76,8 @@ class ChatOneAdapter(var context: Context, var chatList: List<Chat>) :RecyclerVi
         holder.timeTv!!.text = dateTime
 
         holder.itemView.setOnClickListener {
-<<<<<<< HEAD
-            var dialog= Constrain.createDialog(context, R.layout.dialog_confirm)
-            var confirmTv=dialog.findViewById<TextView>(R.id.messagCfTv)
-=======
             var dialog= Constrain.createDialog(context, R.layout.dialog_confirm2)
             var confirmTv=dialog.findViewById<TextView>(R.id.confirmTv)
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             var huyBtn=dialog.findViewById<LinearLayout>(R.id.cancelBtn)
             var dongYBtn=dialog.findViewById<LinearLayout>(R.id.dongyBtn)
             confirmTv.setText("Bạn có muốn xóa tin nhắn ?")
@@ -126,11 +120,7 @@ class ChatOneAdapter(var context: Context, var chatList: List<Chat>) :RecyclerVi
     }
 
     override fun getItemViewType(position: Int): Int {
-<<<<<<< HEAD
-        return if (chatList[position].senderUid.equals(ActionActivity.uid)) {
-=======
         return if (chatList[position].senderUid.equals(CourseTypeActivity.uid)) {
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             return MSG_TYPE_RIGHT
         } else {
             return MSG_TYPE_LEFT

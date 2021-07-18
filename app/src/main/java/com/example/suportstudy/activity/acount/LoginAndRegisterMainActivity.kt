@@ -16,7 +16,9 @@ class LoginAndRegisterMainActivity : AppCompatActivity() {
     var po=0
     companion object{
         var isTutor=false
+
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_and_register_main)
@@ -34,6 +36,7 @@ class LoginAndRegisterMainActivity : AppCompatActivity() {
         if(po==1){
             viewPager!!.setCurrentItem(1)
         }
+
         tabLayout!!.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager!!.setCurrentItem(tab.position)

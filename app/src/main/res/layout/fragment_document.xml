@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.document.ListDocumentActivity">
+    tools:context=".fragment.DocumentFragment">
     <RelativeLayout
         android:id="@+id/toolbar"
         android:background="@drawable/toolbar"

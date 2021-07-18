@@ -34,6 +34,7 @@ class ConnectionManager(val context: Context):LiveData<Boolean> (){
 
     override fun onInactive() {
         super.onInactive()
+
         try {
             if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
                 connectivityManager.unregisterNetworkCallback(connectivityManagerCallback())
@@ -64,6 +65,7 @@ class ConnectionManager(val context: Context):LiveData<Boolean> (){
                      super.onLost(network)
                      postValue(false)
                  }
+
                  override fun onAvailable(network: Network) {
                      super.onAvailable(network)
                      postValue(true)
@@ -79,6 +81,7 @@ class ConnectionManager(val context: Context):LiveData<Boolean> (){
         override fun onReceive(context: Context?, intent: Intent?) {
             updateConnection()
         }
+
     }
 
     fun updateConnection(){

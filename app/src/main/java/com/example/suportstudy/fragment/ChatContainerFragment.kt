@@ -32,8 +32,8 @@ class ChatContainerFragment : Fragment() {
 
         viewPagerChat = view.findViewById(R.id.viewpager_chat)
         tabLayout = view.findViewById(R.id.tablayout_chat)
-        tabLayout!!.addTab(tabLayout!!.newTab())
-        tabLayout!!.addTab(tabLayout!!.newTab())
+        tabLayout!!.addTab(tabLayout!!.newTab().setText("Chat"))
+        tabLayout!!.addTab(tabLayout!!.newTab().setText("Group"))
 
 
         val adapter = ChatContainerAdapter(childFragmentManager)

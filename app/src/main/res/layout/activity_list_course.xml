@@ -35,7 +35,6 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
-                android:visibility="gone"
                 android:layout_alignParentRight="true"
                 android:src="@drawable/avatar"
                 android:layout_width="40dp"

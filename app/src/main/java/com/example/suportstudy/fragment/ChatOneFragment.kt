@@ -1,20 +1,13 @@
 package com.example.suportstudy.fragment
 
 import android.annotation.SuppressLint
-<<<<<<< HEAD
-import android.content.SharedPreferences
-=======
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.SearchView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.course.ListCourseActivity
@@ -30,7 +23,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ChatOneFragment : Fragment() {
-   var  rcvChatOne:RecyclerView?=null
+var  rcvChatOne:RecyclerView?=null
 
 
     var chatlistList: ArrayList<Chatlist>? = null
@@ -38,18 +31,12 @@ class ChatOneFragment : Fragment() {
     var reference: DatabaseReference? = null
 
     var noMessageLayout: LinearLayout? = null
-    var loader: LazyLoader? = null
 
-    var myUid:String?=null
+    var myUid= CourseTypeActivity.uid
 
     var adapterOneChatlist:AdapterOneChatlist?=null
 
     var userAPI:UserAPI?=null
-    var searchView:SearchView?=null
-
-    var listSearch:ArrayList<Users>?=null
-
-    var userSharedPreferences: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,49 +45,23 @@ class ChatOneFragment : Fragment() {
         }
     }
 
-    @SuppressLint("UseRequireInsteadOfGet")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         var view=inflater.inflate(R.layout.fragment_chat_one, container, false)
-        userSharedPreferences = activity!!.getSharedPreferences(Constrain.SHARED_REF_USER,
-            AppCompatActivity.MODE_PRIVATE
-        )
-        myUid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")
         initViewData(view)
-        searchView!!.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if(query.equals("")){
-                   loadChats()
-                }else{
-                    searchloadChats(query.toString())
-                }
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if(newText.equals("")){
-                    loadChats()
-                }else{
-                    searchloadChats(newText.toString())
-                }
-                return false
-            }
-        })
+        // Inflate the layout for this fragment
         return view
     }
     fun initViewData(view: View){
-        listSearch=ArrayList()
-        searchView=view.findViewById(R.id.searchView)
         rcvChatOne=view.findViewById(R.id.rcvChatOne)
-        loader=view.findViewById(R.id.myLoader)
-        noMessageLayout=view.findViewById(R.id.noDataLayout)
         userAPI=Constrain.createRetrofit(UserAPI::class.java)
-        chatlistList=ArrayList()
-        userList=ArrayList()
-        reference =Constrain.initFirebase("ChatList").child(myUid!!)
-        loader!!.visibility=View.VISIBLE
+
+        chatlistList=ArrayList<Chatlist>()
+        userList=ArrayList<Users>()
+        reference =
+        FirebaseDatabase.getInstance().getReference("ChatList").child(myUid!!)
         reference!!.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 chatlistList!!.clear()
@@ -108,24 +69,12 @@ class ChatOneFragment : Fragment() {
                     val chatlist: Chatlist? = ds.getValue(Chatlist::class.java)
                     chatlistList!!.add(chatlist!!)
                 }
-<<<<<<< HEAD
-                if (chatlistList!!.size==0){
-                    noMessageLayout!!.visibility=View.VISIBLE
-                    loader!!.visibility=View.GONE
-                }else{
-                    noMessageLayout!!.visibility=View.GONE
-                    loadChats()
-                    loader!!.visibility=View.GONE
-                }
-
-=======
                 loadChats()
 
             }
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
-            }
             override fun onCancelled(databaseError: DatabaseError) {
+
             }
         })
     }
@@ -136,11 +85,7 @@ class ChatOneFragment : Fragment() {
                 override fun onResponse(call: Call<List<Users>>, response: Response<List<Users>>) {
                     if(response.isSuccessful){
                     var    listUser= response.body()!!
-<<<<<<< HEAD
-                        userList!!.clear()
-=======
 
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
                         for (i in listUser.indices){
                             var id=listUser[i]._id
                             for (j in chatlistList!!.indices){
@@ -151,61 +96,31 @@ class ChatOneFragment : Fragment() {
 
                             }
                         }
-                        adapterOneChatlist =  AdapterOneChatlist( context!!, userList!!   )
+
+                        adapterOneChatlist =
+                            AdapterOneChatlist(
+                                context!!, userList!!
+                            )
                         rcvChatOne!!.adapter = adapterOneChatlist
                         adapterOneChatlist!!.notifyDataSetChanged()
-                        for (i in userList!!.indices) {
-                            lastMessage(userList!![i]._id) // id  dzAZNw7EBJchnky8eJnrFepjBU73
-                        }
-
-
-                    }
-                }
-                override fun onFailure(call: Call<List<Users>>, t: Throwable) {
-                }
-            })
-    }
-    private fun searchloadChats(query: String) {
-        userAPI!!.getAllUsers()
-            .enqueue(object :Callback<List<Users>>{
-                override fun onResponse(call: Call<List<Users>>, response: Response<List<Users>>) {
-                    if(response.isSuccessful){
-                    var    listUser= response.body()!!
-                        userList!!.clear()
-
-                        for (i in listUser.indices){
-                            var id=listUser[i]._id
-                            for (j in chatlistList!!.indices){
-                                if (id.equals(chatlistList!![j].id)) {
-                                    if (listUser!![i].name.toLowerCase().contains(query.toLowerCase())) {
-                                        userList!!.add(listUser[i])
-                                    }
-                                    break
-                                }
-                            }
-                            adapterOneChatlist =  AdapterOneChatlist( context!!, userList!!   )
-                            rcvChatOne!!.adapter = adapterOneChatlist
-                            adapterOneChatlist!!.notifyDataSetChanged()
-                        }
 
                         for (i in userList!!.indices) {
                             lastMessage(userList!![i]._id) // id  dzAZNw7EBJchnky8eJnrFepjBU73
                         }
-                        if (userList!!.size==0){
-                            noMessageLayout!!.visibility=View.VISIBLE
-                        }else{
-                            noMessageLayout!!.visibility=View.GONE
-                        }
-                        loader!!.visibility=View.GONE
 
                     }
                 }
+
                 override fun onFailure(call: Call<List<Users>>, t: Throwable) {
+
                 }
+
             })
+
+
     }
     private fun lastMessage(userId: String) { // id  dzAZNw7EBJchnky8eJnrFepjBU73
-        val reference = Constrain.initFirebase("Chats")
+        val reference = FirebaseDatabase.getInstance(Constrain.firebaseUrl).getReference("Chats")
         reference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 var theLastMessage = "default"
@@ -216,11 +131,14 @@ class ChatOneFragment : Fragment() {
                     if (sender == null || receiver == null) {
                         continue
                     }
+                    var i = 0
                     if (chat.receiverUid.equals(myUid) &&
                         chat.senderUid.equals(userId) ||
                         chat.receiverUid.equals(userId) &&
                         chat.senderUid.equals(myUid)
                     ) {
+                        i++
+
                         if (chat.messageType.equals("image")) {
                             theLastMessage = "Sent a photo"
                         }
@@ -233,7 +151,6 @@ class ChatOneFragment : Fragment() {
                     userId,
                     theLastMessage
                 )
-
                 adapterOneChatlist!!.notifyDataSetChanged()
             }
 
@@ -242,6 +159,7 @@ class ChatOneFragment : Fragment() {
     }
 
     companion object {
+
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ChatOneFragment().apply {

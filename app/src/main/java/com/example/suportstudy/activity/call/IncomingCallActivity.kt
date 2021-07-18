@@ -17,15 +17,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.chat.ChatOneActivity
-<<<<<<< HEAD
-import com.example.suportstudy.call_api.Common
-import com.example.suportstudy.call_api.StringeeAudioManager
-=======
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.call_api.Common
 import com.example.suportstudy.call_api.StringeeAudioManager
 import com.example.suportstudy.call_api.Utils
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 import com.example.suportstudy.controller.UserController
 import com.example.suportstudy.until.Constrain
 import com.stringee.call.StringeeCall
@@ -68,10 +63,6 @@ class IncomingCallActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_incoming_call)
-<<<<<<< HEAD
-        Constrain.context=context
-=======
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
 
         Common.isInCall = true
 
@@ -259,11 +250,7 @@ class IncomingCallActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             override fun onError(stringeeCall: StringeeCall, i: Int, s: String) {
-<<<<<<< HEAD
-                runOnUiThread { Constrain.showToast(s)}
-=======
                 runOnUiThread { Utils.reportMessage(this@IncomingCallActivity, s) }
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             }
 
             override fun onHandledOnAnotherDevice(
@@ -273,14 +260,10 @@ class IncomingCallActivity : AppCompatActivity(), View.OnClickListener {
             ) {
                 runOnUiThread {
                     if (signalingState == StringeeCall.SignalingState.ANSWERED || signalingState == StringeeCall.SignalingState.BUSY) {
-<<<<<<< HEAD
-                        Constrain.showToast("This call is handled on another device.")
-=======
                         Utils.reportMessage(
                             this@IncomingCallActivity,
                             "This call is handled on another device."
                         )
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
                         endCall(false, false)
                     }
                 }
@@ -394,11 +377,7 @@ class IncomingCallActivity : AppCompatActivity(), View.OnClickListener {
                 mStringeeCall!!.reject()
             }
         }
-<<<<<<< HEAD
-        Constrain.postDelay(Runnable {
-=======
         Utils.postDelay(Runnable {
->>>>>>> 7578cff2be5c882010e136b88df098deabe451d6
             Common.isInCall = false
             finish()
         }, 1000)
