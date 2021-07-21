@@ -2,6 +2,7 @@ package com.example.suportstudy.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Application
 import android.app.NotificationManager
 import android.content.Intent
 import android.content.SharedPreferences
@@ -40,7 +41,7 @@ import com.stringee.listener.StringeeConnectionListener
 import de.hdodenhof.circleimageview.CircleImageView
 import org.json.JSONObject
 
-class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, LifecycleObserver {
+class ActionActivity : AppCompatActivity(),LifecycleObserver {
     var context = this@ActionActivity
     lateinit var btnDisscus: CardView
     lateinit var btnTopic: CardView
@@ -241,9 +242,8 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
         }
     }
 
-    //Block
-    override fun onBackPressed() {}
-    override fun onClick(v: View?) {
-        TODO("Not yet implemented")
+    override fun onBackPressed() {
     }
+
+
 }

@@ -1,11 +1,7 @@
 package com.example.suportstudy.activity.course
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.app.NotificationManager
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -13,25 +9,13 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
-import androidx.core.app.ActivityCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.ActionActivity
-import com.example.suportstudy.activity.MainActivity
-import com.example.suportstudy.activity.acount.ProfileActivity
-import com.example.suportstudy.activity.call.IncomingCallActivity
 import com.example.suportstudy.adapter.CourseTypeAdapter
-import com.example.suportstudy.call_api.Common
-import com.example.suportstudy.call_api.GenAccessToken
-import com.example.suportstudy.controller.CourseController
-import com.example.suportstudy.controller.UserController
 import com.example.suportstudy.extensions.gone
 import com.example.suportstudy.extensions.onClick
 import com.example.suportstudy.extensions.visible
@@ -39,22 +23,18 @@ import com.example.suportstudy.model.CourseType
 import com.example.suportstudy.service.CourseTypeAPI
 import com.example.suportstudy.until.ConnectionManager
 import com.example.suportstudy.until.Constrain
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.iid.FirebaseInstanceId
 import com.makeramen.roundedimageview.RoundedImageView
-import com.stringee.StringeeClient
-import com.stringee.call.StringeeCall
-import com.stringee.call.StringeeCall2
-import com.stringee.exception.StringeeError
-import com.stringee.listener.StatusListener
-import com.stringee.listener.StringeeConnectionListener
 import de.hdodenhof.circleimageview.CircleImageView
-import org.json.JSONObject
+import kotlinx.coroutines.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class CourseTypeActivity : AppCompatActivity(), android.view.View.OnClickListener,
-    LifecycleObserver {
+class CourseTypeActivity : AppCompatActivity()
+     {
     var context = this@CourseTypeActivity
 
     lateinit var list: List<CourseType>
@@ -174,37 +154,85 @@ class CourseTypeActivity : AppCompatActivity(), android.view.View.OnClickListene
     }
 
     fun getAllCourseType() {
-        CourseController.getAllCourseType(context).observe(context, {
-            if (it.size == 0) {
-                loader.visible()
+        val chatFetchJob = Job()
+        val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            throwable.printStackTrace()
+        }
+        val scope = CoroutineScope(chatFetchJob + Dispatchers.IO)
+        scope.launch(errorHandler) {
+         courseTypeAPI.getAllCourseType().enqueue(object :Callback<List<CourseType>>{
+                override fun onResponse(
+                    call: Call<List<CourseType>>,
+                    response: Response<List<CourseType>>
+                ) {
+                    if(response.isSuccessful){
+                        if (response.body()!!.size == 0) {
+                            loader.gone()
+                            noDataLayout.visible()
 
-            } else {
-                var categorieAdapter = CourseTypeAdapter(context, it)
-                rcvCourse!!.adapter = categorieAdapter
-                categorieAdapter.notifyDataSetChanged()
-                loader.gone()
+                        } else {
+                            var categorieAdapter = CourseTypeAdapter(context, response.body()!!)
+                            rcvCourse!!.adapter = categorieAdapter
+                            categorieAdapter.notifyDataSetChanged()
+                            loader.gone()
+                            noDataLayout.gone()
+                        }
+                        loader.gone()
+                    }                }
 
-            }
-            loader.gone()
+                override fun onFailure(call: Call<List<CourseType>>, t: Throwable) {
+                    Log.e("error",t.message.toString())
+                }
 
-        })
+            })
+
+        }
+
+
     }
 
     fun searchCourse(query: String) {
         var listSearch = ArrayList<CourseType>()
-        CourseController.getAllCourseType(context).observe(context, {
-            for (i in it.indices) {
-                if (it[i].name.contains(query)) {
-                    listSearch.add(it[i])
-                    break
+        val chatFetchJob = Job()
+        val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            throwable.printStackTrace()
+        }
+        val scope = CoroutineScope(chatFetchJob + Dispatchers.IO)
+        scope.launch(errorHandler) {
+            courseTypeAPI.getAllCourseType().enqueue(object :Callback<List<CourseType>>{
+                override fun onResponse(
+                    call: Call<List<CourseType>>,
+                    response: Response<List<CourseType>>
+                ) {
+                    if(response.isSuccessful){
+                        if (response.body()!!.size == 0) {
+                            loader.visible()
+
+                        } else {
+                            var it=response.body()
+                            for (i in it!!.indices) {
+                                if (it[i].name.contains(query)) {
+                                    listSearch.add(it[i])
+                                    break
+                                }
+                            }
+                            var categorieAdapter = CourseTypeAdapter(context, listSearch)
+                            rcvCourse!!.adapter = categorieAdapter
+                            categorieAdapter.notifyDataSetChanged()
+
+                        }
+                        loader.gone()
+                    }
                 }
-            }
-            var categorieAdapter = CourseTypeAdapter(context, listSearch)
-            rcvCourse!!.adapter = categorieAdapter
-            categorieAdapter.notifyDataSetChanged()
 
+                override fun onFailure(call: Call<List<CourseType>>, t: Throwable) {
+                    Log.e("error",t.message.toString())
+                }
 
-        })
+            })
+
+        }
+
     }
 
     fun refreshData() {
@@ -229,8 +257,5 @@ class CourseTypeActivity : AppCompatActivity(), android.view.View.OnClickListene
     }
 
 
-    override fun onClick(v: View?) {
-
-    }
 
 }

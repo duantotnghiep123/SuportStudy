@@ -21,19 +21,9 @@ interface UserAPI {
         @Field("image") image: String,
         @Field("isTurtor") isTurtor: Boolean,
     ): Call<Users>
-
-    @POST("/api/findUserEmailPassWord")
-    @FormUrlEncoded
-    fun login(
-        @Field("email") email: String?,
-        @Field("password") password: String,
-    ): Call<List<Users>>
-
     @POST("/api/getAllUseId")
     @FormUrlEncoded
     fun getAllUsersByID( @Field("_id") _id:String ?): Call<List<Users>>
-
-
 
     @Multipart
     @POST("/api/updateImage")

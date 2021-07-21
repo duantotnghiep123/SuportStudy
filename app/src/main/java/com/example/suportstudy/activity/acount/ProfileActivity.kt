@@ -17,7 +17,6 @@ import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.MainActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.group.ListGroupActivity
-import com.example.suportstudy.controller.UserController
 import com.example.suportstudy.extensions.gone
 import com.example.suportstudy.extensions.visible
 import com.example.suportstudy.model.Users
@@ -25,6 +24,7 @@ import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.until.Persmission
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -159,25 +159,45 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun getDataProfile(uid: String?) {
-        var data=UserController.getUserProfile(context,uid!!)
-        data.observe(context,{listUser->
-            var imgUrl = ""
-            for (i in listUser!!.indices) {
-                imgUrl = listUser!![i].image
-                name = listUser!![i].name
-                password = Constrain.decryption(listUser!![i].password)!!
-            }
-            val editor = sharedPreferences!!.edit()
-            editor.putString(Constrain.KEY_IMAGE, imgUrl)
-            editor.putString(Constrain.KEY_NAME, name)
-            editor.apply()
-            image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")!!
-            nameTv!!.text = name
-            var path = Constrain.subPathImage("profile",imgUrl)
-            Constrain.checkShowImage(context,R.drawable.avatar_default,path,avatarIv!!)
-            myLoader.gone()
-            dataLayout.visible()
-        })
+        val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            throwable.printStackTrace()
+            Constrain.showToast(context, "Data error")
+        }
+        val chatFetchJob = Job()
+        val scope = CoroutineScope(chatFetchJob + Dispatchers.Main)
+
+        scope.launch(errorHandler) {
+            userAPI!!.getAllUsersByID(uid).enqueue(object : Callback<List<Users>> {
+                override fun onResponse(
+                    call: Call<List<Users>>,
+                    response: Response<List<Users>>
+                ) {
+                    if (response.isSuccessful) {
+                       var listUser= response.body()
+                        var imgUrl = ""
+                        for (i in listUser!!.indices) {
+                            imgUrl = listUser!![i].image
+                            name = listUser!![i].name
+                            password = Constrain.decryption(listUser!![i].password)!!
+                        }
+                        val editor = sharedPreferences!!.edit()
+                        editor.putString(Constrain.KEY_IMAGE, imgUrl)
+                        editor.putString(Constrain.KEY_NAME, name)
+                        editor.apply()
+                        image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")!!
+                        nameTv!!.text = name
+                        var path = Constrain.subPathImage("profile",imgUrl)
+                        Constrain.checkShowImage(context,R.drawable.avatar_default,path,avatarIv!!)
+                        myLoader.gone()
+                        dataLayout.visible()
+                    }
+                }
+                override fun onFailure(call: Call<List<Users>>, t: Throwable) {
+                    Log.e("err", t.message.toString())
+                }
+
+            })
+        }
 
     }
 

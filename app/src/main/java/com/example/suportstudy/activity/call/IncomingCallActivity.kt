@@ -19,12 +19,16 @@ import com.example.suportstudy.R
 import com.example.suportstudy.activity.chat.ChatOneActivity
 import com.example.suportstudy.call_api.Common
 import com.example.suportstudy.call_api.StringeeAudioManager
-import com.example.suportstudy.controller.UserController
+import com.example.suportstudy.model.Users
+import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
 import com.stringee.call.StringeeCall
 import com.stringee.common.StringeeConstant
 import com.stringee.listener.StatusListener
 import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 
 class IncomingCallActivity : AppCompatActivity(), View.OnClickListener {
@@ -54,12 +58,15 @@ class IncomingCallActivity : AppCompatActivity(), View.OnClickListener {
     private var mSignalingState: StringeeCall.SignalingState? = null
 
     val REQUEST_PERMISSION_CALL = 1
+
+    var userAPI:UserAPI?=null
     var context=this@IncomingCallActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_incoming_call)
         Constrain.context=context
+        userAPI=Constrain.createRetrofit(UserAPI::class.java)
 
         Common.isInCall = true
 
@@ -91,17 +98,26 @@ class IncomingCallActivity : AppCompatActivity(), View.OnClickListener {
         btnSwitch = findViewById<View>(R.id.btn_switch) as ImageButton
         btnSwitch!!.setOnClickListener(this)
 
-        UserController.getUserProfile(context,receiveID!!).observe(context,{
-            name=it[0].name
-            image=it[0].image
-            receiveID=it[0]._id
-            tvFrom!!.setText(name)
-            var path = Constrain.subPathImage("profile", image!!)
-            Constrain.checkShowImage(context,R.drawable.avatar_default,path,avatarIv!!)
-        })
+       userAPI!!.getAllUsersByID(receiveID).enqueue(object :Callback<List<Users>>{
+           override fun onResponse(call: Call<List<Users>>, response: Response<List<Users>>) {
+              if (response.isSuccessful){
+                  var listUser=response.body()
+                  name= listUser!![0].name
+                  image=listUser!![0].image
+                  receiveID=listUser!![0]._id
+                  tvFrom!!.setText(name)
+                  var path = Constrain.subPathImage("profile", image!!)
+                  Constrain.checkShowImage(context,R.drawable.avatar_default,path,avatarIv!!)
+              }
+           }
+
+           override fun onFailure(call: Call<List<Users>>, t: Throwable) {
+                  Log.e("error",t.message.toString())
+           }
+
+       })
+
         avatarIv!!.visibility=View.VISIBLE
-
-
 
         isSpeaker = mStringeeCall!!.isVideoCall()
         btnSpeaker!!.setBackgroundResource(if (isSpeaker) R.drawable.btn_speaker_on else R.drawable.btn_speaker_off)

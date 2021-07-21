@@ -12,6 +12,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
@@ -80,8 +81,8 @@ class LoginFragment : Fragment() {
 
     fun loginFuntion(email:String,password:String){
         sd!!.show()
-        var call = userAPI!!.getAllUsers()
-        call.enqueue(object : retrofit2.Callback<List<Users>> {
+        userAPI!!.getAllUsers()
+            .enqueue(object : retrofit2.Callback<List<Users>> {
             override fun onResponse(
                 call: retrofit2.Call<List<Users>>,
                 response: Response<List<Users>>
@@ -99,7 +100,6 @@ class LoginFragment : Fragment() {
                         ) {
                             checkLogin=true
                             isLogin=true
-
                             val editor = sharedPreferences!!.edit()
                             editor.putString(Constrain.KEY_ID, _id)
                             editor.putString(Constrain.KEY_NAME, name)
@@ -113,9 +113,8 @@ class LoginFragment : Fragment() {
                     }
                     if(checkLogin==true){
                         sd!!.dismiss()
-                        Constrain.nextActivity(activity!!,CourseTypeActivity::class.java)
+                        Constrain.nextActivity(activity!!,ActionActivity::class.java)
                         activity!!.finish()
-
                     }else{
                         Constrain.showToast("Email hoặc mật khẩu không đúng")
                         sd!!.dismiss()
