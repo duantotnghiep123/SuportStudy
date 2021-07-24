@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/greynhat4"
-    tools:context=".fragment.NewsFeedFragment">
+    tools:context=".fragment.newsfeed.NewsFeedFragment">
 
     <RelativeLayout
         android:id="@+id/toolbar"
@@ -218,8 +218,8 @@
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
 
-        <include
-        android:id="@+id/layoutLogo"
-        layout="@layout/bottom_navigation" />
+<!--        <include-->
+<!--        android:id="@+id/layoutLogo"-->
+<!--        layout="@layout/bottom_navigation" />-->
 
 </RelativeLayout>

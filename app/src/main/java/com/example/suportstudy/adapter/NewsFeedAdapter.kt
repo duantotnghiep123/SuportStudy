@@ -1,31 +1,28 @@
 package com.example.suportstudy.adapter
 
-import android.accounts.AccountManager.get
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
-import com.example.suportstudy.model.Document
+import com.example.suportstudy.extensions.onClick
+import com.example.suportstudy.fragment.newsfeed.NewsFeedViewModel
+import com.example.suportstudy.model.Comment
 import com.example.suportstudy.model.NewsFeed
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
+import com.example.suportstudy.until.ViewModelFactory
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.row_post.view.*
-import okhttp3.HttpUrl.get
 import java.util.*
+import kotlin.collections.ArrayList
 
-class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>,  var layout: Int) :
+class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var layout: Int) :
     RecyclerView.Adapter<NewsFeedAdapter.ViewHolder>() {
     var sd: SweetAlertDialog? = null
 
@@ -37,26 +34,34 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>,  var 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val modelPost: NewsFeed = list!![position]
-        val uid: String = modelPost.uId
-        val id: String = modelPost.id
+        val uid: String = modelPost.__v
+        val id: String = modelPost._id
         val description: String = modelPost.description
-        val coursesId: String = modelPost.coursesId
-        val time: String = modelPost.time
+        val coursesId: String = modelPost.typeClassId
+        val time: String = modelPost.createdAt
         val title: String = modelPost.title
-        val type: String = modelPost.type
+        val type: String = modelPost.image
+        var comment: Int = modelPost.comment!!.size
+        var like: Int = modelPost.like!!.size
+
         if (layout == R.layout.row_post) {
             sd = SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE)
             sd!!.titleText = "Loading"
             sd!!.setCancelable(true)
-//            val calendar = Calendar.getInstance()
-//            calendar.timeInMillis = time.toLong()
-//            val pTime = DateFormat.format("dd/MM/yyyy  hh:mm aa", calendar).toString()
             holder.uNameTv.text = modelPost.title
-            holder.pTimeTv.text = modelPost.time
+            holder.pTimeTv.text = modelPost.createdAt
             holder.pDescriptionTv.text = modelPost.description
-            Picasso.with(context).load(modelPost.type).into(holder.pImageIv)
+            holder.pLikeTv.text = like.toString()
+            holder.pCommentTv.text = comment.toString()
+            Picasso.with(context).load(modelPost.image).into(holder.pImageIv)
 //            holder.pImageIv.setImageURI(Uri.parse("https://niithanoi.edu.vn/pic/News/images/tin-tuc-cong-nghe-va-lap-trinh/kotlin-vs-java.jpg"))
-
+            holder.likeIv.onClick {
+                if (like != null) {
+                    like += 1
+                    holder.pLikeTv.text = like.toString()
+                    Log.d("son", "so $like")
+                }
+            }
 //            setLiked(modelPost.getpId(), holder.likeIv);
 //            setLikes(holder, id)
 //            setTextCoutLike(holder.pLikeTv, modelPost.getpId())

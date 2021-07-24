@@ -25,7 +25,7 @@ class HomeNavActivity : AppCompatActivity(){
         val graphInflater = navHostFragment.navController.navInflater
         navGraph = graphInflater.inflate(R.navigation.home_nav_navigation)
         navController = navHostFragment.navController
-        navGraph.startDestination = R.id.newsFeesFragment
+        navGraph.startDestination = R.id.newsFeedFragment
         navController.graph = navGraph
     }
 
