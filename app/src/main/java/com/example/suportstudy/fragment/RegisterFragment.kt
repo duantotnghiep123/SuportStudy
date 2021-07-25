@@ -1,45 +1,35 @@
 package com.example.suportstudy.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.MainActivity
-import com.example.suportstudy.activity.authencation.LoginActivity
-import com.example.suportstudy.activity.authencation.LoginAndRegisterMainActivity
-import com.example.suportstudy.activity.home.HomeActivity
-import com.example.suportstudy.until.Until
-import io.realm.Realm
-import io.realm.mongodb.App
-import io.realm.mongodb.AppConfiguration
-import io.realm.mongodb.Credentials
-import io.realm.mongodb.User
-import io.realm.mongodb.mongo.MongoClient
-import io.realm.mongodb.mongo.MongoCollection
-import io.realm.mongodb.mongo.MongoDatabase
-import kotlinx.android.synthetic.main.activity_register.*
-import kotlinx.android.synthetic.main.activity_register.btnRegister
-import kotlinx.android.synthetic.main.activity_register.edtEmail
-import kotlinx.android.synthetic.main.activity_register.edtPassword
+import com.example.suportstudy.activity.acount.LoginAndRegisterMainActivity
+import com.example.suportstudy.activity.course.CourseTypeActivity
+import com.example.suportstudy.model.Users
+import com.example.suportstudy.service.UserAPI
+import com.example.suportstudy.until.Constrain
+
 import kotlinx.android.synthetic.main.fragment_register.*
-import org.bson.Document
+import retrofit2.Response
+import java.util.regex.Matcher
 
 class RegisterFragment : Fragment() {
-
-    var mongoClient: MongoClient? = null
-    var mongoDatabase: MongoDatabase? = null
-    var mongoCollection: MongoCollection<Document>? = null
-    var user: User?=null
-    var isTutor=false
+    var isTutor = false
     var sd: SweetAlertDialog? = null
+
+    var isLogin = false
+    var sharedPreferences: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,91 +44,110 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-      var  view= inflater.inflate(R.layout.fragment_register, container, false)
-        val  btnRegister=view.findViewById<Button>(R.id.btnRegister)
-        val  txtHome=view.findViewById<TextView>(R.id.txtHome)
+        var view = inflater.inflate(R.layout.fragment_register, container, false)
+        Constrain.context=activity!!
+        val btnRegister = view.findViewById<Button>(R.id.btnRegister)
+        val txtHome = view.findViewById<TextView>(R.id.txtHome)
 
-        if(LoginAndRegisterMainActivity.isTutor==true){
-            isTutor=true
-        }else{
-            isTutor=false
+        if (LoginAndRegisterMainActivity.isTutor == true) {
+            isTutor = true
+        } else {
+            isTutor = false
         }
-        Until.showToast(activity!!,isTutor.toString())
+        val userAPI = Constrain.createRetrofit(UserAPI::class.java)
+        sharedPreferences = context!!.getSharedPreferences(
+            Constrain.SHARED_REF_USER,
+            Context.MODE_PRIVATE
+        )
         sd = SweetAlertDialog(activity, SweetAlertDialog.PROGRESS_TYPE)
-        sd!!.titleText ="Đang tạo tài khoản..."
+        sd!!.titleText = "Đang tạo tài khoản..."
         sd!!.setCancelable(false)
 
-//        var myintent=activity!!.intent
-//        isTutor=myintent.getBooleanExtra("isTutor", false)
-
-        Realm.init(activity)
-        val app = App(AppConfiguration.Builder(Until.appId).build())
 
         txtHome.setOnClickListener {
-            LoginAndRegisterMainActivity.isTutor=false
-            isTutor=false
-            Until.nextActivity(activity!!,MainActivity::class.java)
+            LoginAndRegisterMainActivity.isTutor = false
+            isTutor = false
+            Constrain.nextActivity(activity!!, MainActivity::class.java)
         }
 
         btnRegister.setOnClickListener {
-            sd!!.show()
-            var email=edtEmail.text.toString()
-            var name=edtName.text.toString()
-            var password=edtPassword.text.toString()
 
-            app.emailPassword.registerUserAsync(email, password) { r->
-                if (r.isSuccess) {
-                    var credentials= Credentials.emailPassword(email, password)
-                    sd!!.titleText ="Đang đăng nhập vào ứng dụng..."
-                    app.loginAsync(credentials) {
-                        if (it.isSuccess) {
-                            user = app.currentUser()!!
-                            mongoClient = user!!.getMongoClient("mongodb-atlas")
-                            mongoDatabase = mongoClient!!.getDatabase("SuportStudy")
-                            mongoCollection = mongoDatabase!!.getCollection("users")
-                            mongoCollection!!.insertOne(
-                                Document(
-                                    "uid", user!!.id
-                                )
-                                    .append("name",name )
-                                    .append("email", email)
-                                    .append("password", password)
-                                    .append("isTutor", isTutor)
-                            ).getAsync { rsul->
-                                if (rsul.isSuccess) {
-                                    sd!!.dismiss()
-                                    Log.v("Data", "Data Inserted Successfully")
-                                    Until.nextActivity(
-                                        activity!!,
-                                        HomeActivity::class.java
-                                    )
-                                    activity!!.finish()
-                                } else {
-                                    sd!!.dismiss()
-                                    Log.v("Data", "Error:" + rsul.error.toString())
-                                }
-                            }
-                        } else {
+            var email = edtEmail.text.toString()
+            var name = edtName.text.toString()
+            var password = edtPassword.text.toString()
+            val matcher: Matcher = Constrain.VALID_EMAIL_ADDRESS_REGEX.matcher(email)
+            if (name.equals("")) {
+                edtName.error = "Vui lòng nhập tên !"
+                edtName.setFocusable(true)
+            }
+            else if (name.length < 6) {
+                edtName.error = "Tên phải từ 6 kí tự !"
+                edtName.setFocusable(true)
+            }else if (email.equals("")) {
+                edtEmail.error = "Vui lòng nhập email !"
+                edtEmail.setFocusable(true)
+            } else if (!matcher.matches()) {
+                edtEmail.error = "Nhập đúng định dạng email !"
+                edtEmail.setFocusable(true)
+            }
+            else if (password.equals("")) {
+                edtPassword.error = "Vui lòng nhập mật khẩu !"
+                edtPassword.setFocusable(true)
+            } else if (password.length < 6) {
+                edtPassword.error = "Mật khẩu phải từ 6 kí tự !"
+                edtPassword.setFocusable(true)
+            }  else {
+                sd!!.show()
+
+                var pass=Constrain.encryption(password)
+                var call = userAPI.register(
+                    name,
+                    email,
+                    pass!!,
+                    "noImage",
+                    isTutor
+                )
+                call.enqueue(object : retrofit2.Callback<Users> {
+                    override fun onResponse(
+                        call: retrofit2.Call<Users>,
+                        response: Response<Users>
+                    ) {
+                        sd!!.titleText = "Đang đăng nhập vào ứng dụng..."
+                        if (response.isSuccessful) {
+                            var   users = response.body()!!
+                            var _id = users._id
+                            var name = users.name
+                            var email = users.name
+                            var image = users.image
+
+                            isLogin = true
+                            val editor = sharedPreferences!!.edit()
+                            editor.putString(Constrain.KEY_ID, _id)
+                            editor.putString(Constrain.KEY_NAME, name)
+                            editor.putString(Constrain.KEY_EMAIL, email)
+                            editor.putString(Constrain.KEY_IMAGE, image)
+                            editor.putBoolean(Constrain.KEY_LOGIN, isLogin)
+                            editor.putBoolean(Constrain.KEY_ISTUTOR, isTutor)
+                            editor.apply()
                             sd!!.dismiss()
-                            Until.showToast(activity!!, "Đăng nhập thất bại");
+                            Constrain.nextActivity(
+                                activity!!,
+                                CourseTypeActivity::class.java
+                            )
+                            activity!!.finish()
                         }
                     }
-                } else {
-                    sd!!.dismiss()
-                    Until.showToast(activity!!, "Lỗi ${r.error}")
-                }
+
+                    override fun onFailure(call: retrofit2.Call<Users>, t: Throwable) {
+                        sd!!.dismiss()
+                        Log.v("Data", "Error: " + t.message.toString())
+                    }
+                })
             }
+
+
         }
-//        btnBack.setOnClickListener {
-////            user?.logOutAsync {
-////                if (it.isSuccess) {
-////                    Log.v("AUTH", "Successfully logged out.")
-////                } else {
-////                    Log.e("AUTH", it.error.toString())
-////                }
-////            }
-//            Until.nextActivity(activity!!, LoginActivity::class.java)
-//        }
+
         return view
     }
 

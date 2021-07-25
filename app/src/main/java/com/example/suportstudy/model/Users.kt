@@ -1,9 +1,10 @@
 package com.example.suportstudy.model
 
 data class Users(
-    var id:String ,
+    var _id:String ,
     var name:String ,
+    var image:String ,
     var email:String,
     var password:String,
-    var isTutor :Boolean ,
+    var isTurtor :Boolean ,
 )

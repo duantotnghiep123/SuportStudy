@@ -1,6 +1,8 @@
 package com.example.suportstudy.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,56 +12,122 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.authencation.RegisterActivity
-import com.example.suportstudy.activity.chat.ChatActivity
-import com.example.suportstudy.activity.home.HomeActivity
-import com.example.suportstudy.until.Until
-import io.realm.Realm
-import io.realm.mongodb.App
-import io.realm.mongodb.AppConfiguration
-import io.realm.mongodb.Credentials
-import io.realm.mongodb.User
-import kotlinx.android.synthetic.main.activity_login.*
+import com.example.suportstudy.activity.ActionActivity
+import com.example.suportstudy.activity.course.CourseTypeActivity
+import com.example.suportstudy.model.Users
+import com.example.suportstudy.service.UserAPI
+import com.example.suportstudy.until.Constrain
+import kotlinx.android.synthetic.main.fragment_login.edtEmail
+import kotlinx.android.synthetic.main.fragment_login.edtPassword
+import retrofit2.Response
+import java.util.regex.Matcher
 
 class LoginFragment : Fragment() {
-    var sd: SweetAlertDialog? = null
+    @SuppressLint("UseRequireInsteadOfGet")
+    var sd:SweetAlertDialog?=null
+    var listUser: List<Users>?=null
+    var  checkLogin=false
+
+    var isLogin = false
+    var userAPI:UserAPI?=null
+    var sharedPreferences: SharedPreferences? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
         }
     }
+
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Constrain.context=activity!!
         // Inflate the layout for this fragment
-        var view= inflater.inflate(R.layout.fragment_login, container, false)
-        val btnLogin=view.findViewById<Button>(R.id.btnLogin)
-        Realm.init(activity)
-        val app = App(AppConfiguration.Builder(Until.appId).build())
+        var view = inflater.inflate(R.layout.fragment_login, container, false)
+        sharedPreferences = context!!.getSharedPreferences(
+            Constrain.SHARED_REF_USER,
+            Context.MODE_PRIVATE
+        )
+        val btnLogin = view.findViewById<Button>(R.id.btnLogin)
+         userAPI = Constrain.createRetrofit(UserAPI::class.java)
 
-        sd = SweetAlertDialog(activity, SweetAlertDialog.PROGRESS_TYPE)
-        sd!!.titleText ="Đang đăng nhập..."
-        sd!!.setCancelable(false)
+
+        sd=Constrain.sweetdialog(activity!!,"Đang đăng nhập")
 
         btnLogin.setOnClickListener {
-            sd!!.show()
-            var email=edtEmail.text.toString()
-            var password=edtPassword.text.toString()
-            var credentials= Credentials.emailPassword(email, password)
 
-            app.loginAsync(credentials) {
-                if (it.isSuccess) {
-                    Until.nextActivity(activity!!, HomeActivity::class.java)
-                } else {
-                    Until.showToast(activity!!,"Đăng nhập thất bại");
-                }
-                sd!!.dismiss()
+            var email = edtEmail.text.toString()
+            var password = edtPassword.text.toString()
+            val matcher: Matcher = Constrain.VALID_EMAIL_ADDRESS_REGEX.matcher(email)
+
+            if(email.equals("")){
+                Constrain.showToast("Vui lòng nhập email")
+                edtEmail.setFocusable(true)
+            }else if (!matcher.matches()) {
+                edtEmail.error = "Nhập đúng định dạng email !"
+                edtEmail.setFocusable(true)
+            }else if(password.equals("")){
+                Constrain.showToast("Vui lòng nhập mật khẩu")
+                edtPassword.setFocusable(true)
+            }else{
+               loginFuntion(email,password)
             }
         }
 
         return view
+    }
+
+    fun loginFuntion(email:String,password:String){
+        sd!!.show()
+        userAPI!!.getAllUsers()
+            .enqueue(object : retrofit2.Callback<List<Users>> {
+            override fun onResponse(
+                call: retrofit2.Call<List<Users>>,
+                response: Response<List<Users>>
+            ) {
+                if (response.isSuccessful) {
+                    listUser = response.body()
+                    for (i in listUser!!.indices) {
+                        var   _id=listUser!![i]._id
+                        var   name=listUser!![i].name
+                        var   image=listUser!![i].name
+                        var   userEmail=listUser!![i].email
+                        var  userPassword=Constrain.decryption(listUser!![i].password)
+                        var  istutor=listUser!![i].isTurtor
+                        if (userEmail.equals(email) && userPassword.equals(password)
+                        ) {
+                            checkLogin=true
+                            isLogin=true
+                            val editor = sharedPreferences!!.edit()
+                            editor.putString(Constrain.KEY_ID, _id)
+                            editor.putString(Constrain.KEY_NAME, name)
+                            editor.putString(Constrain.KEY_NAME, image)
+                            editor.putString(Constrain.KEY_EMAIL, userEmail)
+                            editor.putBoolean(Constrain.KEY_LOGIN, isLogin)
+                            editor.putBoolean(Constrain.KEY_ISTUTOR, istutor)
+                            editor.apply()
+                            break
+                        }
+                    }
+                    if(checkLogin==true){
+                        sd!!.dismiss()
+                        Constrain.nextActivity(activity!!,ActionActivity::class.java)
+                        activity!!.finish()
+                    }else{
+                        Constrain.showToast("Email hoặc mật khẩu không đúng")
+                        sd!!.dismiss()
+                    }
+
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<List<Users>>, t: Throwable) {
+                sd!!.dismiss()
+                Log.v("Data", "Error:" + t.message.toString())
+            }
+        })
     }
 
     companion object {
@@ -72,3 +140,6 @@ class LoginFragment : Fragment() {
             }
     }
 }
+
+
+

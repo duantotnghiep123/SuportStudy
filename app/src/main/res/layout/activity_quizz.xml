@@ -3,10 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:id="@+id/homeLayout"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
-    tools:context=".activity.QuizzActivity">
+    tools:context=".activity.quizz.QuizzActivity">
 
     <com.agrawalsuneet.dotsloader.loaders.LazyLoader
         android:id="@+id/myLoader"
