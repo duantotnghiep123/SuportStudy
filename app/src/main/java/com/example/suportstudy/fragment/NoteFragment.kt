@@ -35,7 +35,7 @@ class NoteFragment : Fragment() {
         var view=inflater.inflate(R.layout.fragment_note, container, false)
 
 
-        recyclerView = view.findViewById<RecyclerView>(R.id.rcvDocument)
+        recyclerView = view.findViewById(R.id.rcvDocument)
         list = ArrayList()
         for (i in 1..23) {
             list!!.add(Document("Bài $i", CourseDetailActivity.imageUrl))

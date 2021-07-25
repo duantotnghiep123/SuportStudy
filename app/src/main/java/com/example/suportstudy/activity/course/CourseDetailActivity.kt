@@ -123,7 +123,7 @@ class CourseDetailActivity : AppCompatActivity() {
         val btnTao = dialog!!.findViewById<Button>(R.id.btnTao)
         val edtName = dialog!!.findViewById<EditText>(R.id.edtName)
         val edtDecription = dialog!!.findViewById<EditText>(R.id.edtDecription)
-         ivGroup = dialog!!.findViewById<CircleImageView>(R.id.IVGroup)
+         ivGroup = dialog!!.findViewById(R.id.IVGroup)
 
         ivGroup!!.setOnClickListener {
             if (!Persmission.checkStoragePermission(context)) {

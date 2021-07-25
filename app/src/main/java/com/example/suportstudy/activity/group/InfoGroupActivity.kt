@@ -15,6 +15,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.extensions.gone
@@ -137,7 +138,7 @@ class InfoGroupActivity : AppCompatActivity() {
                                     response: Response<GroupCourse>
                                 ) {
                                     Constrain.showToast("Đã xóa nhóm")
-                                    Constrain.nextActivity(context,CourseTypeActivity::class.java)
+                                    Constrain.nextActivity(context,ActionActivity::class.java)
                                     finish()
                                 }
                                 override fun onFailure(call: Call<GroupCourse>, t: Throwable) {
@@ -169,7 +170,7 @@ class InfoGroupActivity : AppCompatActivity() {
                             response: Response<GroupCourse>
                         ) {
                             Constrain.showToast("Đã rời nhóm")
-                            Constrain.nextActivity(context,CourseTypeActivity::class.java)
+                            Constrain.nextActivity(context,ActionActivity::class.java)
                             finish()
                         }
 
