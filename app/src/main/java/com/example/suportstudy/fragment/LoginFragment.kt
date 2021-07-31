@@ -98,14 +98,15 @@ class LoginFragment : Fragment() {
                         ) {
                             checkLogin=true
                             isLogin=true
-
                             val editor = sharedPreferences!!.edit()
                             editor.putString(Constrain.KEY_ID, _id)
                             editor.putString(Constrain.KEY_NAME, name)
-                            editor.putString(Constrain.KEY_NAME, image)
+                            editor.putString(Constrain.KEY_IMAGE, image)
                             editor.putString(Constrain.KEY_EMAIL, userEmail)
                             editor.putBoolean(Constrain.KEY_LOGIN, isLogin)
-                            editor.putBoolean(Constrain.KEY_ISTUTOR, istutor)
+                            if (istutor != null) {
+                                editor.putBoolean(Constrain.KEY_ISTUTOR, istutor)
+                            }
                             editor.apply()
                             break
                         }

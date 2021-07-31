@@ -8,6 +8,8 @@ data class Like(
     var _id: String,
     @SerializedName("like")
     var like : Boolean,
+    @SerializedName("userId")
+    var userId: String,
     @SerializedName("postId")
     var postId: String,
     @SerializedName("createdAt")

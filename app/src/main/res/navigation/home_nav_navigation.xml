@@ -17,6 +17,13 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/newsFeedFragment_to_commentFragment"
+            app:destination="@id/commentFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -24,5 +31,11 @@
         android:name="com.example.suportstudy.fragment.addNewsFeed.AddNewsFeedFragment"
         android:label="AddNewsFeedFragment"
         tools:layout="@layout/fragment_add_news_feed" />
+
+    <fragment
+        android:id="@+id/commentFragment"
+        android:name="com.example.suportstudy.fragment.comment.CommentFragment"
+        android:label="AddNewsFeedFragment"
+        tools:layout="@layout/fragment_comment" />
 
 </navigation>

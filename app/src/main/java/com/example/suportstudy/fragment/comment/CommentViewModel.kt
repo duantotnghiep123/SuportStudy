@@ -1,12 +1,8 @@
-package com.example.suportstudy.fragment.addNewsFeed
+package com.example.suportstudy.fragment.comment
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.suportstudy.model.AddLike
 import com.example.suportstudy.model.AddNewsFeed
-import com.example.suportstudy.model.Like
-import com.example.suportstudy.model.NewsFeed
 import com.example.suportstudy.service.NewsFeedAPI
 import com.example.suportstudy.until.Constrain
 import kotlinx.coroutines.CoroutineScope
@@ -18,15 +14,15 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class AddsNewsFeedViewModel : ViewModel() {
+class CommentViewModel : ViewModel() {
 
     val postData = MutableLiveData<Boolean>()
-    val postLike = MutableLiveData<Boolean>()
 
     fun addNewsFeedWithImage(des: RequestBody?, userId: RequestBody??, image: MultipartBody.Part?){
         val newsFeedApi = Constrain.createRetrofit(NewsFeedAPI::class.java)
         CoroutineScope(Dispatchers.IO).launch {
-            newsFeedApi.createNewsFeedWithImage(des, userId, image).enqueue(object : Callback<AddNewsFeed> {
+            newsFeedApi.createNewsFeedWithImage(des, userId, image).enqueue(object :
+                Callback<AddNewsFeed> {
                 override fun onResponse(call: Call<AddNewsFeed>, response: Response<AddNewsFeed>) {
                     postData.postValue(true)
                 }
@@ -35,10 +31,6 @@ class AddsNewsFeedViewModel : ViewModel() {
                 }
             })
         }
-    }
-
-    fun addLike(like: Boolean, userId: String){
-
     }
 
 //    fun addNewsFeedNoImage(des: String, userId: String?, image: MultipartBody.Part?){

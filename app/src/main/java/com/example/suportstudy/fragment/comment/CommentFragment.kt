@@ -1,4 +1,4 @@
-package com.example.suportstudy.fragment.addNewsFeed
+package com.example.suportstudy.fragment.comment
 
 import android.Manifest
 import android.app.Activity
@@ -23,11 +23,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.course.CourseDetailActivity
 import com.example.suportstudy.extensions.onClick
 import com.example.suportstudy.extensions.pop
 import com.example.suportstudy.extensions.visible
-import com.example.suportstudy.model.GroupCourse
+import com.example.suportstudy.fragment.addNewsFeed.AddsNewsFeedViewModel
+import com.example.suportstudy.model.NewsFeed
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.until.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -35,13 +35,9 @@ import kotlinx.android.synthetic.main.fragment_add_news_feed.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
 
-
-class AddNewsFeedFragment : Fragment() {
+class CommentFragment : Fragment() {
 
     private var cameraPermission: Array<String>? = null
     private var storagePermission: Array<String>? = null
@@ -49,6 +45,9 @@ class AddNewsFeedFragment : Fragment() {
     var image_uri: Uri? = null
     var sharedPreferences: SharedPreferences? = null
 
+    private val newsFeed by lazy {
+        arguments?.getString("newsFeed")
+    }
     private val CAMERA_REQUEST_CODE = 200
     private val STORAGE_REQUEST_CODE = 300
     private val IMAGE_PICK_GALLERY_CODE = 400
@@ -61,6 +60,7 @@ class AddNewsFeedFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        initViewModel here
+        Log.d("son", "newsFeed $newsFeed")
         viewModel.postData.observe(this) {
             if (it) {
                 pop()
@@ -74,13 +74,14 @@ class AddNewsFeedFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view =inflater.inflate(R.layout.fragment_add_news_feed, container, false)
+        var view =inflater.inflate(R.layout.fragment_comment, container, false)
         return view
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         cameraPermission = arrayOf(
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -103,19 +104,19 @@ class AddNewsFeedFragment : Fragment() {
 //            if (des == ""){
 //                Constrain.showToast("Vui lòng không để trống")
 //            }else{
-                if (image_uri == null){
-                    Log.d("son", "vaoroi")
+            if (image_uri == null){
+                Log.d("son", "vaoroi")
 //                        viewModel.addNewsFeedNoImage(des, userId)
-                }else{
-                    Log.d("son", "vaoroi $des")
-                    var file = File(part_image)
-                    var userId =   RequestBody.create(MediaType.parse("multipart/form_data"), userId)
-                    var des =   RequestBody.create(MediaType.parse("multipart/form_data"), des)
-                    val reqFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
-                    val image = MultipartBody.Part.createFormData("post", file.getName(), reqFile)
-                    viewModel.addNewsFeedWithImage(des, userId, image)
-                }
+            }else{
+                Log.d("son", "vaoroi $des")
+                var file = File(part_image)
+                var userId =   RequestBody.create(MediaType.parse("multipart/form_data"), userId)
+                var des =   RequestBody.create(MediaType.parse("multipart/form_data"), des)
+                val reqFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
+                val image = MultipartBody.Part.createFormData("post", file.getName(), reqFile)
+                viewModel.addNewsFeedWithImage(des, userId, image)
             }
+        }
 
 //        }
     }

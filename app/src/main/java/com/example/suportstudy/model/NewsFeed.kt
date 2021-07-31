@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class NewsFeed (
     @SerializedName("_id")
     val _id: String,
-    @SerializedName("title")
-    val title: String,
+    @SerializedName("userId")
+    val userId: Users,
     @SerializedName("description")
     val description: String,
     @SerializedName("image")

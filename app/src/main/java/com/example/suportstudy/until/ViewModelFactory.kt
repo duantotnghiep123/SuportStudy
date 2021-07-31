@@ -3,6 +3,7 @@ package com.example.suportstudy.until
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.suportstudy.fragment.addNewsFeed.AddsNewsFeedViewModel
 import com.example.suportstudy.fragment.newsfeed.NewsFeedViewModel
 
 
@@ -13,6 +14,7 @@ class ViewModelFactory(val context: Context) : ViewModelProvider.NewInstanceFact
         with(modelClass) {
             when {
                 isAssignableFrom(NewsFeedViewModel::class.java) -> NewsFeedViewModel()
+                isAssignableFrom(AddsNewsFeedViewModel::class.java) -> AddsNewsFeedViewModel()
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }
