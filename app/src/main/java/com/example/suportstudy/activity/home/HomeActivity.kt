@@ -1,14 +1,17 @@
 package com.example.suportstudy.activity.home
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.HomeNavActivity
 import com.example.suportstudy.fragment.ChatContainerFragment
-import com.example.suportstudy.fragment.NoteFragment
 import com.example.suportstudy.fragment.HomeFragment
+import com.example.suportstudy.fragment.NoteFragment
 import kotlinx.android.synthetic.main.activity_home.*
+
 
 class HomeActivity : AppCompatActivity() {
 
@@ -36,8 +39,10 @@ class HomeActivity : AppCompatActivity() {
             active = fragmentChat
         }
         btnHome.setOnClickListener {
-            fm.beginTransaction().hide(active).show(fragmentHome).commit()
-            active = fragmentHome
+//            fm.beginTransaction().hide(active).show(fragmentHome).commit()
+//            active = fragmentHome
+            val intent = Intent(this, HomeNavActivity::class.java)
+            startActivity(intent)
         }
 
 

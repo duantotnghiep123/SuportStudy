@@ -1,6 +1,5 @@
 package com.example.suportstudy.until
 
-import a.b.a.K
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
@@ -21,10 +20,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
 import com.example.suportstudy.model.Question
+import com.example.suportstudy.model.Users
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
@@ -41,10 +40,11 @@ import java.util.regex.Pattern
 object Constrain {
 
     //    var baseUrl="http://192.168.3.107:10000"
-    var baseUrl = "http://192.168.1.10:3000"
+    var baseUrl = "http://192.168.1.5:3000"
     var firebaseUrl="https://suportstudy-72e5e-default-rtdb.firebaseio.com/"
 //    var baseUrl="http://172.20.10.3:10000"
 
+    var sharedPreferences: SharedPreferences? = null
     var SHARED_REF_USER: String? = "savestatuslogin"
     var KEY_ID = "_id"
     var KEY_NAME = "name"
@@ -52,7 +52,6 @@ object Constrain {
     var KEY_EMAIL = "email"
     var KEY_LOGIN = "islogin"
     var KEY_ISTUTOR = "isTutor"
-
     var context:Context?=null
 
 
@@ -185,8 +184,8 @@ object Constrain {
             null
         }
     }
-    fun subPathImage(typePath:String,imageUrl:String):String{
-        var path = baseUrl + "/${typePath}/" + imageUrl!!.substring(imageUrl.lastIndexOf("/")+1)
+    fun subPathImage(typePath: String, imageUrl: String):String{
+        var path = baseUrl + "/${typePath}/" + imageUrl!!.substring(imageUrl.lastIndexOf("/") + 1)
         return path
     }
     val HASHKEY="com.example.suportstudy"

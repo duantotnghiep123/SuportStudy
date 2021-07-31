@@ -25,6 +25,8 @@
                 android:drawablePadding="10dp"
                 android:paddingLeft="10dp"
                 android:textSize="15dp"
+                android:inputType="textEmailAddress"
+                android:lines="1"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"/>
 
@@ -59,6 +61,7 @@
                 android:layout_marginBottom="5dp"
                 android:paddingLeft="10dp"
                 android:textSize="15dp"
+                android:lines="1"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"/>
         </com.google.android.material.textfield.TextInputLayout>

@@ -1,34 +1,40 @@
 package com.example.suportstudy.adapter
 
-import android.accounts.AccountManager.get
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
-import android.text.format.DateFormat
+import android.content.SharedPreferences
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
-import com.example.suportstudy.model.Document
-import com.example.suportstudy.model.NewsFeed
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
+import com.example.suportstudy.extensions.*
+import com.example.suportstudy.fragment.comment.CommentFragment
+import com.example.suportstudy.model.*
+import com.example.suportstudy.service.NewsFeedAPI
+import com.example.suportstudy.until.Constrain
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.row_post.view.*
-import okhttp3.HttpUrl.get
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 
-class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>,  var layout: Int) :
+class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var layout: Int, var userLocal: Users ) :
     RecyclerView.Adapter<NewsFeedAdapter.ViewHolder>() {
     var sd: SweetAlertDialog? = null
 
+    var sharedPreferences: SharedPreferences? = null
+    var checkLike = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(layout, parent, false)
@@ -37,148 +43,76 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>,  var 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val modelPost: NewsFeed = list!![position]
-        val uid: String = modelPost.uId
-        val id: String = modelPost.id
+//        val uid: String = modelPost.userId._id
+        val id: String = modelPost._id
         val description: String = modelPost.description
-        val coursesId: String = modelPost.coursesId
-        val time: String = modelPost.time
-        val title: String = modelPost.title
-        val type: String = modelPost.type
+        val coursesId: String = modelPost.typeClassId
+        val time: String = modelPost.createdAt
+        val user: Users = modelPost.userId
+        val type: String = modelPost.image
+        var comment: Int = modelPost.comment!!.size
+        var like = modelPost.like!!.size
         if (layout == R.layout.row_post) {
             sd = SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE)
             sd!!.titleText = "Loading"
             sd!!.setCancelable(true)
-//            val calendar = Calendar.getInstance()
-//            calendar.timeInMillis = time.toLong()
-//            val pTime = DateFormat.format("dd/MM/yyyy  hh:mm aa", calendar).toString()
-            holder.uNameTv.text = modelPost.title
-            holder.pTimeTv.text = modelPost.time
-            holder.pDescriptionTv.text = modelPost.description
-            Picasso.with(context).load(modelPost.type).into(holder.pImageIv)
-//            holder.pImageIv.setImageURI(Uri.parse("https://niithanoi.edu.vn/pic/News/images/tin-tuc-cong-nghe-va-lap-trinh/kotlin-vs-java.jpg"))
+            if (user != null){
+                holder.uNameTv.text = user.name
+            }
 
-//            setLiked(modelPost.getpId(), holder.likeIv);
-//            setLikes(holder, id)
-//            setTextCoutLike(holder.pLikeTv, modelPost.getpId())
-//            setCommentCount(modelPost.getpId(), holder.pCommentTv)
-//            try {
-//                if (uAvatar != "") {
-//                    Picasso.with(context).load(uAvatar).placeholder(R.drawable.avatar_default)
-//                        .into(holder.uPictureIv)
-//                } else {
-//                    holder.uPictureIv.setImageResource(R.drawable.avatar_default)
-//                }
-//            } catch (e: Exception) {
-//                holder.uPictureIv.setImageResource(R.drawable.avatar_default)
-//            }
-//            // nếu status không hình thì sẽ ấn imageview , ngược lại hiện
-//            if (pImage == "noImage") {
-//                holder.pImageIv.visibility = View.GONE
-//            } else {
-//                try {
-//
-//                    Picasso.with(context).load(pImage).placeholder(R.drawable.ic_gallery_grey)
-//                        .into(holder.pImageIv)
-//                } catch (e: Exception) {
-//                    holder.pImageIv.setImageResource(R.drawable.ic_gallery_grey)
-//                }
-//            }
-//            holder.commentBtn.setOnClickListener {
-//                val intent = Intent(context, PostDetailActivity::class.java)
-//                intent.putExtra(
-//                    "postId",
-//                    pId
-//                ) // truyền bài đăng có id này qua PostDetailactivity để show dữu liệu của bài viết này
-//                intent.putExtra(
-//                    "count",
-//                    com.example.italkapp.adapter.AdapterPost.count
-//                ) // truyền bài đăng có id này qua PostDetailactivity để show dữu liệu của bài viết này
-//                context!!.startActivity(intent)
-//            }
-//            holder.seenByLikeBtn.setOnClickListener {
-//                val intent = Intent(context, PostLikeByActivity::class.java)
-//                intent.putExtra("postId", pId)
-//                context!!.startActivity(intent)
-//            }
-//            holder.likeBtn.setOnClickListener {
-//                checkLike = true
-//                val postId: String = postsList!![position].getpId()
-//                postsRef.addListenerForSingleValueEvent(object : ValueEventListener {
-//                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                        if (checkLike) {
-//                            if (dataSnapshot.child(postId).child("Likes").hasChild(myUid)) {
-//                                postsRef.child(postId).child("Likes").child(myUid).removeValue()
-//                                checkLike = false
-//                            } else {
-//                                postsRef.child(postId).child("Likes").child(myUid).setValue(true)
-//                                com.example.italkapp.adapter.AdapterPost.count++
-//                                addToNotifications(uid, pId, "like")
-//                                checkLike = false
-//                            }
-//                        }
-//                    }
-//
-//                    override fun onCancelled(databaseError: DatabaseError) {}
-//                })
-//            }
-//            // chuyển màn hình qua profile đã đăng post đã click
-//            holder.profileLayout.setOnClickListener { v ->
-//                // nếu là mã id trong bài đăng là của user đang đăng nhập thì chuyển qua profile chính user đó ngược lại chuyển qua progile user khác
-//                if (myUid == uid) {
-//                    val activity = v.context as AppCompatActivity
-//                    val profileFragment = ProfileFragment()
-//                    val bundle = Bundle()
-//                    //                    bundle.putString("linktrang2", postsList.get(position).getpId());
-//                    profileFragment.setArguments(bundle)
-//                    activity.supportFragmentManager
-//                        .beginTransaction()
-//                        .replace(R.id.frame_container, profileFragment)
-//                        .addToBackStack(null)
-//                        .commit()
-//                } else {
-//                    val intent = Intent(context, HisProfileActivity::class.java)
-//                    intent.putExtra("hisUid", uid)
-//                    context!!.startActivity(intent)
-//                }
-//            }
-//            holder.moreBtn.setOnClickListener {
-//                showMoreOption(
-//                    holder.moreBtn,
-//                    uid,
-//                    myUid,
-//                    pId,
-//                    pDescription,
-//                    pImage
-//                )
-//            }
-//            holder.pImageIv.setOnLongClickListener {
-//                showOptionImage(modelPost.getpImage())
-//                //                    showDialogDownLoadImage(modelPost.getpImage());
-//                false
-//            }
-//        }
-//        if (layout == R.layout.row_post_recent) {
-//            modelPost.getuName().trim()
-//            val name: Array<String> = modelPost.getuName().split("\\s+")
-//            holder.uNameTv.text = name[name.size - 1]
-//            try {
-//                Picasso.with(context).load(pImage).placeholder(R.drawable.ic_gallery_grey)
-//                    .into(holder.pImageIv)
-//            } catch (e: Exception) {
-//                holder.pImageIv.setImageResource(R.drawable.ic_gallery_grey)
-//            }
-//            holder.itemView.setOnClickListener {
-//                val intent = Intent(context, PostDetailActivity::class.java)
-//                intent.putExtra(
-//                    "postId",
-//                    pId
-//                ) // truyền bài đăng có id này qua PostDetailactivity để show dữu liệu của bài viết này
-//                intent.putExtra(
-//                    "count",
-//                    com.example.italkapp.adapter.AdapterPost.count
-//                ) // truyền bài đăng có id này qua PostDetailactivity để show dữu liệu của bài viết này
-//                context!!.startActivity(intent)
-//            }
+            holder.pTimeTv.text = modelPost.createdAt
+            holder.pDescriptionTv.text = modelPost.description
+            holder.pLikeTv.text = like.toString()
+            holder.pCommentTv.text = comment.toString() + " Comment"
+            var pathImageUrl=""
+            pathImageUrl = Constrain.baseUrl + "/post/" + modelPost.image.substring(26)
+            Picasso.with(context).load(pathImageUrl).into(holder.pImageIv)
+
+            fun getLikeByUserId(userId: String): Boolean {
+                if (modelPost.like.isEmpty()) {
+                    return false
+                }
+                modelPost.like.forEach {
+                    if (it.userId?.equals(userId)) {
+                        return true
+                    }
+                }
+                return false
+            }
+            if (getLikeByUserId(userLocal._id)) {
+                holder.likeIv.setImageResource(R.drawable.ic_liked)
+            }
+
+            holder.likeIv.onClick {
+                holder.likeIv.disable()
+                checkLike = false
+                if (checkLike) {
+
+                }else{
+                    like++
+                    holder.likeIv.setImageResource(R.drawable.ic_liked)
+                    holder.pLikeTv.text = like.toString()
+                    val newsFeedApi = Constrain.createRetrofit(NewsFeedAPI::class.java)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        newsFeedApi.addLike(true, userLocal._id, modelPost._id).enqueue(object : Callback<AddLike> {
+                            override fun onResponse(call: Call<AddLike>, response: Response<AddLike>) {
+//                                holder.likeIv.enable()
+                                Log.d("son", "like thanh cong")
+                            }
+                            override fun onFailure(call: Call<AddLike>, t: Throwable) {
+//                                holder.likeIv.enable()
+//                                like--
+//                                holder.likeIv.setImageResource(R.drawable.ic_like)
+//                                holder.pLikeTv.text = like.toString()
+//                                Log.d("son", "like that bai")
+                            }
+                        })
+                    }
+                }
+            }
+            holder.commentBtn.onClick {
+                val fragment: Fragment = CommentFragment()
+            }
         }
     }
 
