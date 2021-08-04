@@ -21,12 +21,16 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseDetailActivity
+import com.example.suportstudy.activity.home.HomeActivity
 import com.example.suportstudy.extensions.onClick
 import com.example.suportstudy.extensions.pop
 import com.example.suportstudy.extensions.visible
+import com.example.suportstudy.fragment.newsfeed.NewsFeedFragment
 import com.example.suportstudy.model.GroupCourse
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.until.ViewModelFactory
@@ -100,13 +104,14 @@ class AddNewsFeedFragment : Fragment() {
             )
             val userId = sharedPreferences?.getString(Constrain.KEY_ID, "")
             var des = pDescription.text.toString()
-//            if (des == ""){
-//                Constrain.showToast("Vui lòng không để trống")
-//            }else{
-                if (image_uri == null){
+            if (des == ""){
+                Constrain.showToast("Vui lòng không để trống")
+            }
+            else {
+                if (image_uri == null) {
                     Log.d("son", "vaoroi")
 //                        viewModel.addNewsFeedNoImage(des, userId)
-                }else{
+                }else {
                     Log.d("son", "vaoroi $des")
                     var file = File(part_image)
                     var userId =   RequestBody.create(MediaType.parse("multipart/form_data"), userId)
@@ -116,8 +121,7 @@ class AddNewsFeedFragment : Fragment() {
                     viewModel.addNewsFeedWithImage(des, userId, image)
                 }
             }
-
-//        }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

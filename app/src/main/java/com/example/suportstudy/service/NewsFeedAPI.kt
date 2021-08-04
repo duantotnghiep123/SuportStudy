@@ -1,10 +1,7 @@
 package com.example.suportstudy.service
 
 import com.example.suportstudy.fragment.newsfeed.NewsFeedResponse
-import com.example.suportstudy.model.AddLike
-import com.example.suportstudy.model.AddNewsFeed
-import com.example.suportstudy.model.GroupCourse
-import com.example.suportstudy.model.NewsFeed
+import com.example.suportstudy.model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -29,6 +26,14 @@ interface NewsFeedAPI {
         @Field("userId") userId: String,
         @Field("postId") postId: String,
     ): Call<AddLike>
+
+    @POST("/api/newsfeed/addComment")
+    @FormUrlEncoded
+    fun addComment(
+        @Field("content") content: String,
+        @Field("userId") userId: String,
+        @Field("postId") postId: String,
+    ): Call<Comment>
 
     @Multipart
     @POST("/api/newsfeed/")

@@ -9,7 +9,10 @@ import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.example.italkapp.adapter.ChatContainerAdapter
 import com.example.suportstudy.R
+import com.example.suportstudy.extensions.onClick
+import com.example.suportstudy.extensions.push
 import com.google.android.material.tabs.TabLayout
+import kotlinx.android.synthetic.main.bottom_navigation.*
 
 
 class ChatContainerFragment : Fragment() {
@@ -60,5 +63,15 @@ class ChatContainerFragment : Fragment() {
 
                 }
             }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        btnDocument.onClick {
+            push(R.id.action_chatFragment_to_noteFragment)
+        }
+        btnHome.onClick {
+            push(R.id.action_chatFragment_to_newsFeedFragment)
+        }
     }
 }

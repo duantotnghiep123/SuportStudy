@@ -7,20 +7,23 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
+import com.example.suportstudy.adapter.LikeAdapter
 import com.example.suportstudy.adapter.NewsFeedAdapter
 import com.example.suportstudy.extensions.gone
 import com.example.suportstudy.extensions.onClick
 import com.example.suportstudy.extensions.push
+import com.example.suportstudy.fragment.addNewsFeed.AddNewsFeedFragment
 import com.example.suportstudy.model.NewsFeed
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.until.ViewModelFactory
-import io.realm.mongodb.User
+import kotlinx.android.synthetic.main.bottom_navigation.*
 import kotlinx.android.synthetic.main.fragment_news_feed.*
 import kotlinx.android.synthetic.main.fragment_news_feed.view.*
 
@@ -28,8 +31,10 @@ import kotlinx.android.synthetic.main.fragment_news_feed.view.*
 class NewsFeedFragment : Fragment() {
     var recyclerView: RecyclerView? = null
     var newsFeedAdapter: NewsFeedAdapter? =null
+    var likeAdapter: LikeAdapter? =null
     var list = ArrayList<NewsFeed>()
     var sharedPreferences: SharedPreferences? = null
+
     private val viewModel by viewModels<NewsFeedViewModel> {
         ViewModelFactory(requireContext())
     }
@@ -71,12 +76,19 @@ class NewsFeedFragment : Fragment() {
             statusBtn.gone()
         }
         statusBtn.onClick {
-            push(R.id.newsFeedFragment_to_addNewsFeedFragment)
+            push(R.id.action_newsFeedFragment_to_addNewsFeedFragment)
+        }
+        btnChat.onClick {
+            push(R.id.action_newsFeedFragment_to_chatFragment)
+        }
+        btnDocument.onClick {
+            push(R.id.action_newsFeedFragment_to_noteFragment)
         }
     }
 
     override fun onResume() {
         super.onResume()
+        Log.d("son", "resume")
         viewModel.getAllProducts()
     }
 }

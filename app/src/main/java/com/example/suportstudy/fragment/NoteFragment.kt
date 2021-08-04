@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseDetailActivity
 import com.example.suportstudy.adapter.DocumentAdapter
+import com.example.suportstudy.extensions.onClick
+import com.example.suportstudy.extensions.push
 import com.example.suportstudy.model.Document
+import kotlinx.android.synthetic.main.bottom_navigation.*
 import kotlin.collections.ArrayList
 
 
@@ -43,6 +46,16 @@ class NoteFragment : Fragment() {
         documentAdapter = DocumentAdapter(activity!!, list!!)
         recyclerView!!.adapter = documentAdapter
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        btnChat.onClick {
+            push(R.id.action_noteFragment_to_chatFragment)
+        }
+        btnHome.onClick {
+            push(R.id.action_noteFragment_to_newsFeedFragment)
+        }
     }
 
     companion object {

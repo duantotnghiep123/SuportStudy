@@ -167,6 +167,7 @@ class ProfileActivity : AppCompatActivity() {
                 name = listUser!![i].name
                 password = Constrain.decryption(listUser!![i].password)!!
             }
+            sharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
             val editor = sharedPreferences!!.edit()
             editor.putString(Constrain.KEY_IMAGE, imgUrl)
             editor.putString(Constrain.KEY_NAME, name)
@@ -197,6 +198,7 @@ class ProfileActivity : AppCompatActivity() {
                         override fun onResponse(call: Call<Users>, response: Response<Users>) {
                             if (response.isSuccessful) {
                                 Constrain.showToast( "Đổi thành công")
+                                sharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
                                 val editor = sharedPreferences!!.edit()
                                 editor.putString(Constrain.KEY_NAME, name)
                                 editor.commit()
