@@ -26,25 +26,17 @@
             app:tint="@color/greynhat2" />
 
         <TextView
+            android:textSize="18dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
-            android:text="NEWS FEED"
-            android:textColor="@color/blackNhat2"
-            android:textSize="27dp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/actionIv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/ic_search"
-            app:tint="@color/blackNhat" />
+            android:text="Bài viết"
+             />
 
         <View
             android:layout_width="match_parent"
@@ -81,6 +73,7 @@
     </com.facebook.shimmer.ShimmerFrameLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:paddingBottom="56dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar">
@@ -214,12 +207,9 @@
                     shimmer:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/row_post" />
             </LinearLayout>
-
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
-
-<!--        <include-->
-<!--        android:id="@+id/layoutLogo"-->
-<!--        layout="@layout/bottom_navigation" />-->
-
+    <include
+        android:id="@+id/layoutBottom"
+        layout="@layout/bottom_navigation" />
 </RelativeLayout>

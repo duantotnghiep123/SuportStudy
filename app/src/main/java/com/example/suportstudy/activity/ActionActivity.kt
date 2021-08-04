@@ -85,7 +85,7 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
         getReference()
         initViewData()
         btnDisscus.setOnClickListener {
-            Constrain.nextActivity(context, HomeActivity::class.java)
+            Constrain.nextActivity(context, HomeNavActivity::class.java)
         }
 
         btnTopic.setOnClickListener {
@@ -95,6 +95,7 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
         avatarIv!!.setOnClickListener {
             Constrain.nextActivity(context, ProfileActivity::class.java)
         }
+        txtName.text = name
     }
 
     private fun initViewData() {

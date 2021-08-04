@@ -6,8 +6,10 @@ data class Comment(
     @SerializedName("_id")
     var _id: String,
     @SerializedName("userId")
-    var userId : Users,
+    var userId : String,
     @SerializedName("content")
     var content: String,
+    @SerializedName("createdAt")
+    var createdAt: String,
 
 )

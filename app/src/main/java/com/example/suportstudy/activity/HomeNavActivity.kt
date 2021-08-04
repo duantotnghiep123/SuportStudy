@@ -8,6 +8,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph
 import androidx.navigation.fragment.NavHostFragment
 import com.example.suportstudy.R
+import com.example.suportstudy.extensions.onClick
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_home_nav.*
 
 class HomeNavActivity : AppCompatActivity(){

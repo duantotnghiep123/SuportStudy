@@ -2,6 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_toobar"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <RelativeLayout
@@ -39,15 +40,16 @@
 
             <TextView
                 android:id="@+id/pubLishPostBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
                 android:text="Đăng"
-                android:textColor="@color/blackNhat"
                 android:textSize="18dp"
-                android:textStyle="bold" />
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </RelativeLayout>
 
         <ImageView

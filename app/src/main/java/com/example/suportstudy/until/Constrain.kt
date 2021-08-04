@@ -23,7 +23,6 @@ import android.widget.Toast
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
 import com.example.suportstudy.model.Question
-import com.example.suportstudy.model.Users
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
@@ -94,6 +93,11 @@ object Constrain {
         sd!!.titleText = title
         sd!!.setCancelable(false)
         return sd
+    }
+
+    fun formatDate(date: String) : String{
+        var dateOut = date.substring(11,19) + " " + date.substring(8,10) + "-" + date.substring(5,7) + "-" + date.substring(0,4)
+        return dateOut
     }
 
 

@@ -11,15 +11,22 @@
         android:label="NewsFeedFragment"
         tools:layout="@layout/fragment_news_feed">
         <action
-            android:id="@+id/newsFeedFragment_to_addNewsFeedFragment"
+            android:id="@+id/action_newsFeedFragment_to_addNewsFeedFragment"
             app:destination="@id/addNewsFeedFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/newsFeedFragment_to_commentFragment"
-            app:destination="@id/commentFragment"
+            android:id="@+id/action_newsFeedFragment_to_chatFragment"
+            app:destination="@id/chatFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_newsFeedFragment_to_noteFragment"
+            app:destination="@id/noteFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -30,12 +37,57 @@
         android:id="@+id/addNewsFeedFragment"
         android:name="com.example.suportstudy.fragment.addNewsFeed.AddNewsFeedFragment"
         android:label="AddNewsFeedFragment"
-        tools:layout="@layout/fragment_add_news_feed" />
+        tools:layout="@layout/fragment_add_news_feed" >
+        <action
+            android:id="@+id/action_addNewsFeedFragment_to_newsFeedFragment"
+            app:destination="@id/newsFeedFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
 
     <fragment
-        android:id="@+id/commentFragment"
-        android:name="com.example.suportstudy.fragment.comment.CommentFragment"
-        android:label="AddNewsFeedFragment"
-        tools:layout="@layout/fragment_comment" />
+        android:id="@+id/chatFragment"
+        android:name="com.example.suportstudy.fragment.ChatContainerFragment"
+        android:label="ChatFragment"
+        tools:layout="@layout/fragment_chat_container" >
+        <action
+            android:id="@+id/action_chatFragment_to_newsFeedFragment"
+            app:destination="@id/newsFeedFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
+            android:id="@+id/action_chatFragment_to_noteFragment"
+            app:destination="@id/noteFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/noteFragment"
+        android:name="com.example.suportstudy.fragment.NoteFragment"
+        android:label="NoteFragment"
+        tools:layout="@layout/fragment_note" >
+        <action
+            android:id="@+id/action_noteFragment_to_newsFeedFragment"
+            app:destination="@id/newsFeedFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
+            android:id="@+id/action_noteFragment_to_chatFragment"
+            app:destination="@id/chatFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
+
 
 </navigation>
