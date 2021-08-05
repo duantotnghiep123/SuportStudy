@@ -10,13 +10,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.suportstudy.R
 import com.example.suportstudy.adapter.NoteAdapter
+import com.example.suportstudy.databinding.FragmentGroupNoteBinding
 import com.example.suportstudy.databinding.FragmentSelfNoteBinding
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.viewmodel.NoteViewModel
 
 class GroupNoteFragment : Fragment() {
     private lateinit var viewModel: NoteViewModel
-    private lateinit var binding: FragmentSelfNoteBinding
+    private lateinit var binding: FragmentGroupNoteBinding
     private var noteAdapter = NoteAdapter()
     private lateinit var myUid: String
 
@@ -31,16 +32,24 @@ class GroupNoteFragment : Fragment() {
         // Inflate the layout for this fragment
         viewModel =
             ViewModelProvider(this).get(NoteViewModel::class.java)
-        binding = FragmentSelfNoteBinding.inflate(inflater, container, false)
+        binding = FragmentGroupNoteBinding.inflate(inflater, container, false)
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        getNote()
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
         subscribeUI()
         getNote()
         setDataToNoteRecyclerView()
+        binding.swRefresh.setOnRefreshListener {
+            binding.swRefresh.isRefreshing = false
+            getNote()
+        }
     }
     companion object {
 
