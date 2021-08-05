@@ -71,7 +71,7 @@
                 android:layout_height="28dp"
                 android:src="@drawable/ic_book" />
             <TextView
-                android:text="Tài liệu"
+                android:text="Ghi chú"
                 android:textSize="14dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

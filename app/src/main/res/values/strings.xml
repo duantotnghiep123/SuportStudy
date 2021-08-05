@@ -18,6 +18,8 @@
     <string name="connected">Đã kết nối</string>
     <string name="busy">Người dùng đang bận</string>
     <string name="end_call">Kết thúc cuộc gọi</string>
+
+    <string name="btn_ok">OK</string>
     <string name="Please_enable_gallery_permissions">Vui lòng bật quyền thư viện</string>
     <string name="Please_enable_camera_permissions">Vui lòng bật quyền camera</string>
 </resources>

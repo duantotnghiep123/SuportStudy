@@ -23,11 +23,15 @@ import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
 import java.util.*
 
-class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :RecyclerView.Adapter<GroupChatAdapter.MyViewHolder>() {
+class GroupChatAdapter(
+    var context: Context,
+    var chatList: List<GroupChat>,
+    private val listener: IItemClickedListener
+) : RecyclerView.Adapter<GroupChatAdapter.MyViewHolder>() {
     private val MSG_TYPE_LEFT = 0
     private val MSG_TYPE_RIGHT = 1
 
-    inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
+    inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var profileIv: ImageView? = null
         var messageIv: ImageView? = null
         var messageTv: TextView? = null
@@ -45,6 +49,7 @@ class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :Rec
         }
 
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
 
         if (viewType == MSG_TYPE_RIGHT) {
@@ -55,8 +60,9 @@ class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :Rec
             return MyViewHolder(view)
         }
     }
+
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        Constrain.context=context
+        Constrain.context = context
         val message: String = chatList.get(position).message!!
         val timeStamp: String = chatList.get(position).timeSend!!
         val type: String = chatList.get(position).typeMessage!!
@@ -80,13 +86,13 @@ class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :Rec
         holder.timeTv!!.text = dateTime
 
         holder.itemView.setOnClickListener {
-            var dialog= Constrain.createDialog(context, R.layout.dialog_confirm)
-            var confirmTv=dialog.findViewById<TextView>(R.id.messagCfTv)
-            var huyBtn=dialog.findViewById<LinearLayout>(R.id.cancelBtn)
-            var dongYBtn=dialog.findViewById<LinearLayout>(R.id.dongyBtn)
+            var dialog = Constrain.createDialog(context, R.layout.dialog_confirm)
+            var confirmTv = dialog.findViewById<TextView>(R.id.messagCfTv)
+            var huyBtn = dialog.findViewById<LinearLayout>(R.id.cancelBtn)
+            var dongYBtn = dialog.findViewById<LinearLayout>(R.id.dongyBtn)
             confirmTv.setText("Bạn có muốn xóa tin nhắn ?")
             dongYBtn.setOnClickListener {
-                deleteMessage(chatList[position].groupId!!,chatList[position]._id)
+                deleteMessage(chatList[position].groupId!!, chatList[position]._id)
                 dialog.dismiss()
             }
             huyBtn.setOnClickListener {
@@ -94,16 +100,20 @@ class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :Rec
             }
             dialog.show()
         }
-
+        holder.itemView.setOnLongClickListener {
+            listener.onItemLongClick(message)
+            false
+        }
     }
 
-    private fun deleteMessage(groupId:String,_id: String?) {
-        var  userSharedPreferences = context.getSharedPreferences(Constrain.SHARED_REF_USER,
+    private fun deleteMessage(groupId: String, _id: String?) {
+        var userSharedPreferences = context.getSharedPreferences(
+            Constrain.SHARED_REF_USER,
             AppCompatActivity.MODE_PRIVATE
         )
         var uid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")
-        var chatRef= Constrain.initFirebase("GroupChats")
-        val query: Query =chatRef.child(groupId).child("Message").orderByChild("_id")
+        var chatRef = Constrain.initFirebase("GroupChats")
+        val query: Query = chatRef.child(groupId).child("Message").orderByChild("_id")
             .equalTo(_id)
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -126,7 +136,6 @@ class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :Rec
         })
 
 
-
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -138,9 +147,12 @@ class GroupChatAdapter(var context: Context, var chatList: List<GroupChat>) :Rec
         }
 
     }
+
     override fun getItemCount(): Int {
         return chatList.size
     }
 
-
+    interface IItemClickedListener {
+        fun onItemLongClick(content: String)
+    }
 }
