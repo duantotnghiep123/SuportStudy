@@ -43,7 +43,7 @@ import java.util.regex.Pattern
 object Constrain {
 
     //    var baseUrl="http://192.168.3.107:10000"
-    var baseUrl = "http://192.168.1.7:3000"
+    var baseUrl = "http://192.168.10.28:3000"
     var firebaseUrl="https://suportstudy-72e5e-default-rtdb.firebaseio.com/"
 //    var baseUrl="http://172.20.10.3:10000"
 

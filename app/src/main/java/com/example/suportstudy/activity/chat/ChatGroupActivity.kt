@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.android.volley.AuthFailureError
@@ -18,12 +20,14 @@ import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.group.InfoGroupActivity
 import com.example.suportstudy.adapter.GroupChatAdapter
+import com.example.suportstudy.apibodymodel.AddNoteBody
 import com.example.suportstudy.extensions.gone
 import com.example.suportstudy.extensions.visible
 import com.example.suportstudy.model.GroupChat
 import com.example.suportstudy.model.GroupCourse
 import com.example.suportstudy.service.GroupCourseAPI
 import com.example.suportstudy.until.Constrain
+import com.example.suportstudy.viewmodel.NoteViewModel
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.database.*
 import de.hdodenhof.circleimageview.CircleImageView
@@ -32,39 +36,45 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 
-class ChatGroupActivity : AppCompatActivity() {
-    var context=this@ChatGroupActivity
+class ChatGroupActivity : AppCompatActivity(), GroupChatAdapter.IItemClickedListener {
+    var context = this@ChatGroupActivity
 
-    var groupId:String?=null
-    var groupCreateBy:String?=null
-    var groupName:String?=null
-    var groupDescription:String?=null
-    var groupImage:String?=null
+    var groupId: String? = null
+    var groupCreateBy: String? = null
+    var groupName: String? = null
+    var groupDescription: String? = null
+    var groupImage: String? = null
 
-    var senderUid:String?=null
+    var senderUid: String? = null
 
-    var groupChatImage:CircleImageView?=null
-    var txtGroupName:TextView?=null
-    var btnInfoGroup:ImageView?=null
-    var edtMessage:EditText?=null
-    var btnSend:ImageView?=null
+    var groupChatImage: CircleImageView? = null
+    var txtGroupName: TextView? = null
+    var btnInfoGroup: ImageView? = null
+    var edtMessage: EditText? = null
+    var btnSend: ImageView? = null
     lateinit var myLoader: LazyLoader
     lateinit var dataLayout: RelativeLayout
-    var groupChatList=ArrayList<GroupChat>()
-    var groupCourseAPI:GroupCourseAPI?=null
+    var groupChatList = ArrayList<GroupChat>()
+    var groupCourseAPI: GroupCourseAPI? = null
     var chatGroupRef: DatabaseReference? = null
     var userSharedPreferences: SharedPreferences? = null
 
-    var name:String?=null
-    var image:String?=null
-    companion object{
-        var groupChatAdapter:GroupChatAdapter?=null
-        var chatGroup_Recyclerview:RecyclerView?=null
+    var name: String? = null
+    var image: String? = null
+    private var addNoteBody = AddNoteBody()
+    private lateinit var viewModel: NoteViewModel
+
+    companion object {
+        var groupChatAdapter: GroupChatAdapter? = null
+        var chatGroup_Recyclerview: RecyclerView? = null
 
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_group)
+        viewModel =
+            ViewModelProvider(this).get(NoteViewModel::class.java)
         userSharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
         senderUid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")
         name = userSharedPreferences!!.getString(Constrain.KEY_NAME, "")
@@ -73,17 +83,17 @@ class ChatGroupActivity : AppCompatActivity() {
         displayMessage()
 
         btnSend!!.setOnClickListener {
-           var message=edtMessage!!.text.toString()
-            if(message.equals("")){
+            var message = edtMessage!!.text.toString()
+            if (message.equals("")) {
                 Constrain.showToast("Hãy nhập tin nhắn...")
-            }else{
+            } else {
                 sendMessage(message)
                 Constrain.hideKeyBoard(context)
             }
             edtMessage!!.setText("")
         }
         btnInfoGroup!!.setOnClickListener {
-            var intent= Intent(context, InfoGroupActivity::class.java)
+            var intent = Intent(context, InfoGroupActivity::class.java)
             intent.putExtra("groupId", groupId)
             intent.putExtra("groupCreateBy", groupCreateBy)
             intent.putExtra("groupImage", groupImage)
@@ -93,35 +103,35 @@ class ChatGroupActivity : AppCompatActivity() {
         }
     }
 
-    fun initDataView(){
-        Constrain.context=context
-        var intentGroupChat=intent
-        groupId=intentGroupChat.getStringExtra("groupId")
-        groupCreateBy=intentGroupChat.getStringExtra("groupCreateBy")
-        groupName=intentGroupChat.getStringExtra("groupName")
-        groupDescription=intentGroupChat.getStringExtra("groupDescription")
-        groupImage=intentGroupChat.getStringExtra("groupImage")
+    fun initDataView() {
+        Constrain.context = context
+        var intentGroupChat = intent
+        groupId = intentGroupChat.getStringExtra("groupId")
+        groupCreateBy = intentGroupChat.getStringExtra("groupCreateBy")
+        groupName = intentGroupChat.getStringExtra("groupName")
+        groupDescription = intentGroupChat.getStringExtra("groupDescription")
+        groupImage = intentGroupChat.getStringExtra("groupImage")
 
-        groupChatImage=findViewById(R.id.groupChatImage)
-        txtGroupName=findViewById(R.id.txtGroupName)
-        btnInfoGroup=findViewById(R.id.btnInfoGroup)
-        edtMessage=findViewById(R.id.edtMessage)
-        btnSend=findViewById(R.id.btnSend)
-        myLoader=findViewById(R.id.myLoader)
-        dataLayout=findViewById(R.id.dataLayout)
-        chatGroup_Recyclerview=findViewById(R.id.chatGroup_Recyclerview)
+        groupChatImage = findViewById(R.id.groupChatImage)
+        txtGroupName = findViewById(R.id.txtGroupName)
+        btnInfoGroup = findViewById(R.id.btnInfoGroup)
+        edtMessage = findViewById(R.id.edtMessage)
+        btnSend = findViewById(R.id.btnSend)
+        myLoader = findViewById(R.id.myLoader)
+        dataLayout = findViewById(R.id.dataLayout)
+        chatGroup_Recyclerview = findViewById(R.id.chatGroup_Recyclerview)
         chatGroupRef = Constrain.initFirebase("GroupChats")
-        groupCourseAPI=Constrain.createRetrofit(GroupCourseAPI::class.java)
+        groupCourseAPI = Constrain.createRetrofit(GroupCourseAPI::class.java)
 
 
         getGroupInfo()
 
 
-
     }
+
     private fun sendMessage(message: String) {
-        var  time=System.currentTimeMillis().toString()
-        var  hashMap=HashMap<String, String>()
+        var time = System.currentTimeMillis().toString()
+        var hashMap = HashMap<String, String>()
         hashMap.put("_id", time)
         hashMap.put("senderUid", senderUid!!)
         hashMap.put("senderName", name!!)
@@ -130,15 +140,17 @@ class ChatGroupActivity : AppCompatActivity() {
         hashMap.put("message", message)
         hashMap.put("groupId", groupId!!)
 
-        chatGroupRef!!.child(groupId!!).child("Message").push().setValue(hashMap).addOnCompleteListener(
-            {
-                if (it.isSuccessful) {
-                    Constrain.showToast("Gửi thành công")
-                    getAllUserId(message)
-                }
-            })
+        chatGroupRef!!.child(groupId!!).child("Message").push().setValue(hashMap)
+            .addOnCompleteListener(
+                {
+                    if (it.isSuccessful) {
+                        Constrain.showToast("Gửi thành công")
+                        getAllUserId(message)
+                    }
+                })
 
     }
+
     private fun displayMessage() {
         chatGroupRef!!.child(groupId!!).child("Message")
             .addValueEventListener(object : ValueEventListener {
@@ -148,7 +160,8 @@ class ChatGroupActivity : AppCompatActivity() {
                         val chat: GroupChat? = ds.getValue(GroupChat::class.java)
                         groupChatList.add(chat!!)
                     }
-                    groupChatAdapter = GroupChatAdapter(context, groupChatList)
+                    groupChatAdapter =
+                        GroupChatAdapter(context, groupChatList, this@ChatGroupActivity)
                     chatGroup_Recyclerview!!.adapter = groupChatAdapter
                     chatGroup_Recyclerview!!.scrollToPosition(groupChatList.size - 1)
                 }
@@ -156,7 +169,8 @@ class ChatGroupActivity : AppCompatActivity() {
                 override fun onCancelled(databaseError: DatabaseError) {}
             })
     }
-    fun getAllUserId(message: String){
+
+    fun getAllUserId(message: String) {
         groupCourseAPI!!.getAllGroupByID(groupId!!).enqueue(object : Callback<List<GroupCourse>> {
             override fun onResponse(
                 call: Call<List<GroupCourse>>,
@@ -182,6 +196,7 @@ class ChatGroupActivity : AppCompatActivity() {
 
         })
     }
+
     private fun getToken(message: String, senderName: String, hisID: String, myImage: String) {
         val database = FirebaseDatabase.getInstance().getReference("Tokens").child(hisID)
         database.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -214,6 +229,7 @@ class ChatGroupActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {}
         })
     }
+
     private fun sendNotification(to: JSONObject) {
         val request: JsonObjectRequest = object : JsonObjectRequest(
             Method.POST, Constrain.NOTIFICATION_URL, to,
@@ -249,7 +265,8 @@ class ChatGroupActivity : AppCompatActivity() {
         )
         requestQueue.add(request)
     }
-    fun getGroupInfo(){
+
+    fun getGroupInfo() {
         myLoader.visible()
         dataLayout.gone()
         groupCourseAPI!!.getAllGroupByID(groupId!!).enqueue(object : Callback<List<GroupCourse>> {
@@ -286,5 +303,42 @@ class ChatGroupActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         getGroupInfo()
+    }
+
+    override fun onItemLongClick(content: String) {
+        var dialog = Constrain.createDialog(context, R.layout.dialog_confirm)
+        var confirmTv = dialog.findViewById<TextView>(R.id.messagCfTv)
+        var huyBtn = dialog.findViewById<LinearLayout>(R.id.cancelBtn)
+        var dongYBtn = dialog.findViewById<LinearLayout>(R.id.dongyBtn)
+        confirmTv.setText("Bạn có muốn ghi chú tin nhắn?")
+        dongYBtn.setOnClickListener {
+            saveNote(content)
+            dialog.dismiss()
+        }
+        huyBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun saveNote(message: String) {
+        userSharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
+        val currentUser = userSharedPreferences!!.getString(Constrain.KEY_ID, "")
+        addNoteBody.apply {
+            title = groupName
+            content = message
+            userId = currentUser
+            isGroupNote = 1
+        }
+        viewModel.addNote(addNoteBody)
+    }
+
+    private fun subscribeUI() {
+        viewModel.liveDataAddNoteResponse.observe(this, {
+            it?.let {
+                viewModel.liveDataAddNoteResponse.value = null
+                Toast.makeText(context, "Ghi chú tin nhắn thành công", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }
