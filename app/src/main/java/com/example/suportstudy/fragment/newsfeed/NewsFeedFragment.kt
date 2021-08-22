@@ -72,6 +72,10 @@ class NewsFeedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.recyclerViewPost
+
+        txtHome.setTextColor(resources.getColor(R.color.blueIcon))
+        imageHome.setImageResource(R.drawable.ic_home_blue)
+
         if (sharedPreferences?.getBoolean(Constrain.KEY_ISTUTOR, true) == false) {
             statusBtn.gone()
         }
@@ -84,11 +88,17 @@ class NewsFeedFragment : Fragment() {
         btnDocument.onClick {
             push(R.id.action_newsFeedFragment_to_noteFragment)
         }
+        backIv.onClick {
+            activity?.finish()
+        }
+        swRefresh.setOnRefreshListener {
+            swRefresh.isRefreshing = false
+            viewModel.getAllProducts()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d("son", "resume")
         viewModel.getAllProducts()
     }
 }

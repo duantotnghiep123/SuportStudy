@@ -1,6 +1,6 @@
 package com.example.suportstudy.service
 
-import com.example.suportstudy.fragment.newsfeed.NewsFeedResponse
+import com.example.suportstudy.apiresponsemodel.NewsFeedResponse
 import com.example.suportstudy.model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -8,6 +8,7 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface NewsFeedAPI {
+
     @GET("/api/newsfeed")
     fun getAllNewsFeed(): Call<NewsFeedResponse>
 
@@ -42,4 +43,9 @@ interface NewsFeedAPI {
         @Part("userId") userId: RequestBody??,
         @Part image: MultipartBody.Part?,
         ): Call<AddNewsFeed>
+
+    @GET("/api/newsfeed/")
+    fun getPostById(
+        @Query("id") id: String,
+    ): Call<NewsFeedResponse>
 }

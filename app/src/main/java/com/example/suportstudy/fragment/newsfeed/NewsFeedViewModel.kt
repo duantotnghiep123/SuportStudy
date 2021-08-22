@@ -3,6 +3,7 @@ package com.example.suportstudy.fragment.newsfeed
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.suportstudy.apiresponsemodel.NewsFeedResponse
 import com.example.suportstudy.model.NewsFeed
 import com.example.suportstudy.service.NewsFeedAPI
 import com.example.suportstudy.until.Constrain

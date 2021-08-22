@@ -21,7 +21,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.SuportStudy"
         android:usesCleartextTraffic="true">
@@ -56,19 +56,15 @@
         <activity android:name=".activity.acount.LoginAndRegisterMainActivity" />
         <activity android:name=".activity.quizz.QuizzActivity" />
         <activity android:name=".activity.acount.ProfileActivity" />
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.MainActivity"/>
+        <activity android:name=".activity.HomeNavActivity"/>
+        <activity android:name=".activity.SplashScreenActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".activity.HomeNavActivity">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
         </activity>
 
         <service

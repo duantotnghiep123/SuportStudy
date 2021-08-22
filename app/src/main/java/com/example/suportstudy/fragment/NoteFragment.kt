@@ -21,6 +21,8 @@ import com.example.suportstudy.adapter.NoteAdapter
 import com.example.suportstudy.adapter.NoteContainerAdapter
 import com.example.suportstudy.apibodymodel.GetNoteBody
 import com.example.suportstudy.databinding.FragmentNoteBinding
+import com.example.suportstudy.extensions.onClick
+import com.example.suportstudy.extensions.push
 import com.example.suportstudy.model.Document
 import com.example.suportstudy.model.Note
 import com.example.suportstudy.service.QuestionAPI
@@ -28,11 +30,13 @@ import com.example.suportstudy.until.ConnectionManager
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.viewmodel.NoteViewModel
 import com.google.android.material.tabs.TabLayout
+import kotlinx.android.synthetic.main.bottom_navigation.*
+import kotlinx.android.synthetic.main.fragment_chat_container.*
 import org.bson.types.ObjectId
 import kotlin.collections.ArrayList
 
 
-class NoteFragment : Fragment() {
+class   NoteFragment : Fragment() {
     companion object {
 
     }
@@ -66,6 +70,14 @@ class NoteFragment : Fragment() {
 //        getNote()
 //        setDataToNoteRecyclerView()
 //        Constrain.hideKeyBoard(activity as Activity)
+        txtNote.setTextColor(resources.getColor(R.color.blueIcon))
+        imageNote.setImageResource(R.drawable.ic_book_blue)
+        btnChat.onClick {
+            push(R.id.action_noteFragment_to_chatFragment)
+        }
+        btnHome.onClick {
+            push(R.id.action_noteFragment_to_newsFeedFragment)
+        }
         setUpUI()
         binding.menu.setOnClickListener {
             activity?.onBackPressed()
@@ -76,8 +88,8 @@ class NoteFragment : Fragment() {
     private fun setUpUI() {
         viewPagerChat = binding.viewpagerChat
         tabLayout = binding.tablayoutChat
-        tabLayout!!.addTab(tabLayout!!.newTab())
-        tabLayout!!.addTab(tabLayout!!.newTab())
+        tabLayout!!.addTab(tabLayout!!.newTab().setText("Cá nhân"))
+        tabLayout!!.addTab(tabLayout!!.newTab().setText("Nhóm"))
 
 
         val adapter = NoteContainerAdapter(childFragmentManager)

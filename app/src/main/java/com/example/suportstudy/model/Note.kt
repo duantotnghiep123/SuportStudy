@@ -1,6 +1,7 @@
 package com.example.suportstudy.model
 
 import androidx.room.*
+import com.example.suportstudy.apiresponsemodel.UserResponse
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 

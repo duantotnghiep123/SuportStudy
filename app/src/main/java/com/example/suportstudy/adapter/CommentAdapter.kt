@@ -44,11 +44,16 @@ class CommentAdapter(var context: Context, var list: NewsFeed, var layout: Int, 
                         }
                     }
                 }
+                try {
                     if (userList.isNotEmpty()) {
                         holder.nameTv!!.text = userList[position].name
                         holder.commentTv!!.text = listComment?.get(position)!!.content
                         holder.timeTv!!.text = Constrain.formatDate(listComment!![position].createdAt)
                     }
+                } catch (e: Exception) {
+
+                }
+
             }
             override fun onFailure(call: Call<List<Users>>, t: Throwable) {
                 TODO("Not yet implemented")

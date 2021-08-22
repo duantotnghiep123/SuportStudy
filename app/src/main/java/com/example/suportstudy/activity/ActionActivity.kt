@@ -209,7 +209,7 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
         sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
         editor = sharedPreferences!!.edit()
         val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        nm?.cancel(44448888)
+        nm.cancel(44448888)
         initAndConnectStringee()
     }
 
@@ -245,5 +245,11 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
     override fun onBackPressed() {}
     override fun onClick(v: View?) {
         TODO("Not yet implemented")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getReference()
+        txtName.text = name
     }
 }

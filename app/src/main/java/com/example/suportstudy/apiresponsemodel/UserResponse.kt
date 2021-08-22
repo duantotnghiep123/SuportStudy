@@ -1,4 +1,4 @@
-package com.example.suportstudy.model
+package com.example.suportstudy.apiresponsemodel
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -1,9 +1,9 @@
-package com.example.suportstudy.fragment.newsfeed
+package com.example.suportstudy.apiresponsemodel
 
 import com.example.suportstudy.model.NewsFeed
 import com.google.gson.annotations.SerializedName
 
-data class NewsFeedResponse(
+class PostByIdResponse (
     @SerializedName("payload")
     var data: ArrayList<NewsFeed>
 )

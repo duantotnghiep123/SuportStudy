@@ -63,7 +63,7 @@
             android:orientation="vertical"
             android:layout_height="match_parent">
             <com.google.android.material.tabs.TabLayout
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="60dp"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:id="@+id/tablayout_chat"
@@ -79,10 +79,13 @@
             <androidx.viewpager.widget.ViewPager
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="60dp"
                 android:id="@+id/viewpager_chat">
             </androidx.viewpager.widget.ViewPager>
         </LinearLayout>
 
-
+        <include
+            android:id="@+id/layoutBottom"
+            layout="@layout/bottom_navigation" />
     </RelativeLayout>
 </layout>

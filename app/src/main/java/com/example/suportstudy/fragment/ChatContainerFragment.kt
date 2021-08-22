@@ -13,6 +13,7 @@ import com.example.suportstudy.extensions.onClick
 import com.example.suportstudy.extensions.push
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.bottom_navigation.*
+import kotlinx.android.synthetic.main.fragment_chat_container.*
 
 
 class ChatContainerFragment : Fragment() {
@@ -35,8 +36,8 @@ class ChatContainerFragment : Fragment() {
 
         viewPagerChat = view.findViewById(R.id.viewpager_chat)
         tabLayout = view.findViewById(R.id.tablayout_chat)
-        tabLayout!!.addTab(tabLayout!!.newTab())
-        tabLayout!!.addTab(tabLayout!!.newTab())
+        tabLayout!!.addTab(tabLayout!!.newTab().setText("Người hướng dẫn"))
+        tabLayout!!.addTab(tabLayout!!.newTab().setText("Nhóm"))
 
 
         val adapter = ChatContainerAdapter(childFragmentManager)
@@ -67,11 +68,16 @@ class ChatContainerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        txtChat.setTextColor(resources.getColor(R.color.blueIcon))
+        imageChat.setImageResource(R.drawable.ic_chat_blue)
         btnDocument.onClick {
             push(R.id.action_chatFragment_to_noteFragment)
         }
         btnHome.onClick {
             push(R.id.action_chatFragment_to_newsFeedFragment)
+        }
+        menu.onClick {
+            activity?.finish()
         }
     }
 }

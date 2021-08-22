@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
+import android.text.InputType
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -43,6 +45,7 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var l
     var sharedPreferences: SharedPreferences? = null
     var checkLike = false
     val viewModel : NewsFeedViewModel? = null
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(layout, parent, false)
@@ -164,6 +167,7 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var l
                 Constrain.showToast("Vui lòng không để trống")
             }
             else {
+                disableSoftInputFromAppearing(edtComment)
                 loader.visible()
                 btnSend.disable()
                 val newsFeedApi = Constrain.createRetrofit(NewsFeedAPI::class.java)
@@ -173,6 +177,7 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var l
                         loader.gone()
                         btnSend.enable()
                         edtComment.text.clear()
+                        dialog.dismiss()
 
 //                        listComment.add(Comment("","","",""))
                         commentAdapter!!.notifyDataSetChanged()
@@ -201,6 +206,11 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var l
         list.adapter = likeAdapter
         btnback.onClick { dialog.dismiss() }
         dialog.show()
+    }
+
+    private fun disableSoftInputFromAppearing(editText: EditText) {
+        editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        editText.setTextIsSelectable(true)
     }
 
 

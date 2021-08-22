@@ -12,6 +12,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
@@ -52,9 +53,7 @@ class LoginFragment : Fragment() {
 
 
         sd=Constrain.sweetdialog(activity!!,"Đang đăng nhập")
-
         btnLogin.setOnClickListener {
-            sd!!.show()
             var email = edtEmail.text.toString()
             var password = edtPassword.text.toString()
             val matcher: Matcher = Constrain.VALID_EMAIL_ADDRESS_REGEX.matcher(email)
@@ -69,6 +68,7 @@ class LoginFragment : Fragment() {
                 Constrain.showToast("Vui lòng nhập mật khẩu")
                 edtPassword.setFocusable(true)
             }else{
+                sd!!.show()
                loginFuntion(email,password)
             }
         }
@@ -113,7 +113,7 @@ class LoginFragment : Fragment() {
                     }
                     if(checkLogin==true){
                         sd!!.dismiss()
-                        Constrain.nextActivity(activity!!,CourseTypeActivity::class.java)
+                        Constrain.nextActivity(activity!!, ActionActivity::class.java)
                         activity!!.finish()
 
                     }else{

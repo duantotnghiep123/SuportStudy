@@ -23,6 +23,7 @@
     <!-- Color of name and result in activity_result. -->
     <color name="colorOfNameAndResult">#000</color>
     <color name="blue">#0091EA</color>
+    <color name="blueIcon">#159aeb</color>
     <color name="grey10">#F8F8F8</color>
     <color name="red">#EC2424</color>
 
