@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.suportstudy.R
 import com.example.suportstudy.adapter.NoteAdapter
 import com.example.suportstudy.databinding.FragmentGroupNoteBinding
@@ -19,7 +20,7 @@ import com.example.suportstudy.model.Note
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.viewmodel.NoteViewModel
 
-class GroupNoteFragment : Fragment(),NoteAdapter.OnItemNoteListener {
+class GroupNoteFragment : Fragment(), NoteAdapter.OnItemNoteListener {
     private lateinit var viewModel: NoteViewModel
     private lateinit var binding: FragmentGroupNoteBinding
     private var noteAdapter = NoteAdapter(this)
@@ -44,6 +45,7 @@ class GroupNoteFragment : Fragment(),NoteAdapter.OnItemNoteListener {
         super.onResume()
         getNote()
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
@@ -55,6 +57,7 @@ class GroupNoteFragment : Fragment(),NoteAdapter.OnItemNoteListener {
             getNote()
         }
     }
+
     companion object {
 
     }
@@ -113,13 +116,19 @@ class GroupNoteFragment : Fragment(),NoteAdapter.OnItemNoteListener {
 
     private fun getNote() {
         binding.myLoader.visible()
-        viewModel.getListNote(isGroupNote = 1, myUid)
+        if (Constrain.isConnectedInternet(requireContext())) {
+            viewModel.getListNote(isGroupNote = 1, myUid)
+        } else {
+            viewModel.getGroupNoteFromDB()
+        }
+
     }
 
     private fun setDataToNoteRecyclerView() {
         binding.rcvDocument.apply {
             adapter = noteAdapter
             hasFixedSize()
+            layoutManager = LinearLayoutManager(requireContext())
         }
     }
 
@@ -138,6 +147,7 @@ class GroupNoteFragment : Fragment(),NoteAdapter.OnItemNoteListener {
         }
         dialog.show()
     }
+
     private fun deleteNote(id: String) {
         viewModel.deleteNote(id)
         viewModel.deleteGroupNoteFromDB(id)

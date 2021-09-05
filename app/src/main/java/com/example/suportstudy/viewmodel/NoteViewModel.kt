@@ -127,4 +127,16 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
             liveDataUserAva.postValue(noteDAO.getUserAva())
         }
     }
+
+    fun getSelfNoteFromDB(){
+        CoroutineScope(IO).launch {
+            liveDataNote.postValue(noteDAO.getSelfNote())
+        }
+    }
+
+    fun getGroupNoteFromDB(){
+        CoroutineScope(IO).launch {
+            liveDataNote.postValue(noteDAO.getGroupNote())
+        }
+    }
 }

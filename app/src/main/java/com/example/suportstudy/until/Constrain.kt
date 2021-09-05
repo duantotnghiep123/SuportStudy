@@ -11,6 +11,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -220,5 +222,11 @@ object Constrain {
             dialog.dismiss()
         }
         alertDialog.show().setCanceledOnTouchOutside(false)
+    }
+
+    fun isConnectedInternet(context: Context): Boolean {
+        val cm = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo: NetworkInfo? = cm.activeNetworkInfo
+        return networkInfo?.isConnected == true
     }
 }

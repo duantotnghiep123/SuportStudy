@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.example.suportstudy.R
 import com.example.suportstudy.apibodymodel.AddNoteBody
 import com.example.suportstudy.databinding.FragmentAddNoteBinding
 import com.example.suportstudy.until.Constrain
@@ -80,7 +82,7 @@ class AddNoteFragment : Fragment() {
                     liveDataNoteResponse.value = null
                     if (it != null) {
                         Constrain.showToast(requireContext(), "Thêm ghi chú thành công")
-                        activity?.onBackPressed()
+                        findNavController().navigate(R.id.action_addNoteFragment_to_noteFragment)
                     } else {
                         Constrain.showErrorMessage("Có lỗi xảy ra", requireContext())
                     }

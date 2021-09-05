@@ -16,6 +16,7 @@ import com.example.suportstudy.R
 import com.example.suportstudy.adapter.NoteAdapter
 import com.example.suportstudy.databinding.FragmentSelfNoteBinding
 import com.example.suportstudy.extensions.gone
+import com.example.suportstudy.extensions.visible
 import com.example.suportstudy.model.Note
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.viewmodel.NoteViewModel
@@ -86,6 +87,9 @@ class SelfNoteFragment : Fragment(), NoteAdapter.OnItemNoteListener {
                     if (!it.data.isNullOrEmpty()) {
                         viewModel.insertNote(it.data)
                         binding.myLoader.gone()
+                    } else {
+                        binding.layoutNoData.visible()
+                        binding.myLoader.gone()
                     }
                 }
             })
@@ -117,7 +121,11 @@ class SelfNoteFragment : Fragment(), NoteAdapter.OnItemNoteListener {
     }
 
     private fun getNote() {
-        viewModel.getListNote(isGroupNote = 0, myUid)
+        if (Constrain.isConnectedInternet(requireContext())) {
+            viewModel.getListNote(isGroupNote = 0, myUid)
+        } else {
+            viewModel.getSelfNoteFromDB()
+        }
     }
 
     private fun setDataToNoteRecyclerView() {

@@ -40,11 +40,12 @@ class CourseDetailActivity : AppCompatActivity() {
     var ivGroup: CircleImageView? = null
     var context = this@CourseDetailActivity
     var groupCourseAPI: GroupCourseAPI? = null
-    lateinit var myUid:String
-    var sd:SweetAlertDialog?=null
+    lateinit var myUid: String
+    var sd: SweetAlertDialog? = null
     var image_uri: Uri? = null
     var part_image: String? = null
-    var isTurtor:Boolean = false
+    var isTurtor: Boolean = false
+
     companion object {
         var imageUrl = ""
         var courseId: String? = null
@@ -59,11 +60,11 @@ class CourseDetailActivity : AppCompatActivity() {
         loadDetail()
 
         btnCreateGroup!!.setOnClickListener {
-            if(btnCreateGroup!!.text.equals("Tạo Nhóm")){
+            if (btnCreateGroup!!.text.equals("Tạo Nhóm")) {
                 createGroup()
-            }else if(btnCreateGroup!!.text.equals("Nhóm thảo luận")){
-                var intent=Intent(context,ListGroupActivity::class.java)
-                intent.putExtra("group","allgroup")
+            } else if (btnCreateGroup!!.text.equals("Nhóm thảo luận")) {
+                var intent = Intent(context, ListGroupActivity::class.java)
+                intent.putExtra("group", "allgroup")
                 intent.putExtra("courseId", courseId)
                 startActivity(intent)
             }
@@ -76,10 +77,10 @@ class CourseDetailActivity : AppCompatActivity() {
     }
 
 
-    fun initViewData(){
-        Constrain.context=context
-        sd=Constrain.sweetdialog(context,"Đang tạo nhóm...")
-        var  userSharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
+    fun initViewData() {
+        Constrain.context = context
+        sd = Constrain.sweetdialog(context, "Đang tạo nhóm...")
+        var userSharedPreferences = getSharedPreferences(Constrain.SHARED_REF_USER, MODE_PRIVATE)
         myUid = userSharedPreferences!!.getString(Constrain.KEY_ID, "")!!
         isTurtor = userSharedPreferences!!.getBoolean(Constrain.KEY_ISTUTOR, false)!!
 
@@ -112,17 +113,18 @@ class CourseDetailActivity : AppCompatActivity() {
         txtCourseName!!.text = name
         txtDescription!!.text = desciption
 
-        Constrain.checkShowImage(context,R.drawable.ic_gallery_grey, imageUrl,courseIv!!)
+        Constrain.checkShowImage(context, R.drawable.ic_gallery_grey, imageUrl, courseIv!!)
 
     }
+
     @RequiresApi(Build.VERSION_CODES.M)
     fun createGroup() {
-        val dialog =Constrain.createDialog(context,R.layout.dialog_create_group)
+        val dialog = Constrain.createDialog(context, R.layout.dialog_create_group)
         val btnHuy = dialog!!.findViewById<Button>(R.id.btnHuy)
         val btnTao = dialog!!.findViewById<Button>(R.id.btnTao)
         val edtName = dialog!!.findViewById<EditText>(R.id.edtName)
         val edtDecription = dialog!!.findViewById<EditText>(R.id.edtDecription)
-         ivGroup = dialog!!.findViewById<CircleImageView>(R.id.IVGroup)
+        ivGroup = dialog!!.findViewById<CircleImageView>(R.id.IVGroup)
 
         ivGroup!!.setOnClickListener {
             if (!Persmission.checkStoragePermission(context)) {
@@ -136,18 +138,30 @@ class CourseDetailActivity : AppCompatActivity() {
             sd!!.show()
             var groupName = edtName.text.toString()
             var groupDescription = edtDecription.text.toString()
-            var time=System.currentTimeMillis().toString()
-            if(groupName.equals("")){
-                Constrain.showToast("Nhập tên group")
-            }else if(groupDescription.equals("")){
-                Constrain.showToast("Nhập tên mô tả")
+            var time = System.currentTimeMillis().toString()
+            if (groupName.isEmpty() && groupDescription.isEmpty()) {
+                sd!!.hide()
+                Constrain.showErrorMessage("Vui lòng nhập thông tin", context)
+            } else if (groupName == "") {
+                sd!!.hide()
+                Constrain.showErrorMessage("Tên group không được để trống", context)
+            } else if (groupDescription == "") {
+                sd!!.hide()
+                Constrain.showErrorMessage("Mô tả không được để trống", context)
 
-            }else{
-                if (image_uri==null){
-                    createGroupNoImage(myUid,groupName,groupDescription,"noImage", courseId,time)
+            } else {
+                if (image_uri == null) {
+                    createGroupNoImage(
+                        myUid,
+                        groupName,
+                        groupDescription,
+                        "noImage",
+                        courseId,
+                        time
+                    )
                     dialog.dismiss()
-                }else{
-                    createGroupWithImage(myUid!!,groupName,groupDescription,time)
+                } else {
+                    createGroupWithImage(myUid!!, groupName, groupDescription, time)
                     dialog.dismiss()
                 }
             }
@@ -158,67 +172,91 @@ class CourseDetailActivity : AppCompatActivity() {
         }
         dialog.show()
     }
-    private fun createGroupWithImage(myUid: String, groupName: String, groupDescription: String, time: String) {
+
+    private fun createGroupWithImage(
+        myUid: String,
+        groupName: String,
+        groupDescription: String,
+        time: String
+    ) {
         sd!!.show()
         var file = File(part_image)
-        var createBy =   RequestBody.create(MediaType.parse("multipart/form_data"), myUid)
-        var groupName =   RequestBody.create(MediaType.parse("multipart/form_data"), groupName)
-        var groupDescription =   RequestBody.create(MediaType.parse("multipart/form_data"), groupDescription)
-        var courseID =   RequestBody.create(MediaType.parse("multipart/form_data"), courseId)
+        var createBy = RequestBody.create(MediaType.parse("multipart/form_data"), myUid)
+        var groupName = RequestBody.create(MediaType.parse("multipart/form_data"), groupName)
+        var groupDescription =
+            RequestBody.create(MediaType.parse("multipart/form_data"), groupDescription)
+        var courseID = RequestBody.create(MediaType.parse("multipart/form_data"), courseId)
         val reqFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
         val image = MultipartBody.Part.createFormData("group", file.getName(), reqFile)
 
-        groupCourseAPI!!.createGroupWithImage(createBy,groupName,groupDescription,image,courseID)
-            .enqueue(object : Callback<GroupCourse>{
+        groupCourseAPI!!.createGroupWithImage(
+            createBy,
+            groupName,
+            groupDescription,
+            image,
+            courseID
+        )
+            .enqueue(object : Callback<GroupCourse> {
                 override fun onResponse(call: Call<GroupCourse>, response: Response<GroupCourse>) {
                     if (response.isSuccessful) {
-                        var groupId= response.body()!!._id
-                        joinGroup(groupId,time)
+                        var groupId = response.body()!!._id
+                        joinGroup(groupId, time)
                     }
                 }
+
                 override fun onFailure(call: Call<GroupCourse>, t: Throwable) {
-                     Log.e("Error",t.message.toString())
+                    Log.e("Error", t.message.toString())
                 }
-            } )
+            })
     }
 
-    private fun createGroupNoImage(myUid: String?, groupName: String, groupDescription: String, s: String, courseId: String?, time: String?) {
-             sd!!.show()
-             groupCourseAPI!!.createGroupNoImage(myUid,groupName,groupDescription,s,courseId!!)
-                 .enqueue(object :Callback<GroupCourse>{
-                     override fun onResponse(
-                         call: Call<GroupCourse>,
-                         response: Response<GroupCourse>
-                     ) {
-                         if(response.isSuccessful){
-                             var groupId=response.body()!!._id
-                             joinGroup(groupId,time)
-                         }
-                     }
-                     override fun onFailure(call: Call<GroupCourse>, t: Throwable) {
-                         Constrain.showToast("Thất bại")
-                     }
+    private fun createGroupNoImage(
+        myUid: String?,
+        groupName: String,
+        groupDescription: String,
+        s: String,
+        courseId: String?,
+        time: String?
+    ) {
+        sd!!.show()
+        groupCourseAPI!!.createGroupNoImage(myUid, groupName, groupDescription, s, courseId!!)
+            .enqueue(object : Callback<GroupCourse> {
+                override fun onResponse(
+                    call: Call<GroupCourse>,
+                    response: Response<GroupCourse>
+                ) {
+                    if (response.isSuccessful) {
+                        var groupId = response.body()!!._id
+                        joinGroup(groupId, time)
+                    }
+                }
 
-                 })
+                override fun onFailure(call: Call<GroupCourse>, t: Throwable) {
+                    Constrain.showToast("Thất bại")
+                }
+
+            })
     }
 
-    private fun joinGroup(groupId: String?,timeJoin: String?) {
-          groupCourseAPI!!.joinGroup(groupId,myUid!!,timeJoin!!).enqueue(object :Callback<Participant>{
-              override fun onResponse(call: Call<Participant>, response: Response<Participant>) {
-                  if(response.isSuccessful){
-                      Constrain.showToast("Thành công")
-                      sd!!.dismiss()
+    private fun joinGroup(groupId: String?, timeJoin: String?) {
+        groupCourseAPI!!.joinGroup(groupId, myUid!!, timeJoin!!)
+            .enqueue(object : Callback<Participant> {
+                override fun onResponse(call: Call<Participant>, response: Response<Participant>) {
+                    if (response.isSuccessful) {
+                        Constrain.showToast("Thành công")
+                        sd!!.dismiss()
 
-                  }
-              }
+                    }
+                }
 
-              override fun onFailure(call: Call<Participant>, t: Throwable) {
-                 Log.e("Err",t.message.toString())
+                override fun onFailure(call: Call<Participant>, t: Throwable) {
+                    Log.e("Err", t.message.toString())
 
-              }
+                }
 
-          })
+            })
     }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
@@ -231,23 +269,25 @@ class CourseDetailActivity : AppCompatActivity() {
                     if (writeStorageAccpted) {
                         Persmission.pickFromGallery(context)
                     } else {
-                        Constrain.showToast( "Bật quyền thư viện")
+                        Constrain.showToast("Bật quyền thư viện")
                     }
                 }
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK) {
             if (requestCode == Persmission.IMAGE_PICK_GALLERY_CODE) {
                 image_uri = data!!.data!!
                 ivGroup!!.setImageURI(image_uri)
-                part_image = Constrain.getRealPathFromURI(context,image_uri)
+                part_image = Constrain.getRealPathFromURI(context, image_uri)
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+
     override fun onStart() {
         super.onStart()
         if (isTurtor == true) {

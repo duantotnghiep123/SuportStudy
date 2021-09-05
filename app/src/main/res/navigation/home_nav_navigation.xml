@@ -94,7 +94,11 @@
     <fragment
         android:id="@+id/addNoteFragment"
         android:name="com.example.suportstudy.fragment.AddNoteFragment"
-        android:label="AddNoteFragment" />
+        android:label="AddNoteFragment" >
+        <action
+            android:id="@+id/action_addNoteFragment_to_noteFragment"
+            app:destination="@id/noteFragment" />
+    </fragment>
 
 
 </navigation>
