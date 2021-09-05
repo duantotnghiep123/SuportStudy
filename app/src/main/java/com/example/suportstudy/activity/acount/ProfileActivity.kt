@@ -174,7 +174,7 @@ class ProfileActivity : AppCompatActivity() {
             image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "")!!
             nameTv!!.text = name
             if (imgUrl != "") {
-                var path = Constrain.baseUrl + "post/" + imgUrl.substring(30)
+                var path = Constrain.baseUrl + "/post/" + imgUrl.substring(27)
                 Constrain.checkShowImage(context, R.drawable.avatar_default, path, avatarIv!!)
             }
             myLoader.gone()

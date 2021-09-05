@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.model.NewsFeedById
 import com.example.suportstudy.until.Constrain
+import com.example.suportstudy.until.TimeConverter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.row_comments.view.*
 
@@ -28,9 +29,7 @@ class CommentAdapter(var context: Context, var list: NewsFeedById, var layout: I
         holder.nameTv!!.text = list.comment?.get(position)?.userId?.name
         holder.commentTv!!.text = list?.comment?.get(position)?.content
         holder.timeTv!!.text = list?.comment?.get(position)?.createdAt?.let {
-            Constrain.formatDate(
-                it
-            )
+            TimeConverter.convertToDateTime(it)
         }
     }
 

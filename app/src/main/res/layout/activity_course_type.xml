@@ -32,7 +32,7 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"/>
             <TextView
-                android:text="Categories"
+                android:text="Chủ đề"
                 android:textSize="20dp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
@@ -86,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"/>
         <TextView
-            android:text="Categories"
+            android:text="Chủ đề"
             android:textSize="18dp"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"

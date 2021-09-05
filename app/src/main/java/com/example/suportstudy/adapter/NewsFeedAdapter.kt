@@ -26,6 +26,7 @@ import com.example.suportstudy.model.NewsFeed
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.NewsFeedAPI
 import com.example.suportstudy.until.Constrain
+import com.example.suportstudy.until.TimeConverter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_comment.view.*
 import kotlinx.android.synthetic.main.row_post.view.*
@@ -73,7 +74,7 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var l
             }
 
             Picasso.with(context).load(pathImageUrlUser).into(holder.uPictureIv)
-            holder.pTimeTv.text = Constrain.formatDate(modelPost.createdAt)
+            holder.pTimeTv.text = TimeConverter.convertToDateTime(modelPost.createdAt)
             holder.pDescriptionTv.text = modelPost.description
             holder.pLikeTv.text = like.toString() + " Thích"
             holder.pCommentTv.text = comment.toString() + " Bình luận"
