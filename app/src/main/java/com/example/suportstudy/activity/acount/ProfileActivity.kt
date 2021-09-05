@@ -171,10 +171,12 @@ class ProfileActivity : AppCompatActivity() {
             editor.putString(Constrain.KEY_IMAGE, imgUrl)
             editor.putString(Constrain.KEY_NAME, name)
             editor.apply()
-            image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "noImage")!!
+            image = sharedPreferences!!.getString(Constrain.KEY_IMAGE, "")!!
             nameTv!!.text = name
-            var path = Constrain.subPathImage("profile",imgUrl)
-            Constrain.checkShowImage(context,R.drawable.avatar_default,path,avatarIv!!)
+            if (imgUrl != "") {
+                var path = Constrain.baseUrl + "post/" + imgUrl.substring(30)
+                Constrain.checkShowImage(context, R.drawable.avatar_default, path, avatarIv!!)
+            }
             myLoader.gone()
             dataLayout.visible()
         })
