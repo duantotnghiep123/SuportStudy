@@ -4,20 +4,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.suportstudy.model.Comment
-import com.example.suportstudy.model.NewsFeed
 import com.example.suportstudy.model.NewsFeedById
-import com.example.suportstudy.model.Users
-import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_comment.view.*
 import kotlinx.android.synthetic.main.row_comments.view.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class CommentAdapter(var context: Context, var list: NewsFeedById, var layout: Int) : RecyclerView.Adapter<CommentAdapter.ViewHolder>() {

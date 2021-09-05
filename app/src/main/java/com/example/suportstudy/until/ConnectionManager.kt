@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.*
 import android.os.Build
-import androidx.core.content.getSystemService
 import androidx.lifecycle.LiveData
 
 class ConnectionManager(val context: Context):LiveData<Boolean> (){

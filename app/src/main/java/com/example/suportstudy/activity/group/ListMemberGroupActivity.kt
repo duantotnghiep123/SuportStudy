@@ -1,9 +1,8 @@
 package com.example.suportstudy.activity.group
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.text.InputType
 import android.text.TextUtils
 import android.util.Log
@@ -19,10 +18,12 @@ import cn.pedant.SweetAlert.SweetAlertDialog
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.apiresponsemodel.NewsFeedByIdResponse
-import com.example.suportstudy.apiresponsemodel.NewsFeedResponse
 import com.example.suportstudy.extensions.*
 import com.example.suportstudy.fragment.newsfeed.NewsFeedViewModel
-import com.example.suportstudy.model.*
+import com.example.suportstudy.model.AddLike
+import com.example.suportstudy.model.Comment
+import com.example.suportstudy.model.NewsFeed
+import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.NewsFeedAPI
 import com.example.suportstudy.until.Constrain
 import com.squareup.picasso.Picasso

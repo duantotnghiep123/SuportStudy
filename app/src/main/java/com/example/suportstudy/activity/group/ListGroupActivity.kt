@@ -1,27 +1,23 @@
 package com.example.suportstudy.activity.group
 
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.acount.ProfileActivity
 import com.example.suportstudy.activity.course.CourseDetailActivity
-import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.adapter.GroupAdapter
 import com.example.suportstudy.extensions.gone
 import com.example.suportstudy.extensions.visible
-
 import com.example.suportstudy.model.GroupCourse
-
 import com.example.suportstudy.service.GroupCourseAPI
 import com.example.suportstudy.until.Constrain
 import kotlinx.coroutines.*

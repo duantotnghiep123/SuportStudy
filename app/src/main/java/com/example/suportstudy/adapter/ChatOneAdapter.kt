@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.chat.ChatOneActivity
-import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.model.Chat
 import com.example.suportstudy.until.Constrain
 import com.google.firebase.database.DataSnapshot

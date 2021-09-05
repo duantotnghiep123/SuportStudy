@@ -2,7 +2,6 @@ package com.example.suportstudy.controller
 
 import android.app.Activity
 import androidx.lifecycle.MutableLiveData
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.suportstudy.model.Course
 import com.example.suportstudy.model.CourseType
 import com.example.suportstudy.service.CourseAPI

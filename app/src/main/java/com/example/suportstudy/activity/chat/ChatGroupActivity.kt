@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
@@ -17,7 +16,6 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.group.InfoGroupActivity
 import com.example.suportstudy.adapter.GroupChatAdapter
 import com.example.suportstudy.apibodymodel.AddNoteBody
@@ -28,7 +26,6 @@ import com.example.suportstudy.model.GroupCourse
 import com.example.suportstudy.service.GroupCourseAPI
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.viewmodel.NoteViewModel
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.database.*
 import de.hdodenhof.circleimageview.CircleImageView
 import org.json.JSONException

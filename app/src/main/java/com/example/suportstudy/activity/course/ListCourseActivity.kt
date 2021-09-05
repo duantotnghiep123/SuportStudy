@@ -1,7 +1,6 @@
 package com.example.suportstudy.activity.course
 
 import android.os.Bundle
-import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -16,9 +15,6 @@ import com.example.suportstudy.model.Course
 import com.example.suportstudy.service.CourseAPI
 import com.example.suportstudy.until.Constrain
 import com.makeramen.roundedimageview.RoundedImageView
-import com.squareup.picasso.Picasso
-
-import java.lang.Exception
 
 class ListCourseActivity : AppCompatActivity() {
 

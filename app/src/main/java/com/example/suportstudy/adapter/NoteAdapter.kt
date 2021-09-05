@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.databinding.LayoutItemNoteBinding
 import com.example.suportstudy.model.Note
 
-class NoteAdapter() : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
+class NoteAdapter(private val listener: OnItemNoteListener) :
+    RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 
     var notes = mutableListOf<Note>()
         set(value) {
@@ -15,11 +16,16 @@ class NoteAdapter() : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
         }
 
     class NoteViewHolder(
-        private val binding: LayoutItemNoteBinding
+        private val binding: LayoutItemNoteBinding,
+        private val listener: OnItemNoteListener
     ) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(note: Note) {
             this.binding.noteItem = note
+            this.itemView.setOnLongClickListener {
+                listener.onItemLongClickListener(note)
+                false
+            }
         }
     }
 
@@ -29,7 +35,7 @@ class NoteAdapter() : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ), listener
         )
     }
 
@@ -39,5 +45,9 @@ class NoteAdapter() : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 
     override fun getItemCount(): Int {
         return notes.size
+    }
+
+    interface OnItemNoteListener {
+        fun onItemLongClickListener(note: Note)
     }
 }

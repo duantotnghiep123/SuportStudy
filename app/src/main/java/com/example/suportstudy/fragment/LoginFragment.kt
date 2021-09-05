@@ -13,12 +13,10 @@ import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.ActionActivity
-import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
-import kotlinx.android.synthetic.main.fragment_login.edtEmail
-import kotlinx.android.synthetic.main.fragment_login.edtPassword
+import kotlinx.android.synthetic.main.fragment_login.*
 import retrofit2.Response
 import java.util.regex.Matcher
 

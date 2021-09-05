@@ -5,16 +5,15 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.document.ListDocumentActivity
 import com.example.suportstudy.activity.group.ListGroupActivity
-import com.example.suportstudy.activity.home.HomeActivity
 import com.example.suportstudy.model.GroupCourse
 import com.example.suportstudy.model.Participant
 import com.example.suportstudy.service.GroupCourseAPI

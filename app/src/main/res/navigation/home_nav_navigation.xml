@@ -87,7 +87,14 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
+            android:id="@+id/action_noteFragment_to_addNoteFragment2"
+            app:destination="@id/addNoteFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/addNoteFragment"
+        android:name="com.example.suportstudy.fragment.AddNoteFragment"
+        android:label="AddNoteFragment" />
 
 
 </navigation>

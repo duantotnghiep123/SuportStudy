@@ -1,41 +1,19 @@
 package com.example.suportstudy.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.os.UserManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
-import com.example.italkapp.adapter.ChatContainerAdapter
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.ActionActivity
-import com.example.suportstudy.activity.course.CourseDetailActivity
-import com.example.suportstudy.adapter.DocumentAdapter
-import com.example.suportstudy.adapter.NoteAdapter
 import com.example.suportstudy.adapter.NoteContainerAdapter
-import com.example.suportstudy.apibodymodel.GetNoteBody
 import com.example.suportstudy.databinding.FragmentNoteBinding
 import com.example.suportstudy.extensions.onClick
 import com.example.suportstudy.extensions.push
-import com.example.suportstudy.model.Document
-import com.example.suportstudy.model.Note
-import com.example.suportstudy.service.QuestionAPI
-import com.example.suportstudy.until.ConnectionManager
-import com.example.suportstudy.until.Constrain
-import com.example.suportstudy.viewmodel.NoteViewModel
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.bottom_navigation.*
-import kotlinx.android.synthetic.main.fragment_chat_container.*
-import org.bson.types.ObjectId
-import kotlin.collections.ArrayList
 
 
 class   NoteFragment : Fragment() {
@@ -61,6 +39,9 @@ class   NoteFragment : Fragment() {
 
         // Inflate the layout for this fragment
         binding = FragmentNoteBinding.inflate(inflater, container, false)
+        binding.menu.setOnClickListener {
+            activity?.onBackPressed()
+        }
         return binding.root
     }
 
@@ -81,9 +62,6 @@ class   NoteFragment : Fragment() {
             push(R.id.action_noteFragment_to_newsFeedFragment)
         }
         setUpUI()
-        binding.menu.setOnClickListener {
-            activity?.finish()
-        }
     }
 
 
@@ -100,7 +78,7 @@ class   NoteFragment : Fragment() {
 
         tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPagerChat!!.setCurrentItem(tab.position)
+                viewPagerChat!!.currentItem = tab.position
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}

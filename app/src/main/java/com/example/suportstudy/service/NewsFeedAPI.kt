@@ -2,7 +2,9 @@ package com.example.suportstudy.service
 
 import com.example.suportstudy.apiresponsemodel.NewsFeedByIdResponse
 import com.example.suportstudy.apiresponsemodel.NewsFeedResponse
-import com.example.suportstudy.model.*
+import com.example.suportstudy.model.AddLike
+import com.example.suportstudy.model.AddNewsFeed
+import com.example.suportstudy.model.Comment
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call

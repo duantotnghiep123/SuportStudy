@@ -21,5 +21,12 @@ interface NoteDAO {
     suspend fun getGroupNote(): List<Note>
 
     @Query("SELECT USER_IMAGE FROM NOTE")
-    suspend fun getUserAva():String
+    suspend fun getUserAva(): String
+
+    @Query("DELETE FROM NOTE")
+    suspend fun clearDataSelfNote()
+    @Query("DELETE FROM NOTE WHERE IS_GROUP_NOTE =:isGroupNote")
+    suspend fun clearDataByNoteType(isGroupNote:Int)
+    @Query("DELETE FROM NOTE WHERE ID =:id")
+    suspend fun deleteNoteById(id: String)
 }

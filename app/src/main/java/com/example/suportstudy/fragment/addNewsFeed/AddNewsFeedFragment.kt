@@ -21,17 +21,11 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.course.CourseDetailActivity
-import com.example.suportstudy.activity.home.HomeActivity
 import com.example.suportstudy.extensions.onClick
 import com.example.suportstudy.extensions.pop
 import com.example.suportstudy.extensions.visible
-import com.example.suportstudy.fragment.newsfeed.NewsFeedFragment
-import com.example.suportstudy.model.GroupCourse
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.until.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -39,9 +33,6 @@ import kotlinx.android.synthetic.main.fragment_add_news_feed.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
 
 

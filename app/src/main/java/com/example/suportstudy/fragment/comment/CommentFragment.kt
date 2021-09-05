@@ -27,7 +27,6 @@ import com.example.suportstudy.extensions.onClick
 import com.example.suportstudy.extensions.pop
 import com.example.suportstudy.extensions.visible
 import com.example.suportstudy.fragment.addNewsFeed.AddsNewsFeedViewModel
-import com.example.suportstudy.model.NewsFeed
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.until.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog

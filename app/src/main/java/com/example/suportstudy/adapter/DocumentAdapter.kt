@@ -5,7 +5,6 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
@@ -14,9 +13,6 @@ import com.example.suportstudy.activity.document.ViewDocumentDetailActivity
 import com.example.suportstudy.model.Document
 import com.example.suportstudy.until.Constrain
 import com.makeramen.roundedimageview.RoundedImageView
-import com.squareup.picasso.Picasso
-import java.util.*
-import kotlin.collections.ArrayList
 
 class DocumentAdapter(var context: Context, var list: ArrayList<Document>) :
     Adapter<DocumentAdapter.ViewHolder>() {

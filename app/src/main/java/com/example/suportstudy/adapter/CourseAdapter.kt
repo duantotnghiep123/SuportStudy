@@ -6,17 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseDetailActivity
-import com.example.suportstudy.model.Chat
 import com.example.suportstudy.model.Course
 import com.example.suportstudy.until.Constrain
-import com.makeramen.roundedimageview.RoundedImageView
-import com.squareup.picasso.Picasso
-import java.lang.Exception
 
 class CourseAdapter(var context: Context,var courseList: List<Course>) :RecyclerView.Adapter<CourseAdapter.MyViewHolder>() {
 

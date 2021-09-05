@@ -2,7 +2,6 @@ package com.example.suportstudy.adapter
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +9,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.chat.ChatGroupActivity
-
 import com.example.suportstudy.model.GroupCourse
 import com.example.suportstudy.until.Constrain
-import com.google.firebase.database.*
-import com.squareup.picasso.Picasso
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import de.hdodenhof.circleimageview.CircleImageView
 
 class GroupChatListAdapter(

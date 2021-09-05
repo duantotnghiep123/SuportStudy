@@ -1,21 +1,18 @@
 package com.example.suportstudy.service
 
 import com.example.suportstudy.apibodymodel.AddNoteBody
-import com.example.suportstudy.apibodymodel.GetNoteBody
-import com.example.suportstudy.apiresponsemodel.AddNoteResponse
 import com.example.suportstudy.apiresponsemodel.NoteResponse
 import com.example.suportstudy.model.Note
 import com.example.suportstudy.until.Constrain
-import org.bson.types.ObjectId
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface NoteAPI {
     @POST("/api/note/addnote")
-    fun addNote(@Body addNoteBody: AddNoteBody):Call<AddNoteResponse>
+    fun addNote(@Body addNoteBody: AddNoteBody):Call<Note>
+
+    @DELETE("/api/note/")
+    fun deleteNote(@Query("id") id:String):Call<Note>
 
     @GET("/api/note/getByType")
     fun getListNote(

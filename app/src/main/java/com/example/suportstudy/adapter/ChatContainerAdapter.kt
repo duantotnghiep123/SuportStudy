@@ -5,8 +5,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.example.suportstudy.fragment.ChatGroupFragment
 import com.example.suportstudy.fragment.ChatOneFragment
-import com.example.suportstudy.fragment.LoginFragment
-import com.example.suportstudy.fragment.RegisterFragment
 
 
 class ChatContainerAdapter(fm: FragmentManager) :

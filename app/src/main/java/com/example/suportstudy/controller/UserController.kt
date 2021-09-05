@@ -3,13 +3,9 @@ package com.example.suportstudy.controller
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.example.suportstudy.R
-import com.example.suportstudy.model.Course
 import com.example.suportstudy.model.Users
-import com.example.suportstudy.service.CourseAPI
 import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
-
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback

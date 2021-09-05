@@ -1,12 +1,8 @@
 package com.example.suportstudy.fragment.addNewsFeed
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.suportstudy.model.AddLike
 import com.example.suportstudy.model.AddNewsFeed
-import com.example.suportstudy.model.Like
-import com.example.suportstudy.model.NewsFeed
 import com.example.suportstudy.service.NewsFeedAPI
 import com.example.suportstudy.until.Constrain
 import kotlinx.coroutines.CoroutineScope

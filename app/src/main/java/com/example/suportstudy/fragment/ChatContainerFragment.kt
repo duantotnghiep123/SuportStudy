@@ -1,16 +1,14 @@
 package com.example.suportstudy.fragment
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.example.italkapp.adapter.ChatContainerAdapter
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.extensions.onClick
 import com.example.suportstudy.extensions.push
 import com.google.android.material.tabs.TabLayout

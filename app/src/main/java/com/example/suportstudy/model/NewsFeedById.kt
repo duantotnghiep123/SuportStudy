@@ -1,7 +1,6 @@
 package com.example.suportstudy.model
 
 import com.google.gson.annotations.SerializedName
-import io.realm.mongodb.User
 
 data class NewsFeedById (
     @SerializedName("_id")

@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.acount.LoginAndRegisterMainActivity
-import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.activity.quizz.QuizzActivity
 import com.example.suportstudy.until.Constrain
 import kotlinx.android.synthetic.main.activity_main.*

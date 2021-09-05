@@ -4,23 +4,20 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.ActionActivity
-import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.adapter.GroupChatListAdapter
 import com.example.suportstudy.extensions.gone
 import com.example.suportstudy.extensions.visible
 import com.example.suportstudy.model.GroupCourse
-
 import com.example.suportstudy.service.GroupCourseAPI
 import com.example.suportstudy.until.Constrain
 import com.google.firebase.database.DatabaseReference

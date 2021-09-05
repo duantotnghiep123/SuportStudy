@@ -17,11 +17,9 @@ import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.res.ResourcesCompat
-import com.example.suportstudy.activity.ActionActivity
+import com.example.suportstudy.activity.ActionActivity.Companion.uid
 import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.activity.chat.ChatOneActivity
-import com.example.suportstudy.activity.course.CourseTypeActivity
-import com.example.suportstudy.activity.ActionActivity.Companion.uid
 import com.example.suportstudy.until.Constrain
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage

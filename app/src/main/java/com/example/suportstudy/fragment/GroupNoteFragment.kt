@@ -1,24 +1,28 @@
 package com.example.suportstudy.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.suportstudy.R
 import com.example.suportstudy.adapter.NoteAdapter
 import com.example.suportstudy.databinding.FragmentGroupNoteBinding
-import com.example.suportstudy.databinding.FragmentSelfNoteBinding
+import com.example.suportstudy.extensions.gone
+import com.example.suportstudy.extensions.visible
+import com.example.suportstudy.model.Note
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.viewmodel.NoteViewModel
 
-class GroupNoteFragment : Fragment() {
+class GroupNoteFragment : Fragment(),NoteAdapter.OnItemNoteListener {
     private lateinit var viewModel: NoteViewModel
     private lateinit var binding: FragmentGroupNoteBinding
-    private var noteAdapter = NoteAdapter()
+    private var noteAdapter = NoteAdapter(this)
     private lateinit var myUid: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,10 +83,21 @@ class GroupNoteFragment : Fragment() {
                     liveDataNoteResponse.value = null
                     if (!it.data.isNullOrEmpty()) {
                         viewModel.insertGroupNote(it.data)
+                        binding.myLoader.gone()
                     }
                 }
             })
-
+            /** Delete Note response **/
+            liveDataDeleteNoteResponse.observe(viewLifecycleOwner, {
+                it?.let {
+                    liveDataDeleteNoteResponse.value = null
+                    if (it != null) {
+                        Constrain.showToast("Xoá ghi chú thàng công")
+                    } else {
+                        Constrain.showErrorMessage("Có lỗi xảy ra", requireContext())
+                    }
+                }
+            })
             /** Observe data from DB **/
             liveDataNote.observe(viewLifecycleOwner, Observer {
                 it?.let {
@@ -97,6 +112,7 @@ class GroupNoteFragment : Fragment() {
     }
 
     private fun getNote() {
+        binding.myLoader.visible()
         viewModel.getListNote(isGroupNote = 1, myUid)
     }
 
@@ -105,5 +121,25 @@ class GroupNoteFragment : Fragment() {
             adapter = noteAdapter
             hasFixedSize()
         }
+    }
+
+    override fun onItemLongClickListener(note: Note) {
+        var dialog = Constrain.createDialog(requireContext(), R.layout.dialog_confirm)
+        var confirmTv = dialog.findViewById<TextView>(R.id.messagCfTv)
+        var huyBtn = dialog.findViewById<LinearLayout>(R.id.cancelBtn)
+        var dongYBtn = dialog.findViewById<LinearLayout>(R.id.dongyBtn)
+        confirmTv.text = "Bạn có muốn xoá ghi chú?"
+        dongYBtn.setOnClickListener {
+            deleteNote(note.id)
+            dialog.dismiss()
+        }
+        huyBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+    private fun deleteNote(id: String) {
+        viewModel.deleteNote(id)
+        viewModel.deleteGroupNoteFromDB(id)
     }
 }

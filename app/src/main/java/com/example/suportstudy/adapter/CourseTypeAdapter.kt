@@ -12,7 +12,6 @@ import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.ListCourseActivity
 import com.example.suportstudy.model.CourseType
 import com.example.suportstudy.until.Constrain
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_coursetype.view.*
 
 class CourseTypeAdapter (var context: Context, var courseList: List<CourseType>) :RecyclerView.Adapter<CourseTypeAdapter.MyViewHolder>(){

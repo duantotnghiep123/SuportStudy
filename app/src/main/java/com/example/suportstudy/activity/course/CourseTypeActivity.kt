@@ -1,37 +1,21 @@
 package com.example.suportstudy.activity.course
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.app.NotificationManager
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
-import androidx.core.app.ActivityCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.agrawalsuneet.dotsloader.loaders.CircularDotsLoader
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.ActionActivity
-import com.example.suportstudy.activity.MainActivity
-import com.example.suportstudy.activity.acount.ProfileActivity
-import com.example.suportstudy.activity.call.IncomingCallActivity
 import com.example.suportstudy.adapter.CourseTypeAdapter
-import com.example.suportstudy.call_api.Common
-import com.example.suportstudy.call_api.GenAccessToken
 import com.example.suportstudy.controller.CourseController
-import com.example.suportstudy.controller.UserController
 import com.example.suportstudy.extensions.gone
 import com.example.suportstudy.extensions.onClick
 import com.example.suportstudy.extensions.visible
@@ -39,19 +23,11 @@ import com.example.suportstudy.model.CourseType
 import com.example.suportstudy.service.CourseTypeAPI
 import com.example.suportstudy.until.ConnectionManager
 import com.example.suportstudy.until.Constrain
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.iid.FirebaseInstanceId
 import com.makeramen.roundedimageview.RoundedImageView
-import com.stringee.StringeeClient
-import com.stringee.call.StringeeCall
-import com.stringee.call.StringeeCall2
-import com.stringee.exception.StringeeError
-import com.stringee.listener.StatusListener
-import com.stringee.listener.StringeeConnectionListener
 import de.hdodenhof.circleimageview.CircleImageView
-import org.json.JSONObject
 
 class CourseTypeActivity : AppCompatActivity(), android.view.View.OnClickListener,
     LifecycleObserver {

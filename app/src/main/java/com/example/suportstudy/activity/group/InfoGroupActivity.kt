@@ -4,23 +4,21 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
-import com.example.suportstudy.activity.chat.ChatGroupActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.extensions.gone
 import com.example.suportstudy.extensions.visible
 import com.example.suportstudy.model.GroupCourse
-
 import com.example.suportstudy.service.GroupCourseAPI
 import com.example.suportstudy.until.Constrain
 import com.example.suportstudy.until.Persmission

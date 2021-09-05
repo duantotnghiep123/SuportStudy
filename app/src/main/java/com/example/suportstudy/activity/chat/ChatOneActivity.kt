@@ -15,7 +15,6 @@ import com.android.volley.toolbox.Volley
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.call.CallingActivity
-import com.example.suportstudy.activity.course.CourseTypeActivity
 import com.example.suportstudy.adapter.ChatOneAdapter
 import com.example.suportstudy.model.Chat
 import com.example.suportstudy.until.Constrain

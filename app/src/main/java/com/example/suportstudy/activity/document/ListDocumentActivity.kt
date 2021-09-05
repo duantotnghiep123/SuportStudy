@@ -1,7 +1,7 @@
 package com.example.suportstudy.activity.document
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
 import com.example.suportstudy.activity.course.CourseDetailActivity
