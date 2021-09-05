@@ -1,5 +1,6 @@
 package com.example.suportstudy.service
 
+import com.example.suportstudy.apiresponsemodel.NewsFeedByIdResponse
 import com.example.suportstudy.apiresponsemodel.NewsFeedResponse
 import com.example.suportstudy.model.*
 import okhttp3.MultipartBody
@@ -44,8 +45,9 @@ interface NewsFeedAPI {
         @Part image: MultipartBody.Part?,
         ): Call<AddNewsFeed>
 
-    @GET("/api/newsfeed/")
+    @PUT("/api/newsfeed/byId")
+    @FormUrlEncoded
     fun getPostById(
-        @Query("id") id: String,
-    ): Call<NewsFeedResponse>
+        @Field("postId") id: String,
+    ): Call<NewsFeedByIdResponse>
 }

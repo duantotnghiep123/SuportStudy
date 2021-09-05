@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
@@ -23,10 +22,8 @@ import com.example.suportstudy.R
 import com.example.suportstudy.activity.acount.ProfileActivity
 import com.example.suportstudy.activity.call.IncomingCallActivity
 import com.example.suportstudy.activity.course.CourseTypeActivity
-import com.example.suportstudy.activity.home.HomeActivity
 import com.example.suportstudy.call_api.Common
 import com.example.suportstudy.call_api.GenAccessToken
-import com.example.suportstudy.extensions.onClick
 import com.example.suportstudy.until.Constrain
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.database.DatabaseReference
@@ -209,7 +206,7 @@ class ActionActivity : AppCompatActivity(), android.view.View.OnClickListener, L
         sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
         editor = sharedPreferences!!.edit()
         val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        nm.cancel(44448888)
+        nm?.cancel(44448888)
         initAndConnectStringee()
     }
 

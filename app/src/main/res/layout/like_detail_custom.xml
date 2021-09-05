@@ -42,6 +42,17 @@
             android:layout_width="match_parent"
             android:layout_height="0.2dp"/>
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imgNoData"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/nodata"
+        android:layout_below="@id/toolbar"
+        android:visibility="gone"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="10dp"
         android:id="@+id/recyclerviewLike"

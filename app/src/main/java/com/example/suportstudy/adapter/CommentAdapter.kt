@@ -8,9 +8,11 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.model.Comment
 import com.example.suportstudy.model.NewsFeed
+import com.example.suportstudy.model.NewsFeedById
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.service.UserAPI
 import com.example.suportstudy.until.Constrain
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_comment.view.*
 import kotlinx.android.synthetic.main.row_comments.view.*
 import retrofit2.Call
@@ -18,8 +20,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class CommentAdapter(var context: Context, var list: NewsFeed, var layout: Int, var listComment:  Array<Comment>?) : RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
-    var userList: ArrayList<Users> = ArrayList()
+class CommentAdapter(var context: Context, var list: NewsFeedById, var layout: Int) : RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentAdapter.ViewHolder {
         val view = LayoutInflater.from(context).inflate(layout, parent, false)
@@ -27,38 +28,17 @@ class CommentAdapter(var context: Context, var list: NewsFeed, var layout: Int, 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        var comment : Array<Comment>? = list.comment
-
-        val userApi = Constrain.createRetrofit(UserAPI::class.java)
-        userApi.getAllUsers().enqueue(object : Callback<List<Users>> {
-            override fun onResponse(call: Call<List<Users>>, response: Response<List<Users>>) {
-                if (response.isSuccessful) {
-                    var    listUser= response.body()!!
-                    for (i in listUser.indices){
-                        var id=listUser[i]._id
-                        for (j in list.like!!.indices) {
-                            if (id == list.like!![j].userId) {
-                                userList.add(listUser[i])
-                                notifyDataSetChanged()
-                            }
-                        }
-                    }
-                }
-                try {
-                    if (userList.isNotEmpty()) {
-                        holder.nameTv!!.text = userList[position].name
-                        holder.commentTv!!.text = listComment?.get(position)!!.content
-                        holder.timeTv!!.text = Constrain.formatDate(listComment!![position].createdAt)
-                    }
-                } catch (e: Exception) {
-
-                }
-
-            }
-            override fun onFailure(call: Call<List<Users>>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-        })
+        if (!list.comment?.get(position)?.userId?.image.equals("noImage")) {
+            var pathImageUrlUser = Constrain.baseUrl + "/post/" + list.comment?.get(position)?.userId?.image?.substring(27)
+            Picasso.with(context).load(pathImageUrlUser).into(holder.avatarIv)
+        }
+        holder.nameTv!!.text = list.comment?.get(position)?.userId?.name
+        holder.commentTv!!.text = list?.comment?.get(position)?.content
+        holder.timeTv!!.text = list?.comment?.get(position)?.createdAt?.let {
+            Constrain.formatDate(
+                it
+            )
+        }
     }
 
     override fun getItemCount(): Int {

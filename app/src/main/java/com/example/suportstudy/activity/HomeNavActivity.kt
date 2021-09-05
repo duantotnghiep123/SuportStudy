@@ -35,4 +35,7 @@ class HomeNavActivity : AppCompatActivity(){
         navGraph.startDestination = R.id.newsFeedFragment
         navController.graph = navGraph
     }
+    override fun onBackPressed() {
+        finish()
+    }
 }

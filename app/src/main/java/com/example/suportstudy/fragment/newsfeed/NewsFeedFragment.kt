@@ -3,13 +3,10 @@ package com.example.suportstudy.fragment.newsfeed
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suportstudy.R
@@ -18,7 +15,7 @@ import com.example.suportstudy.adapter.NewsFeedAdapter
 import com.example.suportstudy.extensions.gone
 import com.example.suportstudy.extensions.onClick
 import com.example.suportstudy.extensions.push
-import com.example.suportstudy.fragment.addNewsFeed.AddNewsFeedFragment
+import com.example.suportstudy.extensions.visible
 import com.example.suportstudy.model.NewsFeed
 import com.example.suportstudy.model.Users
 import com.example.suportstudy.until.Constrain
@@ -54,8 +51,15 @@ class NewsFeedFragment : Fragment() {
         val isTurtor = sharedPreferences?.getBoolean(Constrain.KEY_ISTUTOR, true)
         var user = Users(_id!!, name!!, image!!, email!!,"" ,isTurtor!!)
         viewModel.list.observe(this){
-            newsFeedAdapter = NewsFeedAdapter(requireActivity(), it, R.layout.row_post, user)
-            recyclerView!!.adapter = newsFeedAdapter
+            if (it.isNotEmpty()) {
+                shimmer_view_container.gone()
+                imgNoData.gone()
+                newsFeedAdapter = NewsFeedAdapter(requireActivity(), it, R.layout.row_post, user)
+                recyclerView!!.adapter = newsFeedAdapter
+            } else {
+                shimmer_view_container.gone()
+                imgNoData.visible()
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package com.example.suportstudy.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.os.UserManager
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.example.italkapp.adapter.ChatContainerAdapter
 import com.example.suportstudy.R
+import com.example.suportstudy.activity.ActionActivity
 import com.example.suportstudy.activity.course.CourseDetailActivity
 import com.example.suportstudy.adapter.DocumentAdapter
 import com.example.suportstudy.adapter.NoteAdapter
@@ -80,7 +82,7 @@ class   NoteFragment : Fragment() {
         }
         setUpUI()
         binding.menu.setOnClickListener {
-            activity?.onBackPressed()
+            activity?.finish()
         }
     }
 

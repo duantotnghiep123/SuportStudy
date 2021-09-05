@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/greynhat4"
+    android:background="@color/white"
     tools:context=".fragment.newsfeed.NewsFeedFragment">
 
     <RelativeLayout
@@ -20,8 +20,8 @@
             android:layout_height="24dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/ic_back_left_grey"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/ic_back"
             android:visibility="visible"
             app:tint="@color/black" />
 
@@ -44,6 +44,15 @@
             android:layout_alignParentBottom="true"
             android:background="@color/greynhat4" />
     </RelativeLayout>
+    <ImageView
+        android:id="@+id/imgNoData"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/nodata"
+        android:layout_below="@id/toolbar"
+        android:visibility="gone"
+        />
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer_view_container"
         android:layout_width="wrap_content"

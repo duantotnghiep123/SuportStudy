@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.agrawalsuneet.dotsloader.loaders.LazyLoader
 import com.example.suportstudy.R
+import com.example.suportstudy.apiresponsemodel.NewsFeedByIdResponse
+import com.example.suportstudy.apiresponsemodel.NewsFeedResponse
 import com.example.suportstudy.extensions.*
 import com.example.suportstudy.fragment.newsfeed.NewsFeedViewModel
 import com.example.suportstudy.model.*
@@ -45,6 +47,7 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var l
     var sharedPreferences: SharedPreferences? = null
     var checkLike = false
     val viewModel : NewsFeedViewModel? = null
+    var cmtOrLike = ""
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -53,18 +56,13 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var l
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val modelPost: NewsFeed = list!![position]
-//        val uid: String = modelPost.userId._id
-        val id: String = modelPost._id
-        val description: String = modelPost.description
-        val coursesId: String = modelPost.typeClassId
-        val time: String = modelPost.createdAt
+        val modelPost: NewsFeed = list[position]
         val user: Users = modelPost.userId
-        val type: String = modelPost.image
-        var comment: Int = modelPost.comment!!.size
+        var comment = modelPost.comment!!.size
         var like = modelPost.like!!.size
-        var pathImageUrl=""
-        pathImageUrl = Constrain.baseUrl + "/post/" + modelPost.image.substring(26)
+        var pathImageUrl = Constrain.baseUrl + "/post/" + modelPost.image.substring(27)
+        var pathImageUrlUser = Constrain.baseUrl + "/post/" + modelPost.userId.image.substring(27)
+
         if (layout == R.layout.row_post) {
             sd = SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE)
             sd!!.titleText = "Loading"
@@ -73,7 +71,7 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var l
                 holder.uNameTv.text = user.name
             }
 
-            Picasso.with(context).load(pathImageUrl).into(holder.uPictureIv)
+            Picasso.with(context).load(pathImageUrlUser).into(holder.uPictureIv)
             holder.pTimeTv.text = Constrain.formatDate(modelPost.createdAt)
             holder.pDescriptionTv.text = modelPost.description
             holder.pLikeTv.text = like.toString() + " Thích"
@@ -103,14 +101,9 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var l
                     CoroutineScope(Dispatchers.IO).launch {
                         newsFeedApi.addLike(true, userLocal._id, modelPost._id).enqueue(object : Callback<AddLike> {
                             override fun onResponse(call: Call<AddLike>, response: Response<AddLike>) {
-//                                holder.likeIv.enable()
                                 Log.d("son", "like thanh cong")
                             }
                             override fun onFailure(call: Call<AddLike>, t: Throwable) {
-//                                holder.likeIv.enable()
-//                                like--
-//                                holder.likeIv.setImageResource(R.drawable.ic_like)
-//                                holder.pLikeTv.text = like.toString()
                                 Log.d("son", "like that bai")
                             }
                         })
@@ -118,11 +111,14 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var l
                 }
             }
             holder.commentBtn.onClick {
-                showDialogComment(modelPost, userLocal, position)
+                cmtOrLike = "comment"
+                getPostById(modelPost._id)
+                Log.d("son", "post ${modelPost._id}" )
             }
             holder.seeLikeBtn.onClick {
-                showDialogLike(modelPost)
-                Log.d("son", "userIdLike ${modelPost.like}")
+                cmtOrLike = "like"
+                getPostById(modelPost._id)
+//                Log.d("son", "userIdLike ${modelPost.like}")
             }
         }
     }
@@ -138,8 +134,26 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var l
         return false
     }
 
+    private fun getPostById(id: String){
+        val newsFeedApi = Constrain.createRetrofit(NewsFeedAPI::class.java)
+        CoroutineScope(Dispatchers.IO).launch {
+            newsFeedApi.getPostById(id).enqueue(object : Callback<NewsFeedByIdResponse> {
+                override fun onResponse(call: Call<NewsFeedByIdResponse>, response: Response<NewsFeedByIdResponse>) {
+                        if (cmtOrLike == "comment") {
+                            response.body()?.let { showDialogComment(it) }
+                        } else {
+                            response.body()?.let { showDialogLike(it) }
+                        }
+                }
+                override fun onFailure(call: Call<NewsFeedByIdResponse>, t: Throwable) {
+                    Log.d("son", t.toString())
+                }
+            })
+        }
+    }
+
     @SuppressLint("SetTextI18n")
-    private fun showDialogComment(newsFeed: NewsFeed, userLocal: Users, position: Int) {
+    private fun showDialogComment(newsFeed: NewsFeedByIdResponse) {
         val dialog = Dialog(context, android.R.style.Theme_DeviceDefault_Light_NoActionBar)
         dialog.window?.setWindowAnimations(R.style.Theme_Dialog_Animation)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -150,15 +164,14 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var l
         val btnSend = dialog.findViewById(R.id.senBtn) as ImageView
         val tvLike = dialog.findViewById(R.id.likeCommentTv) as TextView
         var loader = dialog.findViewById(R.id.myLoader) as LazyLoader
-        val listComment: Array<Comment>? = list[position].comment
-        commentAdapter = CommentAdapter(context, list[position], R.layout.row_comments, list[position].comment)
+        commentAdapter = CommentAdapter(context, newsFeed.data, R.layout.row_comments)
         val listRcv: RecyclerView = dialog.findViewById(R.id.recyclerView)
         val hideCommentLayout : LinearLayout = dialog.findViewById(R.id.hideCommentLayout)
         listRcv.layoutManager = LinearLayoutManager(context)
         listRcv.adapter = commentAdapter
 
-        tvLike.text =  newsFeed.like!!.size.toString() + " Thích"
-        if (newsFeed.comment!!.isEmpty()) {
+        tvLike.text =  newsFeed.data.like!!.size.toString() + " Thích"
+        if (newsFeed.data.comment!!.isEmpty()) {
             hideCommentLayout.visible()
         }
         btnback.onClick { dialog.dismiss() }
@@ -171,16 +184,14 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var l
                 loader.visible()
                 btnSend.disable()
                 val newsFeedApi = Constrain.createRetrofit(NewsFeedAPI::class.java)
-                newsFeedApi.addComment(edtComment.text.toString(), userLocal._id, newsFeed._id).enqueue(object  : Callback<Comment>{
+                newsFeedApi.addComment(edtComment.text.toString(), userLocal._id, newsFeed.data._id).enqueue(object  : Callback<Comment>{
                     override fun onResponse(call: Call<Comment>, response: Response<Comment>) {
                         Log.d("son", "comment thanh cong")
                         loader.gone()
                         btnSend.enable()
-                        edtComment.text.clear()
                         dialog.dismiss()
-
-//                        listComment.add(Comment("","","",""))
-                        commentAdapter!!.notifyDataSetChanged()
+                        edtComment.text.clear()
+                        getPostById(newsFeed.data._id)
                     }
                     override fun onFailure(call: Call<Comment>, t: Throwable) {
                         loader.gone()
@@ -193,15 +204,20 @@ class NewsFeedAdapter(var context: Context, var list: ArrayList<NewsFeed>, var l
         dialog.show()
     }
 
-    private fun showDialogLike(newsFeed: NewsFeed) {
+    private fun showDialogLike(newsFeed: NewsFeedByIdResponse) {
+        Log.d("son","vaoShowLike")
         val dialog = Dialog(context, android.R.style.Theme_DeviceDefault_Light_NoActionBar)
         dialog.window?.setWindowAnimations(R.style.Theme_Dialog_Animation)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
         dialog.setContentView(R.layout.like_detail_custom)
         val btnback = dialog.findViewById(R.id.backIv) as ImageView
-        likeAdapter = LikeAdapter(context, newsFeed, R.layout.row_user)
+        likeAdapter = LikeAdapter(context, newsFeed.data, R.layout.row_user)
         val list: RecyclerView = dialog.findViewById(R.id.recyclerviewLike)
+        val imgNoData : ImageView = dialog.findViewById(R.id.imgNoData)
+        if (newsFeed.data.like!!.isEmpty()) {
+            imgNoData.visible()
+        }
         list.layoutManager = LinearLayoutManager(context)
         list.adapter = likeAdapter
         btnback.onClick { dialog.dismiss() }
